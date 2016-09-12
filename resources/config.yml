@@ -1,0 +1,38 @@
+---
+language: 'eng'
+
+formats:
+ nametag: "[{RANK}{FACTION}] {PLAYER}"
+ chat:
+  normal: "[{RANK}{FACTION}] {PLAYER}: {MESSAGE}"
+  faction: "&7F>>&f [{RANK}{FACTION}] {PLAYER}: {MESSAGE}"
+ rank:
+  leader: "***"
+  officer: "**"
+  member: "*"
+  recruit: ""
+ hud:
+  text: "{RANK} | {NAME} | {WORLD}"
+  sub-title: ""
+
+prices:
+ faction:
+  create: 500
+  claim: 300
+
+
+settings:
+ invitation.expire.time: 60
+ combat:
+  hurt:
+   in.own.plot: false
+  attack:
+   factionLess: false
+   team: false
+   while:
+    factionLess: false
+  enemy: true
+  truce: true
+  neutral: true
+  ally: false
+...
