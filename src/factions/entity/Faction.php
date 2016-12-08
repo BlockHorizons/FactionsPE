@@ -122,7 +122,7 @@ class Faction implements RelationParticipator, Named
     private $flags = [];
     
     /**
-     * Saves last time when this faction were saved. (UNIX Timestamp) 
+     * Last time when this faction were saved. (UNIX Timestamp) 
      * @var int $lastSave 
      */
     private $lastSave;
@@ -172,12 +172,12 @@ class Faction implements RelationParticipator, Named
 
        if(isset($data["home"])) {
            $p = explode(":", $data["home"]);
-           if(($level = EvalCore::get()->getServer()->getLevelByName($p[3]))) {
+           if(($level = FactionsPE::get()->getServer()->getLevelByName($p[3]))) {
                $pos = new Position($p[0], $p[1], $p[2], $level);
                $this->home = $pos;
                $this->verifyHomeIsValid();
            } else {
-               EvalCore::warning(Text::parse("<red>%var0 home was un-set because it is no longer in valid territory (%var1)", $this->getName(), $data["home"]));
+               FactionsPE::get()->getLogger()->warning(Text::parse("<red>%var0 home was un-set because it is no longer in valid territory (%var1)", $this->getName(), $data["home"]));
            }
        }
 

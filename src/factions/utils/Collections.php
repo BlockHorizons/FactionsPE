@@ -42,7 +42,6 @@ class Collections
                     }
                     sort($sorted, SORT_ASC);
                     $ret = [];
-                    var_dump($sorted);
                     foreach($sorted as $key => $time){
                         $ret[$key] = $items[$key];
                     }

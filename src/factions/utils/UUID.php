@@ -9,7 +9,9 @@
 namespace factions\utils;
 
 
-class UUID {
+final class UUID {
+
+	private __construct(){}
 
 	const SIZE = 24;
 	const SPLITS = 4;

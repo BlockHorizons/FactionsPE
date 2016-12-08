@@ -33,7 +33,9 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 {
 
 	/** @var IFPlayer[] $storage */
-	protected static $storage = [];
+	private static $storage = [];
+
+
 	/** @var string $factionHereId */
 	public $factionHereId = "";
 	/** @var $lastActivityMillis */
@@ -47,6 +49,7 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 	
 	public function __construct(Player $player)
 	{
+		// I'm not sure what these checks below do. :confused:
 		$this->name = $player->getName();
 		FPlayer::attach($this);
 		parent::__construct($player instanceof Player ? $player->getName() : $player);
@@ -64,14 +67,9 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 		if (!self::isRegistered($player)) self::$storage[$player->getName()] = $player;
 	}
 
-	public static function isRegistered(IFPlayer $player) : BOOL
+	public static function isRegistered(IFPlayer $player) : BOOL // TODO: Rename -> contains
 	{
 		return isset(self::$storage[$player->getName()]);
-	}
-
-	public static function init()
-	{
-		// We must make sure that storage is created
 	}
 
 	/**
@@ -123,11 +121,15 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 	 */
 	public static function getByName($name) {
 		foreach(self::$storage as $player){
-			if(strtolower($player->getName()) === strtolower($name)) return $player; # Is strtolower necessary?
+			if(strtolower($player->getName()) === strtolower($name)) return $player;
 		}
 		return NULL;
 	}
 
+	/**
+	 * Remove a member from storage
+	 * @param IFPlayer $player
+	 */
 	public static function detach(IFPlayer $player)
 	{
 		if (self::isRegistered($player)) {
@@ -138,12 +140,20 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 		}
 	}
 
+	/**
+	 * Create a FPlayer instance for Player if he doesn't have one already
+	 * @param Player $player
+	 */
 	public static function create(Player $player)
 	{
 		if (($ret = self::getByName($player->getName())) !== NULL) return $ret;
 		return new FPlayer($player);
 	}
 
+	/**
+	 * Returns a OfflinePlayer instance for player with $name
+	 * @param string $name
+	 */
 	public static function createOffline(string $name) : OfflineFPlayer
 	{
 		if (($ret = self::getByName($name)) !== NULL) return $ret;
@@ -151,7 +161,7 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 	}
 
 	/**
-	 * @return FPlayer[]
+	 * @return IFPlayer[]
 	 */
 	public static function getAllOnline() : ARRAY
 	{
@@ -162,6 +172,9 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 		return $ret;
 	}
 
+	/**
+	 * Makes sure that every member data is saved
+	 */
 	public static function saveAll() {
 		foreach(self::getAll() as $player) {
 			$player->save();
@@ -169,14 +182,24 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 	}
 
 	/**
-	 * @return IFPlayer[]|FPlayer[]|OfflineFPlayer[]
+	 * @return IFPlayer[]
 	 */
 	public static function getAll()
 	{
 		return self::$storage;
 	}
 	
-	public function getAutoClaimFaction() : STRING
+
+	/*
+	 * ----------------------------------------------------------
+	 * METHODS
+	 * ----------------------------------------------------------
+	 * 
+	 * The real functions 
+	 *
+	 */
+
+	public function getAutoClaimFaction() : STRING // TODO: Rewrite the autoClaimFaction thingy
 	{
 		return $this->autoClaimFaction;
 	}
