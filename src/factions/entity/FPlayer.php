@@ -26,6 +26,7 @@ use factions\objs\Rel;
 use factions\utils\RelationUtil;
 use pocketmine\level\Position;
 use pocketmine\Player;
+use pocketmine\IPlayer;
 use pocketmine\command\ConsoleCommandSender;
 
 class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationParticipator, Named
@@ -91,7 +92,7 @@ class FPlayer extends OfflineFPlayer implements EconomyParticipator, RelationPar
 				$player = $player->getPlayer();
 			}
 		}
-		if($player instanceof Player) {
+		if($player instanceof IPlayer) {
 			// Handling player object
 			if (($ret = self::getByName($player->getName())) !== NULL) {
 				// if stored instance is offline - detach from storage

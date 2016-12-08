@@ -1,0 +1,6 @@
+[submodule "lib/Localizer"]
+	path = lib/Localizer
+	url = https://github.com/Chris-Prime/Localizer.git
+[submodule "src/sll"]
+	path = src/sll
+	url = https://github.com/Chris-Prime/Simple-LibLoader.git

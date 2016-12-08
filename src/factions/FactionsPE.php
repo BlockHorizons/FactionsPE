@@ -48,6 +48,7 @@ use evalcore\{
 };
 use ssl\LibLoader;
 
+
 class FactionsPE extends PluginBase
 {
 
@@ -141,9 +142,6 @@ class FactionsPE extends PluginBase
 
     private static $disabling = false;
     private static $instance;
-
-    /** @var float $start */
-    public $start;
     
     /** @var DataProvider $data */
     private $data;
@@ -169,14 +167,15 @@ class FactionsPE extends PluginBase
 
     public function onLoad()
     {
-        $this->start = microtime(true);
         LibLoader::loadLib($this->getFile()."lib/Localizer");
-        self::$instance = $this;
+
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder() . "logs");
+
         Localizer::transferLanguages($this->getFile()."resources/languages", $this->getDataFolder()."languages");
         $this->saveDefaultConfig();
         $this->settings = new Settings($this->getDataFolder()."config.yml", Settings::YAML);
+
         Perm::init();
         Flag::init();
         Predicate::init();
@@ -208,7 +207,7 @@ class FactionsPE extends PluginBase
         }
         foreach([StatsEngine::class, ChatEngine::class, ExploitEngine::class, CombatEngine::class, MainEngine::class,
             PlayerEngine::class] as $engine) {
-            Engines::registerEngine($engine);
+            $this->getServer()->getPluginManager()->registerListener($this, new $engine($this));
         }
 
 
