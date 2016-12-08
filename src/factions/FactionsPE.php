@@ -46,6 +46,7 @@ use pocketmine\{
 use evalcore\{
     EvalCore, engine\Engines
 };
+use ssl\LibLoader;
 
 class FactionsPE extends PluginBase
 {
@@ -139,21 +140,21 @@ class FactionsPE extends PluginBase
     const NAME_WARZONE_DEFAULT = "Warzone";
 
     private static $disabling = false;
-    private static $folder = "";
     private static $instance;
 
     /** @var float $start */
-    public $start = .0;
+    public $start;
     
-    /** @var Text $text */
-    private $text;
-    
-    /** @var NBTDataProvider $data */
+    /** @var DataProvider $data */
     private $data;
+    
+    // --------------------------------------------------------
+    // STATIC
+    // --------------------------------------------------------
 
     public static function getFolder() : string
     {
-        return self::$folder;
+        return self::get()->getDataFolder();
     }
 
     public static function get() : FactionsPE
@@ -161,7 +162,7 @@ class FactionsPE extends PluginBase
         return self::$instance;
     }
 
-    public static function isShuttingDown()
+    public static function isShuttingDown() : bool
     {
         return self::$disabling;
     }
@@ -169,12 +170,12 @@ class FactionsPE extends PluginBase
     public function onLoad()
     {
         $this->start = microtime(true);
+        LibLoader::loadLib($this->getFile()."lib/Localizer");
         self::$instance = $this;
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder() . "logs");
-        @mkdir($this->getDataFolder() . "languages");
+        Localizer::transferLanguages($this->getFile()."resources/languages", $this->getDataFolder()."languages");
         $this->saveDefaultConfig();
-        self::$folder = $this->getDataFolder();
         $this->settings = new Settings($this->getDataFolder()."config.yml", Settings::YAML);
         Perm::init();
         Flag::init();
@@ -183,7 +184,7 @@ class FactionsPE extends PluginBase
 
     public function onEnable()
     {
-        $this->text = new Text($this, Settings::get('language', Text::FALLBACK_LANGUAGE));
+        Localizer::loadLanguages($this->getDataFolder()."languages");
         try {
             $this->data = DataProvider::load($this, $this->getConfig()->get('data-provider', 'NBT'));
         } catch (\Exception $e) {
@@ -197,6 +198,7 @@ class FactionsPE extends PluginBase
             if(is_int($a)){ new $b(); continue; }
             new $a($this);
         }
+        // TODO: Make better factions manager
         new Factions();
 
         // Start hud task if necessary
@@ -220,19 +222,17 @@ class FactionsPE extends PluginBase
         FPlayer::attach(new FConsole());
         
         $this->getLogger()->info(Text::parse('plugin.log.enable'));
-
-        Tester::test($this);
     }
 
     public function onDisable()
     {
-        foreach($this->getServer()->getOnlinePlayers() as $player) $player->kick("Server shutting down");
         self::$disabling = true;
+        foreach($this->getServer()->getOnlinePlayers() as $player) $player->kick("Server shutting down");
         if (Factions::get() instanceof Factions) Factions::close();
         if (Plots::get() instanceof Plots) Plots::close();
         FPlayer::saveAll();
 
-        $this->getLogger()->info(Text::parse('plugin.log.disable'));
+        $this->getLogger()->info(Localizer::trans('plugin.disabled'));
     }
 
     /**

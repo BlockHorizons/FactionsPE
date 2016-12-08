@@ -1,35 +1,30 @@
-///                        Gameplay
-///--------------------------------------------------------------
-//     This file has the most affect on your player gameplay
-// NOTE: Do not edit comments, unless you know what you're doing!
-///--------------------------------------------------------------
 ---
-# Can player join any faction while having negative power level? (true);
+# Can player join any faction while having negative power level? (true)
 can.join.with.negative.power.level: false
-# Can player leave with negative power level? (false);
+# Can player leave with negative power level? (false)
 can.leave.with.negative.power.level: false
-# Can players use 'faction home' feature? (true);
+# Can players use 'faction home' feature? (true)
 homes.enabled: true 
-# Teleport players back to 'faction home'? If yes, then node above must be set to true (true);
+# Teleport players back to 'faction home' on death? If yes, then node above must be set to true (true);
 homes.teleport.to.on.death.active: true
-# Allow command /home? (true);
+# Allow command /home? (true)
 homes.teleport.command.enabled: true 
 # Can player teleport to his faction home while in enemy territory? (false)
 homes.teleport.allowed.from.enemy.territory: false
 # Can player teleport to his home while in different world? (true)
 homes.teleport.allowed.from.different.world: true
-# How far can be nearest enemy to disallow home teleportation?
+# How far can be nearest enemy to disallow home teleportation? (10)
 homes.teleport.allowed.enemy.distance: 10
-# In which worlds 'faction pvp rules' are enabled in? ([])
-worlds.pvp.rules.enabled: [world]
+# In which worlds 'faction pvp rules' are enabled in? (['world'])
+worlds.pvp.rules.enabled: ["world"]
 # List down 'super admins' ([])
 players.who.bypass.all.protection: []
 # How much the player will be damaged by 'pain build'? (1)
 action.denied.pain.amount: 1
-# List down worlds where power loss is enabled ([])
-worlds.power.loss.enabled: [world]
-# List down worlds where claiming is enabled ([])
-worlds.claiming.enabled: [world]
+# List down worlds where power loss is enabled (["world"])
+worlds.power.loss.enabled: ["world"]
+# List down worlds where claiming is enabled (["world"])
+worlds.claiming.enabled: ["world"]
 # Should we send the player his faction 'description' aka motd as warm welcome message? (true)
 show.motd.on.join: true
 # Can liquids flow? (true)

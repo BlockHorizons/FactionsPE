@@ -1,5 +1,5 @@
 ---
-language: 'eng'
+language: 'en'
 
 formats:
  nametag: "[{RANK}{FACTION}] {PLAYER}"
@@ -7,32 +7,24 @@ formats:
   normal: "[{RANK}{FACTION}] {PLAYER}: {MESSAGE}"
   faction: "&7F>>&f [{RANK}{FACTION}] {PLAYER}: {MESSAGE}"
  rank:
-  leader: "***"
-  officer: "**"
-  member: "*"
-  recruit: ""
- hud:
-  text: "{RANK} | {NAME} | {WORLD}"
-  sub-title: ""
+  leader: "**"
+  officer: "*"
+  member: "+"
+  recruit: "-"
+
+# Optional functions
+enable-hud: false
+enable-stats: false
 
 prices:
  faction:
-  create: 500
-  claim: 300
+  create: 3500
 
-
-settings:
- invitation.expire.time: 60
- combat:
-  hurt:
-   in.own.plot: false
-  attack:
-   factionLess: false
-   team: false
-   while:
-    factionLess: false
-  enemy: true
-  truce: true
-  neutral: true
-  ally: false
+data-provider: json
+mysql-settings:
+ host: db4free.net
+ user: chris_prime
+ password: factionspe
+ database: factionspe
+ port: 3306
 ...
