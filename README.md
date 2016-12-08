@@ -1,4 +1,4 @@
-![Factions - PE](/resources/logo.png?raw=true "FactionsPE Logo")
+![Factions - PE](https://raw.githubusercontent.com/Chris-Prime/FactionsPE/reborn/resources/logo.png "FactionsPE Logo")
 
 ###What is this?
 This project is [PocketMine-MP](https://github.com/pmmp/PocketMine-MP) plugin. This code allows your server to have factions gamemode.
