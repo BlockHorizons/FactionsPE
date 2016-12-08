@@ -10,6 +10,9 @@ Factions are any-sized groups of players who are on one team and work together t
 ###Installation
 Get latest package file from release section and move it into your server's plugin folder. Let the server start-up to enable it.
 
+###For developers
+Wanna extend possibilities of FactionsPE use its API which is described as good as I can on the [Wiki](wiki).
+
 ###Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
 + [Simple-LibLoader](https://github.com/Chris-Prime/Simple-LibLoader)
