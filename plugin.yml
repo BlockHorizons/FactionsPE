@@ -13,10 +13,10 @@
 ## @link https://github.com/Chris-Prime/FactionsPE
 ##
 name: FactionsPE
-author: "Kristaps Drivnieks aka. Primus"
-api: [ 2.0.0 ]
+author: Chris Prime
+api: [ 2.0.0, 2.1.0 ]
 main: factions\FactionsPE
-version: 2.0.0
+version: 1.0.0_reborn
 
 permissions:
 # -------------------------------------------- #
