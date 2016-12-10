@@ -4,3 +4,6 @@
 [submodule "src/sll"]
 	path = src/sll
 	url = https://github.com/Chris-Prime/Simple-LibLoader.git
+[submodule "lib/Dominate"]
+	path = lib/Dominate
+	url = https://github.com/Chris-Prime/Dominate

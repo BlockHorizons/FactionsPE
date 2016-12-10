@@ -16,9 +16,6 @@
 
 namespace factions\command;
 
-use evalcore\command\Command;
-use evalcore\command\parameter\Parameter;
-use evalcore\command\parameter\type\primitive\TypeString;
 use factions\command\subcommand\ClaimSubCommand;
 use factions\command\subcommand\PowerBoostSubCommand;
 use factions\command\subcommand\UnclaimSubCommand;
@@ -48,7 +45,8 @@ use factions\command\subcommand\StatusSubCommand;
 use factions\command\subcommand\TopSubCommand;
 use factions\command\subcommand\WhoSubCommand;
 use factions\FactionsPE;
-use factions\utils\Text;
+use dominate\Command;
+
 use pocketmine\command\CommandSender;
 
 class FactionCommand extends Command
@@ -91,21 +89,13 @@ class FactionCommand extends Command
 
     public function __construct(FactionsPE $plugin)
     {
-        $this->plugin = $plugin;
-
         parent::__construct($plugin, 'faction', 'Main Faction command', FactionsPE::MAIN, ['fac', 'f']);
 
         foreach (self::$subCommandList as $subCommand) {
-            // ReflectionClass tests!
-            $rc = new \ReflectionClass($subCommand);
-            if($rc->getParentClass()->getName() !== Command::class) continue;
-            if($rc->isAbstract()) continue;
-            /** @var Command $cmd */
-            $cmd = new $subCommand($plugin);
-            $this->addChild($cmd);
+            $this->addChild(new $subCommand($plugin));
         }
 
-        $this->addParameter(new Parameter("sub-command", new TypeString(), false, "Sub-command", NULL));
+        $this->addArgument(new Argument("sub-command", new TypeString(), false, "Sub-command", NULL));
     }
 
     /**
@@ -116,10 +106,9 @@ class FactionCommand extends Command
      */
     public function execute(CommandSender $sender, $label, array $args) : bool
     {
-        if (parent::execute($sender, $label, $args) === false) {
-            return true;
-        }
-        if ($this->redirected) return true;
+        if (!parent::execute($sender, $label, $args)) return true;
+
+        if ($this->endPoint === $this) return true;
 
         if (isset($args[0])) {
             if (!$this->getChild($args[0])) {
