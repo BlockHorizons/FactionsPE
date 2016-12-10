@@ -48,7 +48,6 @@ use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\Player;
-use evalcore\engine\Engine;
 
 class MainEngine extends Engine
 {

@@ -18,7 +18,7 @@ namespace factions\integrations;
 
 
 use factions\FactionsPE;
-use factions\utils\Text;
+use localizer\Localizer;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 
@@ -64,10 +64,10 @@ class Economy
             }
         }
         if($this->isLoaded()){
-            $main->getLogger()->info(Text::parse('plugin.economy.set', $this->getName()));
+            $main->getLogger()->info(Localizer::trans('plugin.economy-set', $this->getName()));
         } else {
-            $main->getLogger()->info(Text::parse('plugin.economy.failed'));
-            $main->getLogger()->info(Text::parse('plugin.economy.dummy'));
+            $main->getLogger()->info(Localizer::trans('plugin.economy-failed'));
+            $main->getLogger()->info(Localizer::trans('plugin.economy-dummy'));
             $this->economy = new DummyEconomy();
         }
     }

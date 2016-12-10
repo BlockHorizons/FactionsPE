@@ -8,10 +8,6 @@
 
 namespace factions\command\subcommand;
 
-
-use evalcore\command\Command;
-use evalcore\command\parameter\Parameter;
-use factions\command\parameter\type\TypeFaction;
 use factions\entity\Faction;
 use factions\entity\FPlayer;
 use factions\FactionsPE;
@@ -20,6 +16,9 @@ use factions\objs\Plots;
 use factions\utils\Text;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+
+use dominate\Command;
+use dominate\argument\Argument;
 
 class InfoSubCommand extends Command
 {
@@ -30,7 +29,7 @@ class InfoSubCommand extends Command
             $plugin, "info", "Fetch faction info", "factions.info", []
         );
 
-        $this->addParameter(new Parameter("faction", new TypeFaction(), true));
+        $this->addParameter(new Argument("faction", Argument::TYPE_FACTION, true));
     }
 
     public function execute(CommandSender $sender, $label, array $args) : bool
@@ -44,13 +43,13 @@ class InfoSubCommand extends Command
                 $fplayer = FPlayer::get($sender);
                 $faction = $fplayer->getFaction();
             } else {
-                $sender->sendMessage(Text::parse("command.be.player") . " Or use '/f info <faction>'");
+                $sender->sendMessage(Localizer::trans("command.be.player") . " Or use '/f info <faction>'");
                 return true;
             }
         } else {
 
             if (!($faction = Factions::getByName($args[0])) instanceof Faction) {
-                $sender->sendMessage(Text::parse('command.info.faction.not.found', $args[0]));
+                $sender->sendMessage(Localizer::trans('command.info-faction-not-found', $args[0]));
                 return true;
             }
 

@@ -18,7 +18,6 @@ namespace factions\engine;
 use factions\entity\FPlayer;
 use factions\utils\Text;
 use pocketmine\event\player\PlayerChatEvent;
-use evalcore\engine\Engine;
 
 class ChatEngine extends Engine
 {

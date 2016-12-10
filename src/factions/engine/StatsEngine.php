@@ -8,8 +8,6 @@
 
 namespace factions\engine;
 
-use evalcore\engine\Engine;
-
 class StatsEngine extends Engine
 {
 

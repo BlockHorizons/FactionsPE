@@ -20,93 +20,10 @@ namespace factions\utils;
 use factions\FactionsPE;
 use pocketmine\utils\TextFormat;
 
-class Text
+final class Text
 {
 
-    const FALLBACK_LANGUAGE = "eng";
-    /** @var string $langFolder */
-    protected static $langFolder;
-    /** @var Text $instance */
-    private static $instance;
-    /** @var string $PREFIX */
-    private static $PREFIX;
-    /** @var string[] $bannedWords */
-    private static $bannedWords;
-    private static $text = "";
-    private static $params = [];
-    private static $lang = [];
-    private static $fallbackLang = [];
-    /** @var bool $constructed */
-    private static $constructed = false;
-    private static $formats = [];
-    /** @var FactionsPE $plugin */
-    protected $plugin;
-
-    public function __construct(FactionsPE $plugin, $lang = "eng")
-    {
-        if (self::$constructed) throw new \RuntimeException("class is in singleton structure");
-        self::$instance = $this;
-        $this->plugin = $plugin;
-        self::$langFolder = $plugin->getDataFolder()."languages/";
-        self::$PREFIX = "&7[&c" . $plugin->getDescription()->getName() . "&7]&r&f";
-        self::$formats = $plugin->getConfig()->get('formats', [
-            "nametag" => "[{RANK}{FACTION}] {PLAYER}",
-            "chat" => [
-                "normal" => "[{RANK}{FACTION}] {PLAYER}: {MESSAGE}",
-                "faction" => "&7F:&f [{RANK}{FACTION}] {PLAYER}: {MESSAGE}"
-            ],
-            "rank" => [
-                "leader" => "***",
-                "officer" => "**",
-                "member" => "*",
-                "recruit" => "^"
-            ],
-            "hud" => [
-                "text" => "*** HUD NOT SET ***",
-                "sub-title" => ""
-            ]
-        ]);
-        self::$bannedWords = $plugin->getConfig()->get('banned-words', []);
-
-        $this->loadLang(self::$langFolder.$lang.'.ini', self::$lang);
-        $this->loadLang(self::$langFolder.self::FALLBACK_LANGUAGE.'.ini', self::$fallbackLang);
-
-        if(!empty(self::$lang)){
-            $plugin->getLogger()->info(self::parse('plugin.log.language.set', $lang));
-        } else {
-            $plugin->getLogger()->info(self::parse('plugin.log.language.using.fallback', $lang, self::FALLBACK_LANGUAGE));
-        }
-        self::$constructed = true;
-    }
-
-    private function loadLang($path, &$d){
-        if(file_exists($path) and strlen($content = file_get_contents($path)) > 0){
-            foreach(explode("\n", $content) as $line){
-                $line = trim($line);
-                if($line === "" or $line{0} === "#"){
-                    continue;
-                }
-                $t = explode("=", $line, 2);
-                if(count($t) < 2){
-                    continue;
-                }
-                $key = trim($t[0]);
-                $value = trim($t[1]);
-                if($value === ""){
-                    continue;
-                }
-                $d[$key] = $value;
-            }
-        }
-    }
-
-    public static function parse($node, ...$vars) : string
-    {
-        $text = isset(self::$lang[$node]) ? self::$lang[$node] : $node;
-        self::$params = $vars;
-        self::$text = $text;
-        return self::$instance;
-    }
+    private function __construct() {}
 
     public static function formatRank($rank){
         if(isset(self::$formats['rank'][$rank])){
@@ -118,21 +35,6 @@ class Text
     public static function getRolePrefix($role) : STRING
     {
         return $role;
-    }
-
-    // Formats
-
-    public static function getFormat($format) : string {
-        $dirs = explode(".", $format);
-        $i = 0;
-        $op = self::$formats;
-        while(isset($dirs[$i]) and isset($op[$dirs[$i]])){
-            if(!is_array($op[$dirs[$i]])) return self::parseColorVars($op[$dirs[$i]]);
-            $op = $op[$dirs[$i]];
-            $i++;
-        }
-        return $format;
-
     }
 
     public static function parseColorVars(&$string) : STRING
@@ -153,7 +55,7 @@ class Text
             "<g>", "<good>", "<b>", "<bad>", "<k>", "<key>", "<v>",
             "<value>", "<h>", "<highlight>", "<c>", "<command>", "<p>", "<param>", 
         ];
-        $with = [     "", "§0", "§1", "§2", "§3", "§4", "§c",
+        $with = ["", "§0", "§1", "§2", "§3", "§4", "§c",
             "§5", "§6", "§6", "§7", "§8", "§8", "§9",
             "§a", "§b", "§c", "§d",
             "§e", "§f", "§k", "§l", "§l", "§m",
@@ -182,23 +84,6 @@ class Text
         $from = '/'.preg_quote($from, '/').'/';
 
         $subject = preg_replace($from, $to, $subject, 1);
-    }
-
-    public static function isNameBanned($name) : bool {
-        foreach(self::$bannedWords as $word){
-            if(strpos(strtolower($name), strtolower($word)) !== false) return true;
-        }
-        return false;
-    }
-
-    public static function getHudText() : string
-    {
-        return self::$formats['hud']['text'];
-    }
-
-    public static function getHudSubTitle() : string
-    {
-        return self::$formats['hud']['sub-title'];
     }
 
     public static function getRelationColor($rel){
@@ -264,22 +149,6 @@ class Text
             }
         }
         return $r;
-    }
-
-    public function __toString()
-    {
-        $s = self::$text;
-        $i = 0;
-        foreach (self::$params as $var) {
-            $s = str_replace("%var" . $i, $var, $s);
-            //$s = sprintf($s, $var);
-            $i++;
-        }
-        $s = str_replace("%prefix", self::$PREFIX, $s);
-        self::$text = "";
-        self::$params = [];
-        self::parseColorVars($s);
-        return $s;
     }
 
 }

@@ -29,7 +29,6 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
-use evalcore\engine\Engine;
 
 /**
  * This engine will update player info, such as faction, nametag, money etc.

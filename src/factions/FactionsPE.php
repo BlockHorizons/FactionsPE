@@ -43,10 +43,8 @@ use factions\{
 use pocketmine\{
     plugin\PluginBase, utils\TextFormat
 };
-use evalcore\{
-    EvalCore, engine\Engines
-};
-use ssl\LibLoader;
+use sll\LibLoader;
+use localizer\Localizer;
 
 
 class FactionsPE extends PluginBase
@@ -76,6 +74,7 @@ class FactionsPE extends PluginBase
     const FLAG_SET = "factions.flag.set";
     const FLAG_SHOW = "factions.flag.show";
     const HOME = "factions.home";
+    const INFO = "factions.info";
     const INVITE = "factions.invite";
     const INVITE_LIST = "factions.invite.list";
     const INVITE_LIST_OTHER = "factions.invite.list.other";
@@ -141,6 +140,8 @@ class FactionsPE extends PluginBase
     const NAME_WARZONE_DEFAULT = "Warzone";
 
     private static $disabling = false;
+
+    /** @var self */
     private static $instance;
     
     /** @var DataProvider $data */
@@ -167,7 +168,9 @@ class FactionsPE extends PluginBase
 
     public function onLoad()
     {
+        self::$instance = $this;
         LibLoader::loadLib($this->getFile()."lib/Localizer");
+        LibLoader::loadLib($this->getFile()."lib/Dominate");
 
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder() . "logs");
@@ -200,16 +203,10 @@ class FactionsPE extends PluginBase
         // TODO: Make better factions manager
         new Factions();
 
-        // Start hud task if necessary
-        if ($this->getConfig()->get('enable-hud', true)) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new HUDTask($this), 10);
-            $this->getLogger()->info(Text::parse('plugin.log.hud.enabled'));
-        }
         foreach([StatsEngine::class, ChatEngine::class, ExploitEngine::class, CombatEngine::class, MainEngine::class,
             PlayerEngine::class] as $engine) {
-            $this->getServer()->getPluginManager()->registerListener($this, new $engine($this));
+            $this->getServer()->getPluginManager()->registerEvents(new $engine($this), $this);
         }
-
 
         # Register command
         $this->getServer()->getCommandMap()->register('FactionsPE', new FactionCommand($this));
@@ -220,13 +217,12 @@ class FactionsPE extends PluginBase
         
         FPlayer::attach(new FConsole());
         
-        $this->getLogger()->info(Text::parse('plugin.log.enable'));
+        $this->getLogger()->info(Localizer::trans('plugin.enabled'));
     }
 
     public function onDisable()
     {
         self::$disabling = true;
-        foreach($this->getServer()->getOnlinePlayers() as $player) $player->kick("Server shutting down");
         if (Factions::get() instanceof Factions) Factions::close();
         if (Plots::get() instanceof Plots) Plots::close();
         FPlayer::saveAll();

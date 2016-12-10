@@ -30,7 +30,7 @@ class ClaimSubCommand extends Command
     public function __construct(FactionsPE $plugin)
     {
         parent::__construct($plugin, "claim", "Claim this plot", FactionsPE::CLAIM);
-        $this->addRequirement(new ReqBePlayer());
+        $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
         $this->addRequirement(new ReqHasFaction());
 
         $this->addChild(new ClaimOneChildCommand($plugin, true));

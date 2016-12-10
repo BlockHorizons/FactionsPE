@@ -45,57 +45,23 @@ use factions\command\subcommand\StatusSubCommand;
 use factions\command\subcommand\TopSubCommand;
 use factions\command\subcommand\WhoSubCommand;
 use factions\FactionsPE;
+
 use dominate\Command;
+use dominate\argument\Argument;
 
 use pocketmine\command\CommandSender;
 
 class FactionCommand extends Command
 {
 
-    /**
-     * All childs
-     * @var String[]
-     */
-    private static $subCommandList = [
-        DisbandSubCommand::class,
-        CreateSubCommand::class,
-        HelpSubCommand::class,
-        InviteSubCommand::class,
-        LeaderSubCommand::class,
-        HomeSubCommand::class,
-        InfoSubCommand::class,
-        SetHomeSubCommand::class,
-        MapSubCommand::class,
-        WhoSubCommand::class,
-        ClaimSubCommand::class,
-        StatusSubCommand::class,
-        JoinSubCommand::class,
-        LeaveSubCommand::class,
-        FlagListSubCommand::class,
-        SetPowerSubCommand::class,
-        TopSubCommand::class,
-        OpenFactionSubCommand::class,
-        CloseFactionSubCommand::class,
-        ListSubCommand::class,
-        KickSubCommand::class,
-        DescSubCommand::class,
-        SetNameSubCommand::class,
-        RelationSubCommand::class,
-        PermSubCommand::class,
-        OverrideSubCommand::class,
-        UnclaimSubCommand::class,
-        PowerBoostSubCommand::class,
-    ];
-
     public function __construct(FactionsPE $plugin)
     {
         parent::__construct($plugin, 'faction', 'Main Faction command', FactionsPE::MAIN, ['fac', 'f']);
 
-        foreach (self::$subCommandList as $subCommand) {
-            $this->addChild(new $subCommand($plugin));
-        }
+        // Registering subcommands
+        $this->addChild(new InfoSubCommand($plugin, "info", "Fetch faction info", FactionsPE::INFO));
 
-        $this->addArgument(new Argument("sub-command", new TypeString(), false, "Sub-command", NULL));
+        $this->addArgument(new Argument("sub-command", Argument::TYPE_STRING));
     }
 
     /**
@@ -108,11 +74,11 @@ class FactionCommand extends Command
     {
         if (!parent::execute($sender, $label, $args)) return true;
 
-        if ($this->endPoint === $this) return true;
+        if ($this->endPoint !== $this) return true;
 
         if (isset($args[0])) {
             if (!$this->getChild($args[0])) {
-                $sender->sendMessage(Text::parse("command.generic.usage", $args[0]));
+                $sender->sendMessage(Localizer::trans("command.generic-usage", $args[0]));
             }
         }
 
