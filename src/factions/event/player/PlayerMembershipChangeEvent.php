@@ -8,13 +8,11 @@
 
 namespace factions\event\player;
 
-
-use factions\base\EventBase;
 use factions\entity\Faction;
 use factions\interfaces\IFPlayer;
 use pocketmine\event\Cancellable;
 
-class PlayerMembershipChangeEvent extends EventBase implements Cancellable
+class PlayerMembershipChangeEvent extends Event implements Cancellable
 {
 
     public static $handlerList = NULL;

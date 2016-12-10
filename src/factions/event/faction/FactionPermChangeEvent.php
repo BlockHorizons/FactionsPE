@@ -8,7 +8,6 @@
 
 namespace factions\event\faction;
 
-
 use factions\entity\Faction;
 use factions\entity\Perm;
 use pocketmine\event\Cancellable;

@@ -16,13 +16,12 @@
 
 namespace factions\event\faction;
 
-
-use factions\base\EventBase;
 use factions\faction\Faction;
 use factions\objs\FPlayer;
 use pocketmine\event\Cancellable;
+use pocketmine\event\Event;
 
-class FactionJoinEvent extends EventBase implements Cancellable
+class FactionJoinEvent extends Event implements Cancellable
 {
 
     public static $handlerList = null;

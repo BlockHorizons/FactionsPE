@@ -18,16 +18,13 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 
 use dominate\Command;
-use dominate\argument\Argument;
 
 class InfoSubCommand extends Command
 {
 
-    public function __construct(FactionsPE $plugin)
+    public function __construct(FactionsPE $plugin, $name, $description, $permission)
     {
-        parent::__construct(
-            $plugin, "info", "Fetch faction info", "factions.info", []
-        );
+        parent::__construct($plugin, "info", $descripton, $permission);
 
         $this->addParameter(new Argument("faction", Argument::TYPE_FACTION, true));
     }

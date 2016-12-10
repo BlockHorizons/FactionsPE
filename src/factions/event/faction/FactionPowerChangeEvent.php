@@ -1,14 +1,15 @@
 <?php
 namespace factions\event\faction;
 
-use factions\base\EventBase;
+use pocketmine\event\Event;
 use factions\interfaces\IFPlayer;
 use pocketmine\event\Cancellable;
 
-class FactionPowerChangeEvent extends EventBase implements Cancellable {
+class FactionPowerChangeEvent extends Event implements Cancellable {
 
-	const CUSTOM = 0x00;
-	const COMMAND = 0x01;
+	const CUSTOM 	= 0x00;
+	const COMMAND 	= 0x01;
+	const REGEN 	= 0x02;
 	
 	public static $handlerList = null;
 

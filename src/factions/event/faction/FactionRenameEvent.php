@@ -16,14 +16,12 @@
 
 namespace factions\event\faction;
 
-
-use factions\base\EventBase;
 use factions\faction\Faction;
 use factions\faction\Factions;
 use factions\objs\FPlayer;
 use pocketmine\event\Cancellable;
 
-class FactionRenameEvent extends EventBase implements Cancellable
+class FactionRenameEvent extends Event implements Cancellable
 {
 
     private $factionId;

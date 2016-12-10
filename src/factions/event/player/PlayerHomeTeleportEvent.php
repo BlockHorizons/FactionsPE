@@ -8,13 +8,12 @@
 
 namespace factions\event\player;
 
-
-use factions\base\EventBase;
 use pocketmine\event\Cancellable;
 use pocketmine\level\Position;
 use pocketmine\Player;
+use pocketmine\event\Event;
 
-class PlayerHomeTeleportEvent extends EventBase implements Cancellable
+class PlayerHomeTeleportEvent extends Event implements Cancellable
 {
 
     public static $handlerList = null;

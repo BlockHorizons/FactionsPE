@@ -1,11 +1,11 @@
 <?php
 namespace factions\event\player;
 
-use factions\base\EventBase;
 use pocketmine\event\Cancellable;
 use factions\interfaces\IFPlayer;
+use pocketmine\event\Event;
 
-class PlayerPowerChangeEvent extends EventBase implements Cancellable {
+class PlayerPowerChangeEvent extends Event implements Cancellable {
 	
 	const TIME = 0x00;
 	const DEATH = 0x01;

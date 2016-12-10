@@ -16,18 +16,18 @@
 
 namespace factions\event\faction;
 
-
-use factions\base\EventBase;
 use factions\objs\FPlayer;
 use pocketmine\event\Cancellable;
+use pocketmine\event\Event;
 
-class FactionCreateEvent extends EventBase implements Cancellable
+class FactionCreateEvent extends Event implements Cancellable
 {
 
     public static $handlerList = null;
 
     /** @var string $factionName */
     private $factionName;
+    
     /**
      * Creator usually is the leader of faction
      * So Faction::getLeader() === FactionCreateEvent::getCreator()

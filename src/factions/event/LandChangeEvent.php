@@ -16,31 +16,33 @@
 
 namespace factions\event;
 
-
-use factions\base\EventBase;
 use factions\entity\Faction;
 use factions\entity\Plot;
 use factions\interfaces\IFPlayer;
 use pocketmine\event\Cancellable;
 
-class LandChangeEvent extends EventBase implements Cancellable
+/**
+ * Called when plot changes an owner
+ */
+class LandChangeEvent extends Event implements Cancellable
 {
-    const CLAIM = 1;
-    const UNCLAIM = 2;
     public static $handlerList = null;
+    
+    const CLAIM     = 0x1;
+    const UNCLAIM   = 0x2;
+
     private $faction;
     private $player;
     private $changeType;
     private $chunk;
 
     /**
-     * LandChangeEvent constructor.
      * @param Faction $faction
      * @param IFPlayer|null $player
      * @param Plot $chunk
      * @param $changeType
      */
-    public function __construct(Faction $faction, IFPlayer $player = null, Plot $chunk, $changeType)
+    public function __construct(Faction $faction, IFPlayer $player = null, Plot $chunk, int $changeType)
     {
         $this->faction = $faction;
         $this->changeType = $changeType;

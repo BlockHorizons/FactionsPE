@@ -1,23 +1,22 @@
 <?php
 namespace factions\event\player;
 
-use factions\base\EventBase;
 use factions\interfaces\IFPlayer;
+use pocketmine\event\Event;
 
 /**
- * @author Primus
- *
  * This event is called when player moves from plot to plot
  */
-class PlayerTraceEvent extends EventBase
+class PlayerTraceEvent extends Event
 {
 
     public static $handlerList = NULL;
 
+    /** @var string */
     protected $from;
     protected $to;
 
-    public function __construct(IFPlayer $player, $fromFactionId, $toFactionId)
+    public function __construct(IFPlayer $player, string $fromFactionId, string $toFactionId)
     {
         $this->player = $player;
         $this->from = $fromFactionId;

@@ -16,12 +16,12 @@
 
 namespace factions\event\faction;
 
-
+use pocketmine\event\Event;
 use factions\base\EventBase;
 use factions\faction\Faction;
 use factions\objs\FPlayer;
 
-class FactionLeaveEvent extends EventBase
+class FactionLeaveEvent extends Event
 {
 
     public static $handlerList = null;
