@@ -3,7 +3,7 @@
 	url = https://github.com/Chris-Prime/Localizer.git
 [submodule "src/sll"]
 	path = src/sll
-	url = https://github.com/Chris-Prime/Simple-LibLoader.git
+	url = https://github.com/Chris-Prime/Simple-LibLoader
 [submodule "lib/Dominate"]
 	path = lib/Dominate
 	url = https://github.com/Chris-Prime/Dominate
