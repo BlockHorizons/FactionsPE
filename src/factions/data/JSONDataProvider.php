@@ -25,7 +25,6 @@ class JSONDataProvider extends DataProvider
     public function loadSavedFactions()
     {
         $factions = $this->order(scandir(self::$factionFolder));
-        var_dump($factions);
         if(in_array("wilderness.json", $factions, true)) {
             if ($factions[0] !== "wilderness.json") {
                 throw new \RuntimeException("Wilderness must be loaded as first faction");
@@ -43,7 +42,6 @@ class JSONDataProvider extends DataProvider
             Factions::attach(new Faction($data["name"], $data["id"], $data));
 
             if (Factions::getById($data["id"])) {
-                $this->getPlugin()->getLogger()->info("Faction " . $data["name"] . " loaded!");
                 continue;
             } else {
                 $this->getPlugin()->getLogger()->info("Unknown error occured while loading faction: " . $data["name"]);

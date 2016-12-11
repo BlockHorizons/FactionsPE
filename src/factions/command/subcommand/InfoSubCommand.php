@@ -18,22 +18,22 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 
 use dominate\Command;
+use factions\command\Argument;
+use localizer\Localizer;
 
 class InfoSubCommand extends Command
 {
 
     public function __construct(FactionsPE $plugin, $name, $description, $permission)
     {
-        parent::__construct($plugin, "info", $descripton, $permission);
+        parent::__construct($plugin, "info", $description, $permission);
 
-        $this->addParameter(new Argument("faction", Argument::TYPE_FACTION, true));
+        $this->addArgument((new Argument("faction", Argument::TYPE_STRING))->setDefaultValue('self'));
     }
 
     public function execute(CommandSender $sender, $label, array $args) : bool
     {
-        if (parent::execute($sender, $label, $args) === false) {
-            return true;
-        }
+        if (!parent::execute($sender, $label, $args) === false) return true;
 
         if (!isset($args[0])) {
             if ($sender instanceof Player) {
@@ -46,7 +46,7 @@ class InfoSubCommand extends Command
         } else {
 
             if (!($faction = Factions::getByName($args[0])) instanceof Faction) {
-                $sender->sendMessage(Localizer::trans('command.info-faction-not-found', $args[0]));
+                $sender->sendMessage(Localizer::trans('command.info-faction-not-found', [$args[0]]));
                 return true;
             }
 

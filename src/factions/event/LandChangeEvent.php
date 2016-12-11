@@ -20,6 +20,7 @@ use factions\entity\Faction;
 use factions\entity\Plot;
 use factions\interfaces\IFPlayer;
 use pocketmine\event\Cancellable;
+use pocketmine\event\Event;
 
 /**
  * Called when plot changes an owner

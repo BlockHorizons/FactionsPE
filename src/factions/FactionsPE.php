@@ -168,14 +168,20 @@ class FactionsPE extends PluginBase
 
     public function onLoad()
     {
+        @mkdir($this->getDataFolder());
         self::$instance = $this;
+
         LibLoader::loadLib($this->getFile()."lib/Localizer");
         LibLoader::loadLib($this->getFile()."lib/Dominate");
+        if(!is_dir($src = $this->getDataFolder()."languages")){
+            Localizer::transferLanguages($this->getFile()."resources/languages", $src);
+        }
+        Localizer::setParser(function(string $text){
+            return Text::parse($text);
+        });
 
-        @mkdir($this->getDataFolder());
-        @mkdir($this->getDataFolder() . "logs");
+        $this->getLogger()->info(Localizer::trans('test'));
 
-        Localizer::transferLanguages($this->getFile()."resources/languages", $this->getDataFolder()."languages");
         $this->saveDefaultConfig();
         $this->settings = new Settings($this->getDataFolder()."config.yml", Settings::YAML);
 
@@ -187,6 +193,9 @@ class FactionsPE extends PluginBase
     public function onEnable()
     {
         Localizer::loadLanguages($this->getDataFolder()."languages");
+        if(Localizer::checkLanguageExistence($lang = $this->getConfig()->get("language"))) {
+            Localizer::$globalLocale = $lang;
+        }
         try {
             $this->data = DataProvider::load($this, $this->getConfig()->get('data-provider', 'NBT'));
         } catch (\Exception $e) {

@@ -25,11 +25,8 @@ final class Text
 
     private function __construct() {}
 
-    public static function formatRank($rank){
-        if(isset(self::$formats['rank'][$rank])){
-            return self::$formats['rank'][$rank];
-        }
-        return "";
+    public static function parse(string $text) : string {
+        return self::parseColorVars($text);
     }
 
     public static function getRolePrefix($role) : STRING
@@ -73,7 +70,7 @@ final class Text
         while(($p = strpos($string, "<rainbow>")) !== false) {
             $c = self::rainbow(substr($string, $p));
             for($i = 0; $p <= strlen($c); $p++, $i++) {
-                $string{$c} = $c{$i};
+                $string{$i} = $c{$i};
             }
         }
         return $string;
