@@ -16,11 +16,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace factions\data;
+namespace factions\data\provider;
 
 use factions\FactionsPE;
 use factions\entity\IMember;
-use factions\entity\Faction;
+use factions\entity\IFaction;
 
 abstract class DataProvider {
 
@@ -71,6 +71,7 @@ abstract class DataProvider {
     return $this->main;
   }
 
+
   // ---------------------------------------------------------------------------
   // ABSTRACT FUNCTIONS
   // ---------------------------------------------------------------------------
@@ -80,7 +81,15 @@ abstract class DataProvider {
   public abstract function saveMember(IMember $member);
   public abstract function saveFaction(IFaction $faction);
 
+  /**
+   * @param string $name
+   * @return MemberData|null
+   */
   public abstract function loadMember(string $name);
+  /**
+   * @param string $id
+   * @return FactionData|null
+   */
   public abstract function loadFaction(string $id);
 
   /**
@@ -92,8 +101,8 @@ abstract class DataProvider {
    */
   public abstract function deleteFaction(string $identifier);
 
-  public abstract function loadFactions();
-
   public abstract function close();
+
+  public abstract function getName() : string;
 
 }

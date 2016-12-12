@@ -16,8 +16,17 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace factions\data;
+namespace factions\data\provider;
 
-# Our best is yet to come (Howling at the moon)
+trait MemberFilePath {
 
-class YAMLDataProvider /* extends DataProvider */ {}
+	/**
+	 * @param IMember|string $member
+	 * @param $ext with fullstop
+	 */
+	public function getMemberFilePath($member, string $ext) {
+		$name = strtolower(trim($member instanceof IMember ? $member->getName() : $member));
+		return $this->getMain()->getDataFolder()."members/".substr($name, 0, 1)."/".$name.$ext;
+	}
+
+}

@@ -16,11 +16,17 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+namespace factions\data\provider;
 
-namespace factions\entity;
+trait FactionFilePath {
 
-class Faction implements IFaction {
+	/**
+	 * @param IFaction|string $member
+	 * @param $ext with fullstop
+	 */
+	public function getFactionFilePath($faction, string $ext) {
+		$name = strtolower(trim($faction instanceof IFaction ? $faction->getId() : $faction));
+		return $this->getMain()->getDataFolder()."factions/".$name.$ext;
+	}
 
-	
-	
 }

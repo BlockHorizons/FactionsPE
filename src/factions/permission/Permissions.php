@@ -19,8 +19,11 @@
 
 namespace factions\permission;
 
-final abstract class Permissions {
+final class Permissions {
 
+    #
+    # PocketMine permission nodes
+    #
     const ACCESS = "factions.access";
     const ACCESS_VIEW = "factions.access.view";
     const ACCESS_PLAYER = "factions.access.player";

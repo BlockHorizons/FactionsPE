@@ -25,6 +25,10 @@ use localizer\Localizer;
 use sll\LibLoader;
 
 use factions\utils\Gameplay;
+use factions\utils\Text;
+use factions\command\FactionCommand;
+use factions\data\provider\DataProvider;
+use factions\data\provider\YAMLDataProvider;
 
 class FactionsPE extends PluginBase {
 
@@ -52,6 +56,10 @@ class FactionsPE extends PluginBase {
       Localizer::transferLanguages($this->getFile()."resources/languages", $tar);
     }
     Localizer::loadLanguages($tar);
+    Localizer::setParser(function(string $text){
+      return Text::parse($text);
+    });
+
     $this->saveDefaultConfig();
     if(Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
       Localizer::$globalLocale = strtolower(trim($lan));
@@ -69,6 +77,8 @@ class FactionsPE extends PluginBase {
     if(!$this->loadIntegrations()) return;
     # Load Gameplay settings
     Gameplay::setData($this->getConfig()->get('gameplay'));
+    # Register commands
+    $this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
 
     $this->getLogger()->info(Localizer::trans("plugin.enabled"));
   }
@@ -87,7 +97,7 @@ class FactionsPE extends PluginBase {
   // LOADER FUNCTIONS
   // ---------------------------------------------------------------------------
 
-  public function loadDataProvider()
+  public function loadDataProvider() : bool
   {
     try {
       switch (strtolower(trim($this->getConfig()->get('data-provider')))) {
@@ -114,8 +124,8 @@ class FactionsPE extends PluginBase {
     return true;
   }
 
-  public function loadIntegrations() {
-    # TODO
+  public function loadIntegrations() : bool {
+    return true; # TODO
   }
 
   // ---------------------------------------------------------------------------

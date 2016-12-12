@@ -19,8 +19,6 @@
 
 namespace factions\entity;
 
-class Faction implements IFaction {
-
-	
+class OfflineMember implements IMember {
 	
 }
