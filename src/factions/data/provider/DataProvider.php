@@ -19,8 +19,8 @@
 namespace factions\data\provider;
 
 use factions\FactionsPE;
-use factions\entity\IMember;
-use factions\entity\IFaction;
+use factions\data\MemberData;
+use factions\data\FactionData;
 
 abstract class DataProvider {
 
@@ -78,8 +78,8 @@ abstract class DataProvider {
 
   protected abstract function prepare();
 
-  public abstract function saveMember(IMember $member);
-  public abstract function saveFaction(IFaction $faction);
+  public abstract function saveMember(MemberData $member);
+  public abstract function saveFaction(FactionData $faction);
 
   /**
    * @param string $name

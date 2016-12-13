@@ -31,7 +31,7 @@ class Factions {
   /**
    * @return IFaction|null
    */
-  public static function getFactionForPlayer(IPlayer $player) {
+  public static function getForPlayer(IPlayer $player) {
     foreach(self::$factions as $faction) {
       if($player->isMember($player)) return $faction;
     }
@@ -41,7 +41,7 @@ class Factions {
   /**
    * @return IFaction|null
    */
-   public static function getFactionById(string $id) {
+   public static function getById(string $id) {
      if(isset(self::$factions[$id])) {
        return self::$factions[$id];
      }
@@ -51,7 +51,7 @@ class Factions {
    /**
     * @return IFaction|null
     */
-    public static function getFactionByName(string $name) {
+    public static function getByName(string $name) {
       $name = strtolower(trim($name));
       foreach (self::$factions as $faction) {
         if($name === strtolower(trim($faction->getName()))) return $faction;

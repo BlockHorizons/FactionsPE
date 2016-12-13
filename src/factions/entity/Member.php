@@ -21,6 +21,4 @@ namespace factions\entity;
 
 class Member extends OfflineMember {
 
-
-
 }

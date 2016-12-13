@@ -30,6 +30,8 @@ use factions\command\FactionCommand;
 use factions\data\provider\DataProvider;
 use factions\data\provider\YAMLDataProvider;
 
+define("IN_DEV", true);
+
 class FactionsPE extends PluginBase {
 
   /** @var FactionsPE */
@@ -80,6 +82,11 @@ class FactionsPE extends PluginBase {
     # Register commands
     $this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
 
+    # Run tests
+    if(IN_DEV) {
+      $this->runTests();
+    }
+
     $this->getLogger()->info(Localizer::trans("plugin.enabled"));
   }
 
@@ -87,6 +94,10 @@ class FactionsPE extends PluginBase {
     $this->getLogger()->info(Localizer::trans('plugin.disabling'));
     if(!empty($d = Gameplay::getData())) {
       $this->getConfig()->set('gameplay', $d);
+    }
+
+    if($this->getDataProvider() instanceof DataProvider) {
+      $this->getDataProvider()->close();
     }
 
     $this->getConfig()->save();
@@ -127,7 +138,6 @@ class FactionsPE extends PluginBase {
   public function loadIntegrations() : bool {
     return true; # TODO
   }
-
   // ---------------------------------------------------------------------------
   // DATA-PROVIDER
   // ---------------------------------------------------------------------------
@@ -138,6 +148,29 @@ class FactionsPE extends PluginBase {
 
   public function setDataProvider(DataProvider $provider) {
     $this->dataProvider = $provider;
+  }
+
+  /*
+   * ----------------------------------------------------------
+   * TESTS
+   * ----------------------------------------------------------
+   */
+
+  /**
+   * @internal
+   */
+  private function runTests() {
+    $tests = glob($this->getFile()."test/*_test.php");
+    foreach($tests as $test) {
+      $this->getLogger()->info("Running ".$test."");
+      $code = file_get_contents($test);
+      $code = substr($code, strpos($code, "<?php") + 5);
+      try {
+        eval($code);
+      } catch(\Exception $e) {
+        $this->getLogger()->error("Error while executing a test: ".$e->getMessage());
+      }
+    }
   }
 
 }

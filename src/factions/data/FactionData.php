@@ -19,6 +19,13 @@
 
 namespace factions\data;
 
+use pocketmine\level\Level;
+use pocketmine\level\Position;
+
+use factions\manager\Factions;
+use factions\manager\Members;
+use factions\FactionsPE;
+
 class FactionData extends Data {
 		
 	/**
@@ -153,6 +160,161 @@ class FactionData extends Data {
 		} else {
 			throw new \Exception("faction data is not assigned to valid faction");
 		}
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * ID
+	 * ----------------------------------------------------------
+	 */
+
+	public function getId() : string {
+		return $this->id;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * NAME
+	 * ----------------------------------------------------------
+	 */
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setName(string $name) {
+		$this->name = $name;
+		$this->changed();
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * DESCRIPTION
+	 * ----------------------------------------------------------
+	 */
+
+	public function getDescription() {
+		return $this->description;
+	}
+
+	public function setDescription(string $description) {
+		$this->description = $description;
+	}
+
+	public function hasDescription() : bool {
+		return $this->description !== null;
+	}
+
+	public function removeDescription() {
+		$this->description = null;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * MOTD
+	 * ----------------------------------------------------------
+	 */
+
+	public function getMotd() {
+		return $this->motd;
+	}
+
+	public function setMotd(string $motd) {
+		$this->motd = $motd;
+	}
+
+	public function hasMotd() : bool {
+		return $this->motd !== null;
+	}
+
+	public function removeMotd() {
+		$this->motd = null;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * HOME
+	 * ----------------------------------------------------------
+	 */
+
+	public function getHome() {
+		return $this->home;
+	}
+
+	public function setHome(Position $home) {
+		$this->home = $home;
+	}
+
+	public function isHomeSet() : bool {
+		return $this->home instanceof Position;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * CREATED AT
+	 * ----------------------------------------------------------
+	 */
+
+	public function getCreatedAt() : int {
+		return $this->createdAt;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * POWER BOOST
+	 * ----------------------------------------------------------
+	 */
+
+	public function getPowerBoost() : int {
+		return $this->powerBoost;
+	}
+
+	public function setPowerBoost(int $power) {
+		$this->powerBoost = $power;
+	}
+
+	public function hasPowerBoost() : bool {
+		return $this->powerBoost === 0;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * MEMBERS
+	 * ----------------------------------------------------------
+	 */
+
+	public function getMembers() : array {
+		return $this->members;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * FLAGS
+	 * ----------------------------------------------------------
+	 */
+
+	public function getFlags() : array {
+		return $this->flags;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * PERMS
+	 * ----------------------------------------------------------
+	 */
+
+	public function getPerms() : array {
+		return $this->perms;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * RELATION WISHES
+	 * ----------------------------------------------------------
+	 */
+
+	public function getRelationWishes() : array {
+		return $this->relationWishes;
 	}
 
 }

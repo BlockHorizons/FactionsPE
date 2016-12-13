@@ -18,8 +18,8 @@
  */
 namespace factions\data\provider;
 
-use factions\entity\IMember;
-use factions\entity\IFaction;
+use factions\data\MemberData;
+use factions\data\FactionData;
 
 # Our best is yet to come (Howling at the moon)
 
@@ -30,18 +30,16 @@ class YAMLDataProvider extends DataProvider {
 		// Nothing to do here :)
 	}
 
-	public function saveMember(IMember $member) {
-		$data = $member->getData();
+	public function saveMember(MemberData $member) {
 		$f = $this->getMemberFilePath($member, ".yml");
 		@mkdir(dirname($f));
-		file_put_contents($f, yaml_emit($data->__toArray()));
+		file_put_contents($f, yaml_emit($member->__toArray()));
 	}
 
-	public function saveFaction(IFaction $faction) {
-		$data = $faction->getData();
+	public function saveFaction(FactionData $faction) {
 		$f = $this->getFactionFilePath($faction, ".yml");
 		@mkdir(dirname($f));
-		file_put_contents($f, yaml_emit($data->__toArray()));
+		file_put_contents($f, yaml_emit($faction->__toArray()));
 	}
 
 	public function loadMember(string $name) {

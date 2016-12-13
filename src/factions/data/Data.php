@@ -17,12 +17,39 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace factions\entity;
+namespace factions\data;
 
-use factions\data\FactionData;
+abstract class Data {
 
-class Faction extends FactionData implements IFaction {
+	/**
+	 * Unix timestamp of last save
+	 * @var integer
+	 */
+	public $lastSaved;
 
-	
-	
+	/*
+	 * ----------------------------------------------------------
+	 * ABSTRACT
+	 * ----------------------------------------------------------
+	 */
+
+	/**
+	 * Called whenever the content of class has changed
+	 */
+	public function changed() {
+		$this->save();
+		$this->lastSaved = time();
+	}
+
+	/**
+	 * Must save this class
+	 */
+	public abstract function save();
+
+	/**
+	 * This class must return array of data ready to be saved.
+	 * @return array
+	 */
+	public abstract function __toArray();
+
 }

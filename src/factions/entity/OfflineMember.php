@@ -19,6 +19,8 @@
 
 namespace factions\entity;
 
-class OfflineMember implements IMember {
+class OfflineMember extends MemberData implements IMember {
+
+	
 	
 }

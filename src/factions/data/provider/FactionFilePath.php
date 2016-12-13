@@ -18,14 +18,17 @@
  */
 namespace factions\data\provider;
 
+use factions\data\FactionData;
+use factions\entity\IFaction;
+
 trait FactionFilePath {
 
 	/**
-	 * @param IFaction|string $member
+	 * @param IFaction|FactionData|string $member
 	 * @param $ext with fullstop
 	 */
 	public function getFactionFilePath($faction, string $ext) {
-		$name = strtolower(trim($faction instanceof IFaction ? $faction->getId() : $faction));
+		$name = strtolower(trim(is_string($faction) ? $faction : $faction->getId()));
 		return $this->getMain()->getDataFolder()."factions/".$name.$ext;
 	}
 
