@@ -21,6 +21,5 @@ namespace factions\entity;
 
 interface IFaction {
 	
-	
-	
+
 }

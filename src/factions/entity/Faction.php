@@ -23,6 +23,13 @@ use factions\data\FactionData;
 
 class Faction extends FactionData implements IFaction {
 
-	
+	/**
+	 * Faction constructor
+	 * @param string 	$id
+	 * @param array 	$data
+	 */
+	public function __construct(string $id, array $data) {
+		parent::__construct(array_merge(["id" => $id], $data));
+	}
 	
 }

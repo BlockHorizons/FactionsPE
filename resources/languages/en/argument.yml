@@ -1,0 +1,7 @@
+---
+type-string-error: "Argument :n passed to command must resolve into string"
+type-integer-error: "Argument :n passed to command must resolve into integer"
+type-float-error: "Argument :n passed to command must resolve into float"
+type-boolean-error: "Argument :n passed to command must resolve into boolean"
+type-null-error: "Argument :n passed to command must resolve into null"
+...

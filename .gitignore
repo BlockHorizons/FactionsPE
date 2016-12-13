@@ -5,6 +5,5 @@ config.json
 
 # folders
 players
-languages
 # IDE res files
 .idea
