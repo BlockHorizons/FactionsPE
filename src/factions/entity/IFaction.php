@@ -19,6 +19,12 @@
 
 namespace factions\entity;
 
+use pocketmine\level\Level;
+use pocketmine\level\Position;
+
+use factions\permission\Permission;
+use factions\flag\Flag;
+
 interface IFaction {
 
 	/*
@@ -112,8 +118,6 @@ interface IFaction {
 	public function isAnyMemberOnline() : bool;
 
 	public function isAllMembersOffline() : bool;
-
-	public function getMembersWhereOnline() : array;
 	
 	public function reindexMembers();
 
@@ -124,6 +128,8 @@ interface IFaction {
 	public function sendMessage($message);
 
 	public function isFactionConsideredOffline() : bool;
+
+	public function isFactionConsideredOnline() : bool;
 	
 	/*
 	 * ----------------------------------------------------------
@@ -160,7 +166,7 @@ interface IFaction {
 
 	public function setFlagsId(array $flags);
 
-	public function setPermsId(array $perms);
+	public function setPermissionsId(array $perms);
 
 	public function isDefaultOpen() : bool;
 
@@ -188,17 +194,17 @@ interface IFaction {
 	 * ----------------------------------------------------------
 	 */
 
-	public function setPerms(array $perms);
+	public function setPermissions(array $perms);
 
-	public function setRelationPermitted(Perm $perm, string $rel, bool $permitted);
+	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted);
 
-	public function getPermitted(Perm $perm) : array;
+	public function getPermitted(Permission $perm) : array;
 
 	public function isPermitted() : bool;
 
-	public function setPermittedRelations(Perm $perm, array $rels);
+	public function setPermittedRelations(Permission $perm, array $rels);
 
-	public function getPerms() : array;
+	public function getPermissions() : array;
 
 	/*
 	 * ----------------------------------------------------------

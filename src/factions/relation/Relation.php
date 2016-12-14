@@ -23,7 +23,7 @@ use factions\utils\Gameplay;
 use factions\utils\Text;
 use pocketmine\factions\TextFormat;
 
-final class Rel
+final class Relation
 {
 
     private function __construct(){}
@@ -89,11 +89,15 @@ final class Rel
         }
         return NULL;
     }
-    public static function isFriend($relation) : BOOL {
+
+
+    public static function isFriend($relation) : bool {
         if($relation === Rel::ALLY) return true;
         return false;
     }
-    public static function getColor($rel)
+
+
+    public static function getColor($rel) : string
     {
         $rel = self::fromString($rel);
         switch ($rel) {
@@ -117,8 +121,10 @@ final class Rel
                 return TextFormat::WHITE;
         }
     }
-    public static function getAll()
+
+    public static function getAll() : array
     {
         return [self::LEADER, self::OFFICER, self::MEMBER, self::RECRUIT, self::NEUTRAL, self::ALLY, self::TRUCE, self::ENEMY];
     }
+
 }

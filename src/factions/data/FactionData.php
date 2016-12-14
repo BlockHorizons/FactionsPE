@@ -99,7 +99,12 @@ class FactionData extends Data {
      * Faction ID => Relation ID 
      * @var array $relationWishes 
      */
-    private $relationWishes = [];
+    protected $relationWishes = [];
+
+    /**
+     * @var string[]
+     */
+    protected $invitedPlayers = [];
 
 	public function __construct(array $source) {
 		// required fields
@@ -150,7 +155,8 @@ class FactionData extends Data {
 			"relationWishes" => $this->relationWishes,
 			"createdAt" => $this->createdAt,
 			"motd" => $this->motd,
-			"description" => $this->description
+			"description" => $this->description,
+			"invitedPlayers" => $this->invitedPlayers
 		];
 	}
 
@@ -316,5 +322,15 @@ class FactionData extends Data {
 	public function getRelationWishes() : array {
 		return $this->relationWishes;
 	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * INVITATION
+	 * ----------------------------------------------------------
+	 */
+
+	public function getInvitedPlayers() : array {
+    	return $this->invitedPlayers;
+    }
 
 }
