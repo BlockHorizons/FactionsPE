@@ -19,6 +19,8 @@
 
 namespace factions\entity;
 
+use factions\data\MemberData;
+
 class OfflineMember extends MemberData implements IMember {
 
 	

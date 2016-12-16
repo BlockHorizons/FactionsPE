@@ -27,7 +27,7 @@ use factions\entity\IMember;
 use factions\entity\Member;
 use factions\entity\OfflineMember;
 
-class Factions {
+class Members {
 
   /**
    * @var IMember[]
@@ -38,9 +38,9 @@ class Factions {
    * You should only pass player names when manipulating with offline players
    *
    * @param $player
-   * @return IMember|Member|OfflineMember
+   * @return IMember|Member|OfflineMember|null
    */
-  public static function get($player) : IMember
+  public static function get($player, bool $create = true) : IMember
   {
     if($player instanceof ConsoleCommandSender) {
       return self::get("Console");
@@ -54,22 +54,23 @@ class Factions {
     }
     if($player instanceof IPlayer) {
       // Handling player object
-      if (($ret = self::getByName($player->getName())) !== NULL) {
+      if (($ret = self::getByName($player->getName())) !== null) {
         // if stored instance is offline - detach from storage
-        if($ret instanceof Member === false) {
+        if(($ret instanceof Member) === false) {
           self::detach($ret);
         }
       }
       return self::create($player);
     } else {
       // Handling name aka offline player
-      if (($ret = self::getByName($player)) !== NULL) {
+      if (($ret = self::getByName($player)) !== null) {
         if($ret->isOnline()) {
           if(!$ret->isNone()) self::detach($ret); // player was stored in offline instance altough he's online
           else return $ret;
         }
       }
-      return self::createOffline($player);
+      if($create)
+        return self::createOffline($player);
     }
   }
 

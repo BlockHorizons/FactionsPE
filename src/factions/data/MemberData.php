@@ -39,10 +39,10 @@ class MemberData extends Data {
 
     /** @var int */
     protected $power = 0;
-    protected $powerBoost;
+    protected $powerBoost = 0;
 
     /** @var int */
-    protected $role;
+    protected $role = Relation::RECRUIT;
 
     /** @var string */
     protected $title;
@@ -56,12 +56,18 @@ class MemberData extends Data {
     protected $overriding = false;
 
     public function __construct(array $source) {
-    	$this->firstPlayed = $source["firstPlayed"] ?? 0;
+    	$this->firstPlayed = $source["firstPlayed"] ?? time();
     	$this->lastPlayed = $source["lastPlayed"] ?? time();
     	$this->power = $source["power"] ?? 0;
     	$this->role = $source["role"] ?? Relation::RECRUIT;
     	$this->title = $source["title"] ?? null;
-    	$this->player = FactionsPE::get()->getServer()->getPlayer($source["player"] ?? "");
+    	if(isset($source["player"])){
+	    	if($source["player"] instanceof Player) {
+	    		$this->player = $source["player"];
+	    	} else {
+	    		$this->player = FactionsPE::get()->getServer()->getPlayer($source["player"]);
+	    	}
+    	}
     	if($this->player) {
     		$this->name = $this->player->getName();
     	} else {
@@ -81,7 +87,17 @@ class MemberData extends Data {
     }
 
     public function save() {
-    	FactionsPE::get()->getDataProvider()->saveMember(Members::get($this->name));
+    	FactionsPE::get()->getDataProvider()->saveMember($this);
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * NAME
+     * ----------------------------------------------------------
+     */
+
+    public function getName() : string {
+    	return $this->player ? $this->player->getName() : $this->name;
     }
 
 }

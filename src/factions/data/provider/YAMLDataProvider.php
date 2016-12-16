@@ -44,14 +44,17 @@ class YAMLDataProvider extends DataProvider {
 
 	public function loadMember(string $name) {
 		if(file_exists($f = $this->getMemberFilePath($name, ".yml"))) {
-			return MemberData::fromArray(yaml_parse(file_get_contents($f)));
+			return new MemberData(yaml_parse(file_get_contents($f)));
 		}
 		return null;
 	}
 
 	public function loadFaction(string $id) {
-		if(file_exists($f = $this->getfactionFilePath($id, ".yml"))) {
-			return FactionData::fromArray(yaml_parse(file_get_contents($f)));
+		var_dump($id);
+		if(file_exists($f = $this->getFactionFilePath($id, ".yml"))) {
+			return new FactionData(yaml_parse(file_get_contents($f)));
+		} else {
+			var_dump($f);
 		}
 		return null;
 	}

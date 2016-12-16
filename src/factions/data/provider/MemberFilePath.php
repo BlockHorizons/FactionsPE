@@ -18,14 +18,16 @@
  */
 namespace factions\data\provider;
 
+use factions\data\MemberData;
+
 trait MemberFilePath {
 
 	/**
-	 * @param IMember|string $member
+	 * @param MemberData|string $member
 	 * @param $ext with fullstop
 	 */
 	public function getMemberFilePath($member, string $ext) {
-		$name = strtolower(trim($member instanceof IMember ? $member->getName() : $member));
+		$name = strtolower(trim($member instanceof MemberData ? $member->getName() : $member));
 		return $this->getMain()->getDataFolder()."members/".substr($name, 0, 1)."/".$name.$ext;
 	}
 
