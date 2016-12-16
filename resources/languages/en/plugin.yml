@@ -26,4 +26,4 @@ dataprovider-error: "Data provider error: :0"
 
 invalid-locale: "Locale code ':locale' is not valid ISO-639_1 language code"
 
-factions-loaded: "<gold>:0<white> factions were loaded"
+factions-loaded: "<gold>:0<white> faction(s) were loaded"

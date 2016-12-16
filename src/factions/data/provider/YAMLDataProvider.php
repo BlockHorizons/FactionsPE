@@ -54,6 +54,7 @@ class YAMLDataProvider extends DataProvider {
 
 	public function loadFaction(string $id) {
 		if(file_exists($f = $this->getFactionFilePath($id, ".yml"))) {
+			echo "Loaded $id\n";
 			return new Faction($id, yaml_parse(file_get_contents($f)));
 		}
 		return null;
@@ -80,7 +81,7 @@ class YAMLDataProvider extends DataProvider {
 	public function loadFactions() {
 		foreach (new \RecursiveDirectoryIterator($this->getMain()->getDataFolder()."factions") as $file) {
 			if($file->isDir()) continue;
-			var_dump($this->loadFaction($file->getBasename(".yml")));
+			$this->loadFaction($file->getBasename(".yml"));
 		}
 	}
 

@@ -74,8 +74,6 @@ interface IFaction {
 
 	public function getCreatedAt() : int;
 
-	public function setCreatedAt(int $time);
-
 	public function getLastOnline() : int;
 
 	/*
@@ -164,9 +162,9 @@ interface IFaction {
 	 * ----------------------------------------------------------
 	 */
 
-	public function setFlagsId(array $flags);
+	public function setFlagId(array $flags);
 
-	public function setPermissionsId(array $perms);
+	public function setPermissionId(array $perms);
 
 	public function isDefaultOpen() : bool;
 
@@ -174,7 +172,7 @@ interface IFaction {
 
 	public function getFlag(string $id) : bool;
 
-	public function setOpen(string $id, bool $open);
+	public function setOpen(bool $open);
 
 	/**
 	 * @param array string => bool
@@ -216,10 +214,9 @@ interface IFaction {
 
 	/**
 	 * @param IFaction|string $faction
-	 * @param int $rel
 	 * @return string relation id
 	 */
-	public function getRelationWish($faction, string $rel) : string;
+	public function getRelationWish($faction) : string;
 
 	/**
 	 * @param IFaction|string
@@ -239,6 +236,8 @@ interface IFaction {
 	 * ----------------------------------------------------------
 	 */
 
+	public function getAllPlots() : array;
+
 	public function getPlotsCountInLevel(Level $level) : int;
 
 	public function getPlotsInLevel(Level $level) : array;
@@ -254,8 +253,6 @@ interface IFaction {
 	 */
 
 	public function getPower() : int;
-
-	public function getMaxPower() : int;
 
 	public function getPowerBoost() : int;
 

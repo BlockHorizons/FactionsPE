@@ -30,6 +30,9 @@ use factions\command\FactionCommand;
 use factions\data\provider\DataProvider;
 use factions\data\provider\YAMLDataProvider;
 use factions\manager\Factions;
+use factions\manager\Members;
+use factions\flag\Flag;
+use factions\permission\Permission;
 
 define("IN_DEV", true);
 
@@ -72,6 +75,8 @@ class FactionsPE extends PluginBase {
     } else {
       $this->getLogger()->warning(Localizer::trans('plugin.invalid-locale', ["locale" => $lan]));
     }
+    Flag::init();
+    Permission::init();
   }
 
   public function onEnable() {
@@ -102,6 +107,9 @@ class FactionsPE extends PluginBase {
     if(!empty($d = Gameplay::getData())) {
       $this->getConfig()->set('gameplay', $d);
     }
+
+    Members::saveAll();
+    Factions::saveAll();
 
     if($this->getDataProvider() instanceof DataProvider) {
       $this->getDataProvider()->close();

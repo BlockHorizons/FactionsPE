@@ -21,11 +21,11 @@ namespace factions\relation;
 
 interface RelationParticipator {
 
-	public function getRelationTo(RelationParticipator $observer) : string;
+	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string;
 
-	public function isFriend(RelationParticipator $observer) : string;
+	public function isFriend(RelationParticipator $observer) : bool;
 
-	public function isEnemy(RelationParticipator $observer) : string;
+	public function isEnemy(RelationParticipator $observer) : bool;
 
 	public function getColorTo(RelationParticipator $observer) : string;
 

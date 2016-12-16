@@ -148,8 +148,8 @@ class FactionData extends Data {
 		return [
 			"name" => $this->name,
 			"id" => $this->id,
-			"flags" => $this->flags,
-			"perms" => $this->perms,
+			"flags" => $this->getFlags(),
+			"perms" => $this->getPermissions(),
 			"members" => $this->members,
 			"powerBoost" => $this->powerBoost,
 			"relationWishes" => $this->relationWishes,
@@ -184,7 +184,7 @@ class FactionData extends Data {
 	 * ----------------------------------------------------------
 	 */
 
-	public function getName() {
+	public function getName() : string {
 		return $this->name;
 	}
 
@@ -199,7 +199,7 @@ class FactionData extends Data {
 	 * ----------------------------------------------------------
 	 */
 
-	public function getDescription() {
+	public function getDescription() : string {
 		return $this->description;
 	}
 
@@ -249,6 +249,10 @@ class FactionData extends Data {
 
 	public function setHome(Position $home) {
 		$this->home = $home;
+	}
+
+	public function hasHome() : bool {
+		return $this->home instanceof Position && $this->home->isValid();
 	}
 
 	public function isHomeSet() : bool {
@@ -309,7 +313,7 @@ class FactionData extends Data {
 	 * ----------------------------------------------------------
 	 */
 
-	public function getPerms() : array {
+	public function getPermissions() : array {
 		return $this->perms;
 	}
 

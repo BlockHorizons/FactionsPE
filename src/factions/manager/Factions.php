@@ -21,6 +21,8 @@ namespace factions\manager;
 
 use pocketmine\IPlayer;
 
+use factions\entity\IFaction;
+
 class Factions {
 
   /**
@@ -75,6 +77,12 @@ class Factions {
 
     public static function getAll() : array {
       return self::$factions;
+    }
+
+    public static function saveAll() {
+      foreach (self::getAll() as $faction) {
+        $faction->save();
+      }
     }
 
 }

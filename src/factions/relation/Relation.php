@@ -26,6 +26,18 @@ use pocketmine\factions\TextFormat;
 final class Relation
 {
 
+    private static $relLevels = array(
+        Rel::RECRUIT => 1000,
+        Rel::MEMBER => 2000,
+        Rel::OFFICER => 3000,
+        Rel::LEADER => 4000,
+        // Relations
+        Rel::ALLY => 5000,
+        Rel::NEUTRAL => 6000,
+        Rel::TRUCE => 7000,
+        Rel::ENEMY => 8000
+    );
+
     private function __construct(){}
 
     // ID's has to be human readable for configurations
@@ -53,7 +65,7 @@ final class Relation
 
     public static function fromString(string $rel)
     {
-        switch (strtolower($rel)) {
+        switch (strtolower(trim($rel))) {
             case 'ally':
             case 'allies':
             case 'friend':
@@ -87,13 +99,16 @@ final class Relation
             case 'rec':
                 return self::RECRUIT;
         }
-        return NULL;
+        return null;
     }
 
 
-    public static function isFriend($relation) : bool {
-        if($relation === Rel::ALLY) return true;
-        return false;
+    public static function isFriend(string $relation) : bool {
+        return $relation === self::ALLY;
+    }
+
+    public static function isEnemy(string $relation) : bool {
+        return $relation === self::ENEMY;
     }
 
 
@@ -125,6 +140,66 @@ final class Relation
     public static function getAll() : array
     {
         return [self::LEADER, self::OFFICER, self::MEMBER, self::RECRUIT, self::NEUTRAL, self::ALLY, self::TRUCE, self::ENEMY];
+    }
+
+    public static function getRelationOfThatToMe(RelationParticipator $me, RelationParticipator $that, bool $ignorePeaceful = false) : string {
+        $ret = self::NEUTRAL;
+        $myFaction = self::getFaction($me);
+        if ($myFaction === null) return self::NEUTRAL; // ERROR
+        $thatFaction = self::getFaction($that);
+        if ($thatFaction === null) return self::NEUTRAL; // ERROR
+        if ($myFaction === $thatFaction) {
+            $ret = self::MEMBER;
+            // Do officer and leader check
+            //P.p.log("getRelationOfThatToMe the factions are the same for "+that.getClass().getSimpleName()+" and observer "+me.getClass().getSimpleName());
+            if ($that instanceof IMember) {
+                $ret = $that->getRole();
+                //P.p.log("getRelationOfThatToMe it was a player and role is "+ret);
+            }
+        } else if (!$ignorePeaceful && ($thatFaction->getFlag(Flag::PEACEFUL) || $myFaction->getFlag(Flag::PEACEFUL))) {
+            $ret = self::TRUCE;
+        } else {
+            // The faction with the lowest wish "wins"
+            if (self::isLowerThan($thatFaction->getRelationWish($myFaction), $myFaction->getRelationWish($thatFaction))) {
+                $ret = $thatFaction->getRelationWish($myFaction);
+            } else {
+                $ret = $myFaction->getRelationWish($thatFaction);
+            }
+        }
+        return $ret;
+    }
+
+    public static function getFaction(RelationParticipator $object) {
+        if ($object instanceof Faction) {
+            return $object;
+        } elseif ($object instanceof IMember) {
+            return $object->getFaction();
+        }
+        # Error
+        return NULL;
+    }
+
+    public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that)  : string {
+        # TODO
+        return TextFormat::DARK_GREEN;
+    }
+
+    public static function isAtLeast($relA, $relB) : bool {
+        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
+        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
+        return $lA >= $lB;
+    }
+
+    public static function isLowerThan($relA, $relB) : bool {
+        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
+        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
+        return $lA < $lB;
+    }
+
+    public static function isHigherThan($relA, $relB) : bool {
+        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
+        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
+        return $lA < $lB;
     }
 
 }

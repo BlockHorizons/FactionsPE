@@ -19,10 +19,17 @@
 
 namespace factions\entity;
 
+use pocketmine\level\Position;
+use pocketmine\level\Level;
+
 use factions\data\FactionData;
 use factions\relation\RelationParticipator;
-use factions\managers\Factions;
-use factions\managers\Members;
+use factions\relation\Relation;
+use factions\manager\Factions;
+use factions\manager\Members;
+use factions\utils\Gameplay;
+use factions\permission\Permission;
+use factions\flag\Flag;
 
 class Faction extends FactionData implements IFaction, RelationParticipator {
 
@@ -288,27 +295,60 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * ----------------------------------------------------------
 	 */
 
-	public function setFlagsId(array $flags);
+	public function setFlagId(array $target) {
+        // Detect Nochange
+        if ($this->flags === $target) return;
+        // Apply
+        $this->flags = $target;
+	}
 
-	public function setPermissionsId(array $perms);
+	public function setPermissionId(array $target) {
+        // Detect Nochange
+        if ($this->perms === $target) return;
+        // Apply
+        $this->perms = $target;
+	}
 
-	public function isDefaultOpen() : bool;
+	public function isDefaultOpen() : bool {
+        return Flag::getFlagOpen()->isStandard();
+    }
 
-	public function isOpen() : bool;
+	public function isOpen() : bool {
+		return $this->getFlag(Flag::OPEN);
+	}
 
-	public function getFlag(string $id) : bool;
+	public function getFlag(string $id) : bool {
+        $ret = isset($this->flags[$id]) ? $this->flags[$id] : null;
+        if ($ret !== null) return $ret;
+        $flag = Flag::getById($id);
+        if ($flag === null) throw new \Exception("undefined flag '$id'");
+        return $flag->isStandard();
+	}
 
-	public function setOpen(string $id, bool $open);
+	public function setOpen(bool $open) {
+		$this->setFlag(Flag::OPEN, $open);
+	}
 
 	/**
 	 * @param array string => bool
 	 */
-	public function getFlags() : array;
+	public function getFlags() : array {
+		$r = [];
+		foreach (Flag::getAll() as $flag) {
+			$r[$flag->getId()] = $this->flags[$flag->getId()] ?? $flag->isStandard();
+		}
+		return $r;
+	}
 
 	/**
 	 * @param Flag[]
 	 */
-	public function setFlags(array $flags);
+	public function setFlags(array $flags) {
+		$flagIds = [];
+		foreach ($flags as $flag) {
+			$flagIds[$flag->getId()] = $flag->isStandard();
+		}
+	}
 
 	/**
      * Returns true if explosion can occur on this Faction's land
@@ -329,17 +369,52 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * ----------------------------------------------------------
 	 */
 
-	public function setPermissions(array $perms);
+	public function setPermissions(array $perms) {
+		$permIds = [];
+        foreach ($perms as $key => $value) {
+            $permIds[$key] = $value;
+        }
+        $this->setPermissioIds($permIds);
+	}
 
-	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted);
+	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted) {
+		$perms = $this->getPermissions();
+        $relations = $this->getPermitted($perm);
+        if ($permitted and !$this->isPermitted($perm, $rel)) {
+            $relations[] = $rel;
+        } else {
+            unset($relations[array_search($rel, $relations, true)]);
+        }
+        $perms[$perm->getId()] = $relations;
+        $this->setPermissions($perms);
+        $this->save();
+	}
 
-	public function getPermitted(Permission $perm) : array;
+	/**
+	 * Get array of relations that has Permission
+	 * @return array
+	 */
+	public function getPermitted(Permission $perm) : array {
+        if(isset($this->getPermissionss()[$perm->getId()])) $rels = $this->getPermissions()[$perm->getId()];
+        return $rels ?? $perm->getStandard();
+	}
 
-	public function isPermitted() : bool;
+	public function isPermitted() : bool {
+        return in_array($rel, $this->getPermitted($perm), true);
+	}
 
-	public function setPermittedRelations(Permission $perm, array $rels);
+	public function setPermittedRelations(Permission $perm, array $rels) {
+        $this->setPermissions([$perm->getId() => $rels]);
+	}
 
-	public function getPermissions() : array;
+	public function getPermissions() : array {
+		 // We start with default values ...
+        $r = [];
+        foreach (Permission::getAll() as $perm) {
+            $r[$perm->getId()] = $this->perms[$perm->getId()] ?? $perm->getStandard();
+        }
+        return $r;
+	}
 
 	/*
 	 * ----------------------------------------------------------
@@ -347,40 +422,91 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * ----------------------------------------------------------
 	 */
 
-	public function getFactionsWhereRelation(string $relation) : array;
+	/**
+     * Returns list of Factions where relations with this faction is equal to $rel
+     * @param string $rel
+     * @return Faction[]
+     */
+	public function getFactionsWhereRelation(string $relation) : array {
+		$r = [];
+        foreach(Factions::getAll() as $f) {
+            if($f === $this) continue;
+            if($f->getRelationTo($this) === $rel) $r[] = $f;
+        }
+        return $r;
+	}
 
 	/**
 	 * @param IFaction|string $faction
-	 * @param int $rel
+	 * @param string $rel
 	 * @return string relation id
 	 */
-	public function getRelationWish($faction, string $rel) : string;
+	public function getRelationWish($faction) : string {
+		$fid = $faction instanceof Faction ? $faction->getId() : $faction;
+        return $this->relationWishes[$fid] ?? Relation::NEUTRAL;
+	}
 
 	/**
 	 * @param IFaction|string
-	 * @param int $rel id
+	 * @param string $rel id
 	 *
 	 */
-	public function setRelationWish($faction, string $rel);
+	public function setRelationWish($faction, string $rel) {
+		$fid = $faction instanceof Faction ? $faction->getId() : $faction;
+		if(!$rel || $rel === Relation::NEUTRAL) {
+			unset($this->relationWishes[array_search($fid, $this->relationWishes)]);
+		} else {
+			$this->relationWishes[$fid] = $rel;
+		}
+	}
 
 	/**
 	 * @return array string => string (faction id => relation id)
 	 */
-	public function getRelationWishes() : array;
+	public function getRelationWishes() : array {
+		return $this->relationWishes;
+	}
 
+	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
+		return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
+	}
+
+	public function isFriend(RelationParticipator $observer) : bool {
+		return Relation::isFriend($this->getRelationTo($observer));
+	}
+
+	public function isEnemy(RelationParticipator $observer) : bool {
+		return Relation::isEnemy($this->getRelationTo($observer));
+	}
+
+	public function getColorTo(RelationParticipator $observer) : string {
+		return Relation::getColorOfThatToMe($this, $observer);
+	}
 	/*
 	 * ----------------------------------------------------------
 	 * PLOTS
 	 * ----------------------------------------------------------
 	 */
 
-	public function getPlotsCountInLevel(Level $level) : int;
+	public function getAllPlots() : array {
+		return Plots::get()->getFactionPlots($this);
+	}
 
-	public function getPlotsInLevel(Level $level) : array;
+	public function getPlotsCountInLevel(Level $level) : int {
+		return count($this->getPlotsInLevel());
+	}
 
-	public function hasLandInflation() : bool;
+	public function getPlotsInLevel(Level $level) : array {
+		return Plots::get()->getPlotsInLevel($level, $this);
+	}
 
-	public function getLandCount() : int;
+	public function hasLandInflation() : bool {
+		return $this->getPlotsCountInLevel() > $this->getPower();
+	}
+
+	public function getLandCount() : int {
+		return count($this->getAllPlots());
+	}
 
 	/*
 	 * ----------------------------------------------------------
@@ -388,12 +514,16 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * ----------------------------------------------------------
 	 */
 
-	public function getPower() : int;
-
-	public function getMaxPower() : int;
-
-	public function getPowerBoost() : int;
-
-	public function setPowerBoost(int $power);
+	public function getPower() : int {
+		if ($this->getFlag(Flag::INFINITY_POWER)) return PHP_INT_MAX;
+        $ret = 0;
+        foreach ($this->getPlayers() as $fplayer) {
+            $ret += $fplayer->getPower();
+        }
+        $ret += $this->getPowerBoost();
+        $max = Gameplay::get('max-faction-power', null);
+        if($max && $max > 0) $ret = min($ret, $max);
+        return $ret;
+	}
 
 }
