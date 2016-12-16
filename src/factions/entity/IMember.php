@@ -20,5 +20,106 @@
 namespace factions\entity;
 
 interface IMember {
+
+	/*
+	 * ----------------------------------------------------------
+	 * FACTION
+	 * ----------------------------------------------------------
+	 */
+
+	public function getFactionId() : string;
+
+	public function setFactionId(string $fid);
+
+	public function getFaction() : Faction;
+	
+	public function setFaction(Faction $faction);
+	
+	public function hasFaction() : bool;
+	
+	public function isDefault() : bool;
+
+	public function isNone() : bool;
+
+	public function resetFactionData();
+
+	public function leave();
+	
+	/*
+	 * ----------------------------------------------------------
+	 * ROLE
+	 * ----------------------------------------------------------
+	 */
+
+	public function setRole(string $role);
+
+	public function isRecruit() : bool;
+
+	public function isMember() : bool;
+
+	public function isOfficer() : bool;
+
+	public function isLeader() : bool;
+
+	public function getRole() : string;
+
+
+	/*
+	 * ----------------------------------------------------------
+	 * POWER
+	 * ----------------------------------------------------------
+	 */
+
+	public function getPower(bool $limit = true) : int;
+
+	public function getMinPower() : int;
+
+	public function getMaxPower() : int;
+
+	public function hasPowerBoost() : bool;
+
+	public function setPowerBoost(int $boost);
+
+	public function setPower(int $power);
+
+	public function getPowerBoost() : int;
+
+	/*
+	 * ----------------------------------------------------------
+	 * PERMISSION
+	 * ----------------------------------------------------------
+	 */
+
+	public function isPermitted(Permission $permission) : bool;
+
+	public function isOverriding() : bool;
+
+	public function setOverriding(bool $value);
+
+	/*
+	 * ----------------------------------------------------------
+	 * PLAYER
+	 * ----------------------------------------------------------
+	 */
+
+	public function getFirstPlayed() : int;
+
+	public function getLastPlayed() : int;
     
+	public function getName() : string;
+
+	public function getNameTag() : string;
+
+	public function isOnline() : bool;
+
+	public function isNormal() : bool;
+
+	public function sendMessage($message);
+
+	public function getTitle() : string;
+
+	public function getDisplayName() : string;
+
+	public function save();
+
 }
