@@ -20,6 +20,8 @@ namespace factions\data\provider;
 
 use factions\data\MemberData;
 use factions\data\FactionData;
+use factions\entity\Member;
+use factions\entity\Faction;
 
 # Our best is yet to come (Howling at the moon)
 
@@ -27,7 +29,8 @@ class YAMLDataProvider extends DataProvider {
 	use MemberFilePath, FactionFilePath;
 
 	protected function prepare() {
-		// Nothing to do here :)
+		@mkdir($this->getMain()->getDataFolder()."factions");
+		@mkdir($this->getMain()->getDataFolder()."members");
 	}
 
 	public function saveMember(MemberData $member) {
@@ -50,11 +53,8 @@ class YAMLDataProvider extends DataProvider {
 	}
 
 	public function loadFaction(string $id) {
-		var_dump($id);
 		if(file_exists($f = $this->getFactionFilePath($id, ".yml"))) {
-			return new FactionData(yaml_parse(file_get_contents($f)));
-		} else {
-			var_dump($f);
+			return new Faction($id, yaml_parse(file_get_contents($f)));
 		}
 		return null;
 	}
@@ -78,7 +78,10 @@ class YAMLDataProvider extends DataProvider {
 	}
 
 	public function loadFactions() {
-		## TODO
+		foreach (new \RecursiveDirectoryIterator($this->getMain()->getDataFolder()."factions") as $file) {
+			if($file->isDir()) continue;
+			var_dump($this->loadFaction($file->getBasename(".yml")));
+		}
 	}
 
 	public function close() {

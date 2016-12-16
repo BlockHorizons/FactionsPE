@@ -21,6 +21,8 @@ namespace factions\entity;
 
 use factions\data\FactionData;
 use factions\relation\RelationParticipator;
+use factions\managers\Factions;
+use factions\managers\Members;
 
 class Faction extends FactionData implements IFaction, RelationParticipator {
 
@@ -36,6 +38,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 */
 	public function __construct(string $id, array $data) {
 		parent::__construct(array_merge(["id" => $id], $data));
+		Factions::attach($this);
 	}
 	
 
@@ -238,20 +241,46 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		return in_array(strtolower(trim($member)), $this->invitedPlayers, true);
 	}
 
-	public function getInvitedMembers() : array;
+	/**
+	 * @return string[]
+	 */
+	public function getInvitedMembers() : array {
+		$r = [];
+		foreach ($this->getInvitedPlayers() as $name) {
+			$r[] = Members::get($name, true);
+		}
+		return $r;
+	}
 
-	public function setInvitedMembers(array $members);
+	public function setInvitedMembers(array $members) {
+		foreach ($members as $member) {
+			$this->invitedPlayers[] = strtolower(trim($member->getName()));			
+		}
+	}
 
 	/**
 	 * @param IMember|string $player
 	 * @param bool $invited
 	 */
-	public function setInvited($player, bool $invited);
+	public function setInvited($player, bool $invited) {
+		if(!$invited)
+			unset($this->invitedPlayers[array_search($player instanceof IMember ? $player->getName() : $player, $this->invitedPlayers)]);
+		else
+			$this->invitedPlayers[] = strtolower(trim($player instanceof IMember ? $player->getName() : $player));
+	}
 
 	/**
 	 * @return IMember[]
 	 */
-	public function getOnlineInvitedMembers() : array;
+	public function getOnlineInvitedMembers() : array {
+		$r = [];
+		foreach ($this->getInvitedPlayers() as $name) {
+			$m = Members::get($name, false);
+			if(!$m || !$m->isOnline())
+				$r[] = $m;
+		}
+		return $r;
+	}
 
 	/*
 	 * ----------------------------------------------------------

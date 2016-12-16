@@ -29,6 +29,7 @@ use factions\utils\Text;
 use factions\command\FactionCommand;
 use factions\data\provider\DataProvider;
 use factions\data\provider\YAMLDataProvider;
+use factions\manager\Factions;
 
 define("IN_DEV", true);
 
@@ -36,6 +37,9 @@ class FactionsPE extends PluginBase {
 
   /** @var FactionsPE */
   private static $instance;
+
+  /** @var DataProvider */
+  protected $dataProvider;
 
   /**
    * Get current instance
@@ -81,6 +85,9 @@ class FactionsPE extends PluginBase {
     Gameplay::setData($this->getConfig()->get('gameplay'));
     # Register commands
     $this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
+    # Load factions
+    $this->getDataProvider()->loadFactions();
+    $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
 
     # Run tests
     if(IN_DEV) {

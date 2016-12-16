@@ -19,6 +19,109 @@
 
 namespace factions\entity;
 
+use pocketmine\Player;
+
+use factions\relation\RelationParticipator;
+use factions\relation\Relation;
+
 class Member extends OfflineMember {
+
+	/** @var string $factionHereId */
+	public $factionHereId = "";
+
+	/** @var $lastActivityMillis */
+	protected $lastActivityMillis;
+	
+	/** @var boolean $mapAutoUpdating */
+	protected $mapAutoUpdating = false;
+	
+	/** @var Faction|null $autoClaimFaction */
+	private $autoClaimFaction;
+
+	public function __construct(Player $player) {
+		parent::__construct($player instanceof Player ? $player->getName() : $player);
+	}
+
+	/**
+	 * @return Faction|null
+	 */
+	public function getAutoClaimFaction() {
+		return $this->autoClaimFaction;
+	}
+
+	public function setAutoClaimFaction(Faction $autoClaimFaction) {
+		$this->autoClaimFaction = $autoClaimFaction;
+	}
+
+	public function isAutoClaiming() : bool {
+		return $this->autoClaimFaction instanceof Faction;
+	}
+
+	public function resetFactionData()
+	{
+		parent::resetFactionData();
+		$this->autoClaimFaction = null;
+	}
+
+	public function getLastActivityMillis() {
+		return $this->lastActivityMillis;
+	}
+
+	public function setLastActivityMillis($lastActivityMillis) {
+		$this->lastActivityMillis = $lastActivityMillis;
+	}
+
+	public function updateLastActivityMillis() {
+		$this->setLastActivityMillis(time());
+	}
+
+	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
+		return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
+	}
+
+	public function isMapAutoUpdating() : bool {
+		if (!$this->mapAutoUpdating) return false;
+		return true;
+	}
+
+	public function setMapAutoUpdating(bool $mapAutoUpdating) {
+		if ($this->mapAutoUpdating === $mapAutoUpdating) $target = null;
+		// Detect Nochange
+		if ($this->mapAutoUpdating === $mapAutoUpdating) return;
+		// Apply
+		$this->mapAutoUpdating = $mapAutoUpdating;
+		// Mark as changed
+		$this->changed();
+	}
+	
+	/*
+	 * ----------------------------------------------------------
+	 * SHORTCUTS
+	 * ----------------------------------------------------------
+	 */
+
+	public function heal(int $hearts) {
+		if (!($player = $this->getPlayer())) return;
+		$player->setHealth($player->getHealth() + $hearts);
+	}
+
+	public function isInOwnTerritory() : bool {
+		return Plots::get()->getFactionAt($this->player) === $this->getFaction();
+	}
+
+	public function isInEnemyTerritory() : bool {
+		return Plots::get()->getFactionAt($this->player)->getRelationTo($this) === Relation::ENEMY;
+	}
+	/**
+	 * @return Position
+     */
+	public function getPosition() : Position
+	{
+		return $this->player->getPosition();
+	}
+
+	public function isAlive() : bool {
+		return $this->getPlayer()->isAlive();
+	}
 
 }

@@ -20,9 +20,244 @@
 namespace factions\entity;
 
 use factions\data\MemberData;
+use factions\manager\Members;
+use factions\manager\Factions;
+use localizer\Localizer;
+use factions\utils\Gameplay;
 
 class OfflineMember extends MemberData implements IMember {
 
+	public function __construct(string $name, array $data = []) {
+		parent::__construct(array_merge(compact("name"), $data));
+		Members::attach($this);
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * FACTION
+	 * ----------------------------------------------------------
+	 */
+
+	public function getFactionId() : string {
+		if(!$this->factionId) return Factions::NONE;
+        return $this->factionId;
+	}
+
+	public function setFactionId(string $fid) {
+		// Detect Nochange
+        if ($fid === $this->factionId) return;
+        // Get the raw old value
+        $oldFactionId = $this->factionId;
+        // Apply
+        $this->factionId = $fid;
+        if ($oldFactionId == null) $oldFactionId = Factions::NONE;
+        // Update index
+        $oldFaction = Factions::getById($oldFactionId);
+        $faction = $this->getFaction();
+        $oldFactionIdDesc = "NULL";
+        $oldFactionNameDesc = "NULL";
+        if ($oldFaction != null) {
+            $oldFactionIdDesc = $oldFaction->getId();
+            $oldFactionNameDesc = $oldFaction->getName();
+        }
+        $factionIdDesc = "NULL";
+        $factionNameDesc = "NULL";
+        if ($faction != null) {
+            $factionIdDesc = $faction->getId();
+            $factionNameDesc = $faction->getName();
+        }
+        FactionsPE::get()->getLogger()->info(
+           Localizer::trans("member-faction-changed",
+                $this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc));
+        // Mark as changed
+        $this->changed();
+	}
+
+	public function getFaction() : Faction {
+        return Factions::getById($this->getFactionId()) ?? Faction::get(Factions::NONE);
+	}
 	
+	public function setFaction(Faction $faction) {
+		$this->setFactionId($faction->getId());
+	}
+	
+	public function hasFaction() : bool {
+		return $this->getFaction()->isNormal();
+	}
+	
+	public function isDefault() : bool {
+		return false; # TODO
+	}
+
+	public function isNone() : bool {
+		$this->factionId !== Factions::NONE;
+	}
+
+	public function resetFactionData() {
+		$this->setFactionId(null);
+        $this->setRole(null);
+        $this->setTitle(null);
+	}
+
+	public function leave() {
+		$myFaction = $this->getFaction();
+        $permanent = $myFaction->getFlag(Flag::PERMANENT);
+        if (count($this->getFaction()->getPlayers()) > 1)
+        {
+            if (!$permanent && $this->getRole() === Rel::LEADER)
+            {
+                $this->sendMessage(Localizer::trans('faction-leave-as-leader'));
+                return;
+            }
+            if (!Gameplay::get("can-leave-with-negative-power", false) && $this->getPower() < 0)
+            {
+                $this->sendMessage(Localizer::trans('faction-leave-with-negative-power'));
+                return;
+            }
+        }
+            // Event
+        $event = new PlayerMembershipChangeEvent($this, $myFaction, PlayerMembershipChangeEvent::REASON_LEAVE);
+		FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+		if ($event->isCancelled()) return;
+		if ($myFaction->isNormal())
+        {
+            foreach ($myFaction->getOnlinePlayers(true) as $player)
+			{
+                $player->sendMessage(Localizer::trans("player-left-faction", $this->getDisplayName(), $myFaction->getName()));
+            }
+            FactionsPE::get()->getLogger()->info($this->getName()." left the faction: ".$myFaction->getName());
+		}
+		$this->resetFactionData();
+		if ($myFaction->isNormal() && !$permanent && empty($myFaction->getPlayers()))
+        {
+            $event = new FactionDisbandEvent($this->getFactionId(), $this);
+			FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+			if ( ! $event->isCancelled())
+            {
+                // Remove this faction
+                $this->sendMessage(Localizer::trans("faction-disbanded-due-empty"), $myFaction->getName()));
+                if (Gameplay::get("log-faction-disband", true))
+                {
+                    FactionsPE::get()->getLogger()->info("The faction ".$myFaction->getName()." (".$myFaction->getId().") was disbanded due to the last player (".$this->getName().") leaving.");
+                }
+                $myFaction->detach();
+            }
+		}
+	}
+	
+	/*
+	 * ----------------------------------------------------------
+	 * ROLE
+	 * ----------------------------------------------------------
+	 */
+
+	public function setRole(string $role) {
+		if($this->role === $role) return;
+		$this->role = $role;
+	}
+
+	public function isRecruit() : bool {
+		return $this->getRole() === Relation::RECRUIT;
+	}
+
+	public function isMember() : bool {
+		return $this->getRole() === Relation::MEMBER;
+	}
+
+	public function isOfficer() : bool {
+		return $this->getRole() === Relation::OFFICER;
+	}
+
+	public function isLeader() : bool {
+		return $this->getRole() === Relation::LEADER;
+	}
+
+	public function getRole() : string {
+		return $this->role;
+	}
+
+
+	/*
+	 * ----------------------------------------------------------
+	 * POWER
+	 * ----------------------------------------------------------
+	 */
+
+	public function getPower(bool $limit = true) : int {
+		$p = $this->power;
+		if($limit) {
+			$p = max(min($this->power, Gameplay::get('min-player-power', -10)), Gameplay::get('max-player-power', 10));
+		}
+		return $p - $this->getPowerBoost();
+	}
+
+	public function hasPowerBoost() : bool {
+		return $this->powerBoost !== 0;
+	}
+
+	public function setPowerBoost(int $boost) {
+		$this->powerBoost = $boost;
+	}
+
+	public function setPower(int $power) {
+		$this->power = $power;
+	}
+
+	public function getPowerBoost() : int {
+		return $this->powerBoost;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * PERMISSION
+	 * ----------------------------------------------------------
+	 */
+
+	public function isPermitted(Permission $permission) : bool {
+		return $this->getFaction()->isPermitted($permission, $this->getRole());
+	}
+
+	public function isOverriding() : bool {
+		if ($this->overriding === NULL) return false;
+        if ($this->overriding === FALSE) return false;
+        if ($this->getPlayer() instanceof Player && !$this->getPlayer()->hasPermission(FactionsPE::OVERRIDE)) {
+            $this->setOverriding(false);
+            return false;
+        }
+        return true;
+	}
+
+	public function setOverriding(bool $overriding) {
+		if ($overriding === false) $overriding = null;
+	    if ($this->overriding === $overriding) return;
+	    $this->overriding = $overriding;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * PLAYER
+	 * ----------------------------------------------------------
+	 */
+
+	public function getNameTag() : string {
+		return $this->player ? $this->player->getNameTag() : $this->getName();
+	}
+
+	public function isOnline() : bool {
+		return $this->player ? $this->player->isOnline() : false;
+	}
+
+	public function isNormal() : bool {
+		return !$this->isNone();
+	}
+
+	public function sendMessage($message) {
+		if(!$this->player) return;
+		$this->player->sendMessage($message);
+	}
+
+	public function getDisplayName() : string {
+		return $this->isOnline() ? $this->player->getDisplayName() : $this->getName();
+	}
 	
 }

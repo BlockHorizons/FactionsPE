@@ -73,4 +73,8 @@ class Factions {
       unset(self::$factions[$faction->getId()]);
     }
 
+    public static function getAll() : array {
+      return self::$factions;
+    }
+
 }
