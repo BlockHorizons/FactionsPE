@@ -6,5 +6,6 @@ var_dump([
 	"isRecruit" => $member->isRecruit(),
 	"power" => $member->getPower(),
 	"hasFaction" => $member->hasFaction(),
-	"faction" => $member->getFaction(),
+	"faction" => $member->getFaction() ? $member->getFactionId() : "~",
+	"faction-isNone" => $member->getFaction()->isNone()
 	]);

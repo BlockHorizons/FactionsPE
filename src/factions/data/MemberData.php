@@ -22,8 +22,15 @@ namespace factions\data;
 use factions\FactionsPE;
 use factions\relation\Relation;
 use factions\manager\Members;
+use factions\entity\Faction;
 
 class MemberData extends Data {
+
+	/** @var int */
+	protected $lastActivity;
+
+	/** @var string */
+	protected $factionId = Faction::NONE;
 
 	/** @var string */
 	protected $name;
@@ -131,5 +138,23 @@ class MemberData extends Data {
     public function getFirstPlayed() : int {
     	return $this->firstPlayed;
     }
+
+    public function setLastPlayed(int $time) {
+    	$this->lastPlayed = $time;
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * LAST-ACTIVITY
+     * ----------------------------------------------------------
+     */
+
+    public function getLastActivity() : int {
+    	return $this->lastActivity;
+    }
+
+    public function setLastActivity($lastActivity) {
+		$this->lastActivity = $lastActivity;
+	}
 
 }

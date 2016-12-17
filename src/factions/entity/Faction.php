@@ -537,4 +537,8 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         return $ret;
 	}
 
+	public function __toString() : string {
+		return $this->getName()." (".$this->getId().")";
+	}
+
 }

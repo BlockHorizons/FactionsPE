@@ -147,5 +147,95 @@ final class Text
         }
         return $r;
     }
-    
+        
+    /**
+     * @param mixed $value
+     * @param bool $color = false
+     * @return string
+     */
+    public static function toString($value, bool $color = false) : string {
+        $s = "";
+        if (is_string($value)) {
+            if(empty($value)) {
+                $s = $color ? "<red>~" : "~";
+            } else {
+                $s = $color ? "<yellow>".$value : $value;
+            }
+        } elseif(is_bool($value)) {
+            $s = $value ? "true" : "false";
+            if($color) {
+                $s = "<green>".$s;
+            } else {
+                $s = "<red>".$s;
+            }
+        } elseif (is_int($value)) {
+            $s = $color ? "<orange>".$value : (string) $value;
+        } elseif (is_float($value)) {
+            $s = $color ? "<aqua>".$value : (string) $value;
+        } elseif (is_array($value)) {
+            $s = self::prettyPrint(json_encode($value));
+        } elseif($value === null) {
+            $s = $color ? "<red>~" : "~";
+        }else {
+            $s = serialize($value);
+        }
+        return self::parse($s.($color ? "<white>" : ""));
+    }
+
+    public static function prettyPrint(string $json) {
+        $result = '';
+        $level = 0;
+        $in_quotes = false;
+        $in_escape = false;
+        $ends_line_level = NULL;
+        $json_length = strlen( $json );
+
+        for( $i = 0; $i < $json_length; $i++ ) {
+            $char = $json[$i];
+            $new_line_level = NULL;
+            $post = "";
+            if( $ends_line_level !== NULL ) {
+                $new_line_level = $ends_line_level;
+                $ends_line_level = NULL;
+            }
+            if ( $in_escape ) {
+                $in_escape = false;
+            } else if( $char === '"' ) {
+                $in_quotes = !$in_quotes;
+            } else if( ! $in_quotes ) {
+                switch( $char ) {
+                    case '}': case ']':
+                        $level--;
+                        $ends_line_level = NULL;
+                        $new_line_level = $level;
+                        break;
+
+                    case '{': case '[':
+                        $level++;
+                    case ',':
+                        $ends_line_level = $level;
+                        break;
+
+                    case ':':
+                        $post = " ";
+                        break;
+
+                    case " ": case "\t": case "\n": case "\r":
+                        $char = "";
+                        $ends_line_level = $new_line_level;
+                        $new_line_level = NULL;
+                        break;
+                }
+            } else if ( $char === '\\' ) {
+                $in_escape = true;
+            }
+            if( $new_line_level !== NULL ) {
+                $result .= "\n".str_repeat( "\t", $new_line_level );
+            }
+            $result .= $char.$post;
+        }
+
+        return $result;
+    }
+
 }

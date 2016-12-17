@@ -262,5 +262,15 @@ class OfflineMember extends MemberData implements IMember {
 	public function getDisplayName() : string {
 		return $this->isOnline() ? $this->player->getDisplayName() : $this->getName();
 	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * LAST-ACTIVITY
+	 * ----------------------------------------------------------
+	 */
+
+	public function updateLastActivity() {
+		$this->setLastActivity(time());
+	}
 	
 }

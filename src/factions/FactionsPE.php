@@ -33,8 +33,9 @@ use factions\manager\Factions;
 use factions\manager\Members;
 use factions\flag\Flag;
 use factions\permission\Permission;
+use factions\engine\MainEngine;
 
-define("IN_DEV", true);
+define("IN_DEV", file_exists(".dev"));
 
 class FactionsPE extends PluginBase {
 
@@ -94,6 +95,8 @@ class FactionsPE extends PluginBase {
     $this->getDataProvider()->loadFactions();
     Factions::createSpecialFactions();
     $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
+    # Register engines
+    $this->runEngines();
 
     # Run tests
     if(IN_DEV) {
@@ -187,6 +190,13 @@ class FactionsPE extends PluginBase {
         $this->getLogger()->error("Error while executing a test: ".$e->getMessage());
       }
     }
+  }
+
+  /**
+   * @internal
+   */
+  private function runEngines() {
+    $this->getServer()->getPluginManager()->registerEvents(new MainEngine($this), $this);
   }
 
 }

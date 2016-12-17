@@ -65,18 +65,6 @@ class Member extends OfflineMember {
 		$this->autoClaimFaction = null;
 	}
 
-	public function getLastActivityMillis() {
-		return $this->lastActivityMillis;
-	}
-
-	public function setLastActivityMillis($lastActivityMillis) {
-		$this->lastActivityMillis = $lastActivityMillis;
-	}
-
-	public function updateLastActivityMillis() {
-		$this->setLastActivityMillis(time());
-	}
-
 	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
 		return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
 	}

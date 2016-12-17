@@ -231,7 +231,6 @@ class Permission {
         $faction = !$faction ? $player->getFaction() : $faction;
         $Relation = $faction->getRelationationTo($player);
         $ret =  $player->isOverriding() ? true : $faction->isPermitted($this, $Relation);
-        FactionsPE::get()->getLogger()->debug("Permission::".strtoupper($this->getId())."->has({$player->getName()}<$Relation>, {$faction->getName()}) === ".($ret?"true":"false"));
         return $ret;
     }
 
