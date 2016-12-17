@@ -23,7 +23,6 @@ use factions\utils\Text;
 use factions\relation\Relation;
 use factions\FactionsPE;
 use factions\entity\IMember;
-use factions\manager\Permissions;
 
 class Permission {
 
@@ -46,7 +45,7 @@ class Permission {
     const TERRITORY = "territory";
     const ACCESS = "access";
     const CLAIMNEAR = "claimnear";
-    const RELATION = "Relation";
+    const Relation = "Relation";
     const DISBAND = "disband";
     const FLAGS = "flags";
     const PERMS = "perms";
@@ -103,7 +102,30 @@ class Permission {
      */
     private $visible = true;
 
-    public function __construct(int $priority, string $name, $desc, array $standard, bool $territory, bool $editable, bool $visible) {
+    public function __construct(iself::getPermBuild();
+        self::getPermPainbuild();
+        self::getPermDoor();
+        self::getPermButton();
+        self::getPermLever();
+        self::getPermContainer();
+        self::getPermName();
+        self::getPermDesc();
+        self::getPermMotd();
+        self::getPermInvite();
+        self::getPermKick();
+        self::getPermTitle();
+        self::getPermHome();
+        self::getPermStatus();
+        self::getPermSethome();
+        self::getPermDeposit();
+        self::getPermWithdraw();
+        self::getPermTerritory();
+        self::getPermAccess();
+        self::getPermClaimnear();
+        self::getPermRelation();
+        self::getPermDisband();
+        self::getPermFlags();
+        self::getPermPerms();nt $priority, string $name, $desc, array $standard, bool $territory, bool $editable, bool $visible) {
         $this->priority = $priority;
         $this->name = $name;
         $this->desc = $desc;
@@ -159,7 +181,7 @@ class Permission {
         // CLAIM_NEAR
         Permissions::create(self::PRIORITY_CLAIMNEAR, self::CLAIMNEAR, self::CLAIMNEAR, "claim nearby", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], false, false, false);
         // RELATION
-        Permissions::create(self::PRIORITY_RELATION, self::RELATION, self::RELATION, "change Relationations", [Relation::LEADER, Relation::OFFICER], false, true, true);
+        Permissions::create(self::PRIORITY_Relation, self::Relation, self::Relation, "change Relationations", [Relation::LEADER, Relation::OFFICER], false, true, true);
         // DISBAND
         Permissions::create(self::PRIORITY_DISBAND, self::DISBAND, self::DISBAND, "disband the faction", [Relation::LEADER], false, true, true);
         // FLAGS

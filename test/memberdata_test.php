@@ -1,16 +1,10 @@
 <?php
-return;
+use factions\entity\OfflineMember;
 
-$data = [
-	"name" => "Dummy",
-	"firstPlayed" => time(),
-	"power" => 4,
-	"role" => \factions\relation\Relation::LEADER,
-	"title" => "BOSS",
-];
-$md = new \factions\data\MemberData($data);
-$md->save();
-
-// Let's get back that data
-$nd = $this->getDataProvider()->loadMember("Dummy");
-var_dump($nd);
+$member = new OfflineMember("dummy");
+var_dump([
+	"isRecruit" => $member->isRecruit(),
+	"power" => $member->getPower(),
+	"hasFaction" => $member->hasFaction(),
+	"faction" => $member->getFaction(),
+	]);

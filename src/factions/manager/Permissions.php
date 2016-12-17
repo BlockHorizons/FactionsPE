@@ -17,7 +17,9 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace factions\permission;
+namespace factions\manager;
+
+use factions\permission\Permission;
 
 final class Permissions {
 
@@ -103,5 +105,50 @@ final class Permissions {
     const UNSETHOME = "factions.unsethome";
     const UNSTUCK = "factions.unstuck";
     const VERSION = "factions.version";
+
+    /*
+     * ----------------------------------------------------------
+     * PERMISSION STORAGE
+     * ----------------------------------------------------------
+     */
+
+    /** @var Permission[] */
+    private static $permissions = [];
+
+    /**
+     * @return Permission|null
+     */
+    public static function getById(string $id) {
+        foreach (self::$permissions as $p) {
+            if ($p->getId() === strtolower($id)) {
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    public static function attach(Permission $perm) {
+        if(!self::contains($perm)) self::$permissions[$perm->getId()] = $perm;
+    }
+
+    public static function detach(Permission $perm) {
+        if(self::contains($perm)) unset(self::$permissions[$perm->getId()]);
+    }
+
+    public static function contains(Permission $perm) : bool {
+        return isset(self::$permissions[$perm->getId()]);
+    }
+
+    public static function create(int $priority, string $id, string $name, string $desc, array $standard, bool $territory, bool $editable, bool $visible) : Permission {
+        $ret = self::getById($id);
+        if($ret) return $ret;
+        $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
+        self::attach($ret);
+        return $ret;
+    }
+
+    public static function getAll() : array {
+        return self::$permissions;
+    }
 
 }

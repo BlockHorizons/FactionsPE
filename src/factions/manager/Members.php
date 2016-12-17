@@ -89,12 +89,12 @@ class Members {
     return null;
   }
 
-  public static function attach(IFPlayer $player)
+  public static function attach(IMember $player)
   {
     if (!self::contains($player)) self::$players[$player->getName()] = $player;
   }
 
-  public static function contains(IFPlayer $player) : bool
+  public static function contains(IMember $player) : bool
   {
     return isset(self::$players[$player->getName()]);
   }

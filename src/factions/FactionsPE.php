@@ -92,6 +92,7 @@ class FactionsPE extends PluginBase {
     $this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
     # Load factions
     $this->getDataProvider()->loadFactions();
+    Factions::createSpecialFactions();
     $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
 
     # Run tests

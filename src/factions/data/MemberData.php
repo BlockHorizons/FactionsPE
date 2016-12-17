@@ -100,4 +100,36 @@ class MemberData extends Data {
     	return $this->player ? $this->player->getName() : $this->name;
     }
 
+    /*
+     * ----------------------------------------------------------
+     * TITLE
+     * ----------------------------------------------------------
+     */
+
+    public function getTitle() : string {
+    	return $this->title ?? "";
+    }
+
+    public function setTitle(string $title) {
+    	$this->title = $title;
+    }
+
+    public function hasTitle() : bool {
+    	return !empty($this->getTitle());
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * TIMES
+     * ----------------------------------------------------------
+     */
+
+    public function getLastPlayed() : int {
+    	return $this->lastPlayed;
+    }
+
+    public function getFirstPlayed() : int {
+    	return $this->firstPlayed;
+    }
+
 }

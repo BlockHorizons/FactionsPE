@@ -1,17 +1,17 @@
 <?php
-var_dump(\factions\manager\Factions::getByName('test'));
-return;
-// Testing FactionData class
-use factions\data\FactionData;
+use factions\entity\Faction;
+use factions\manager\Factions;
 
-$source = [
-	"name" => "TEST",
-	"id" => "DUMMY-ID"
-];
-$fd = new FactionData($source);
-// We cant call $fd->save(); because that will throw an error
-$this->getDataProvider()->saveFaction($fd);
+$faction = Factions::getByName("test");
+if(!$faction) {
+	$faction = new Faction("dummy-id", ["name" => "TEST"]);
+	$faction->save();
+}
 
-// Load
-$nd = $this->getDataProvider()->loadFaction($source["id"]);
-var_dump($nd);
+$this->getLogger()->info("Performing tests on DUMMY faction");
+var_dump([
+	"offline" => $faction->isConsideredOffline(),
+	"online" => $faction->isConsideredOnline(),
+	"normal" => $faction->isNormal(),
+	"none" => $faction->isNone(),
+	]);

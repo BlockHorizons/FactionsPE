@@ -27,16 +27,22 @@ use factions\relation\RelationParticipator;
 use factions\relation\Relation;
 use factions\manager\Factions;
 use factions\manager\Members;
+use factions\manager\Permissions;
 use factions\utils\Gameplay;
 use factions\permission\Permission;
 use factions\flag\Flag;
 
 class Faction extends FactionData implements IFaction, RelationParticipator {
 
-	const ID_NONE 		= "wilderness";
-	const ID_SAFEZONE 	= "safezone";
-	const ID_WARZONE 	= "warzone";
-	const ID_WILDERNESS = self::ID_NONE;
+	const NONE 			= "wilderness";
+	const SAFEZONE 		= "safezone";
+	const WARZONE 		= "warzone";
+	const WILDERNESS 	= self::NONE;
+
+	const NAME_NONE 		= "Wilderness";
+	const NAME_SAFEZONE 	= "Safezone";
+	const NAME_WARZONE 		= "Warzone";
+	const NAME_WILDERNESS 	= self::NAME_NONE;
 
 	/**
 	 * Faction constructor
@@ -59,14 +65,14 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * Check if faction is wilderness
 	 */
 	public function isNone() : bool {
-		return $this->getId() === self::ID_NONE;
+		return $this->getId() === self::NONE;
 	}
 
 	/**
 	 * Check if faction is special
 	 */
 	public function isSpecial() : bool {
-		return in_array($this->getId(), [self::ID_NONE, self::ID_WARZONE, self::ID_SAFEZONE], true);
+		return in_array($this->getId(), [self::NONE, self::WARZONE, self::SAFEZONE], true);
 	}
 	
 	/**
@@ -158,7 +164,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	}
 
 	public function isAllMembersOffline() : bool {
-		return count($this->getPlayersWhereOnline(true)) == 0;
+		return count($this->getOnlineMembers()) == 0;
 	}
 	
 	public function reindexMembers() {
@@ -225,12 +231,12 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         }
 	}
 
-	public function isFactionConsideredOffline() : bool {
+	public function isConsideredOffline() : bool {
 		return $this->isAllMembersOffline();
 	}
 
-	public function isFactionConsideredOnline() : bool {
-		return !$this->isFactionConsideredOffline();
+	public function isConsideredOnline() : bool {
+		return !$this->isConsideredOffline();
 	}
 	
 	/*
@@ -415,7 +421,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 
 	public function getPermissions() : array {
         $r = [];
-        foreach (Permission::getAll() as $perm) {
+        foreach (Permissions::getAll() as $perm) {
             $r[$perm->getId()] = $this->perms[$perm->getId()] ?? $perm->getStandard();
         }
         return $r;

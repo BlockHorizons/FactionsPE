@@ -20,7 +20,7 @@
 namespace factions\command;
 
 use factions\FactionsPE;
-use factions\permission\Permissions;
+use factions\manager\Permissions;
 
 use dominate\Command;
 use dominate\argument\Argument;

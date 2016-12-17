@@ -125,9 +125,9 @@ interface IFaction {
 
 	public function sendMessage($message);
 
-	public function isFactionConsideredOffline() : bool;
+	public function isConsideredOffline() : bool;
 
-	public function isFactionConsideredOnline() : bool;
+	public function isConsideredOnline() : bool;
 	
 	/*
 	 * ----------------------------------------------------------

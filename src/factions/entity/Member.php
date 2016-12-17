@@ -23,6 +23,7 @@ use pocketmine\Player;
 
 use factions\relation\RelationParticipator;
 use factions\relation\Relation;
+use factions\FactionsPE;
 
 class Member extends OfflineMember {
 
@@ -39,7 +40,8 @@ class Member extends OfflineMember {
 	private $autoClaimFaction;
 
 	public function __construct(Player $player) {
-		parent::__construct($player instanceof Player ? $player->getName() : $player);
+		parent::__construct($player instanceof Player ? $player->getName() : $player,
+			["lastPlayed" => time()]);
 	}
 
 	/**

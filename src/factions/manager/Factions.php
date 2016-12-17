@@ -22,6 +22,9 @@ namespace factions\manager;
 use pocketmine\IPlayer;
 
 use factions\entity\IFaction;
+use factions\entity\Faction;
+use factions\flag\Flag;
+use factions\permission\Permission;
 
 class Factions {
 
@@ -29,6 +32,63 @@ class Factions {
    * @var IFaction[]
    */
   private static $factions = [];
+
+  public static function createSpecialFactions() {
+    if(self::getByName(Faction::NAME_NONE) === null) {
+      new Faction(Faction::NONE, [
+          "name" => Faction::NAME_NONE,
+          "flags" => [
+              Flag::PVP,
+              Flag::ANIMALS,
+              Flag::ENDER_GRIEF,
+              Flag::EXPLOSIONS,
+              Flag::FIRE_SPREAD,
+              Flag::FRIENDLY_FIRE,
+              Flag::ZOMBIE_GRIEF,
+              Flag::PERMANENT,
+              Flag::POWER_LOSS,
+              Flag::INFINITY_POWER
+          ],
+          "description" => "It's dangerous to go alone", # TODO: Translatable
+          "perms" => [
+              Permission::BUILD => [
+                  Permission::getAll(),
+              ],
+              Permission::CONTAINER => [
+                  Permission::getAll(),
+              ],
+              Permission::BUTTON => [
+                  Permission::getAll(),
+              ],
+              Permission::DOOR => [
+                  Permission::getAll(),
+              ]
+          ],
+      ]);
+    }
+    if(self::getByName(Faction::NAME_SAFEZONE) === null) {
+        new Faction(Faction::SAFEZONE, [
+            "name" => Faction::NAME_SAFEZONE,
+            "flags" => [
+                Flag::PEACEFUL,
+                Flag::PERMANENT,
+                Flag::INFINITY_POWER
+            ],
+            "description" => "Save from PVP and Monsters" # TODO: Translatable
+        ]);
+    }
+    if(self::getByName(Faction::NAME_WARZONE) === null) {
+        new Faction(Faction::WARZONE, [
+            "name" => Faction::NAME_WARZONE,
+            "flags" => [
+                Flag::PVP,
+                Flag::PERMANENT,
+                Flag::INFINITY_POWER
+            ],
+            "description" => "Be careful enemies can be nearby" # TODO: Translatable
+        ]);
+    }
+  }
 
   /**
    * @return IFaction|null

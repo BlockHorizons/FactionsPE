@@ -24,6 +24,8 @@ use factions\manager\Members;
 use factions\manager\Factions;
 use localizer\Localizer;
 use factions\utils\Gameplay;
+use factions\FactionsPE;
+use factions\relation\Relation;
 
 class OfflineMember extends MemberData implements IMember {
 
@@ -40,7 +42,7 @@ class OfflineMember extends MemberData implements IMember {
 	 */
 
 	public function getFactionId() : string {
-		if(!$this->factionId) return Factions::NONE;
+		if(!$this->factionId) return Faction::NONE;
         return $this->factionId;
 	}
 
@@ -51,7 +53,7 @@ class OfflineMember extends MemberData implements IMember {
         $oldFactionId = $this->factionId;
         // Apply
         $this->factionId = $fid;
-        if ($oldFactionId == null) $oldFactionId = Factions::NONE;
+        if ($oldFactionId == null) $oldFactionId = Faction::NONE;
         // Update index
         $oldFaction = Factions::getById($oldFactionId);
         $faction = $this->getFaction();
@@ -75,7 +77,7 @@ class OfflineMember extends MemberData implements IMember {
 	}
 
 	public function getFaction() : Faction {
-        return Factions::getById($this->getFactionId()) ?? Faction::get(Factions::NONE);
+        return Factions::getById($this->getFactionId()) ?? Factions::getById(Faction::NONE);
 	}
 	
 	public function setFaction(Faction $faction) {
@@ -91,7 +93,7 @@ class OfflineMember extends MemberData implements IMember {
 	}
 
 	public function isNone() : bool {
-		$this->factionId !== Factions::NONE;
+		$this->factionId !== Faction::NONE;
 	}
 
 	public function resetFactionData() {
@@ -136,7 +138,7 @@ class OfflineMember extends MemberData implements IMember {
 			if ( ! $event->isCancelled())
             {
                 // Remove this faction
-                $this->sendMessage(Localizer::trans("faction-disbanded-due-empty"), $myFaction->getName()));
+                $this->sendMessage(Localizer::trans("faction-disbanded-due-empty", [$myFaction->getName()]));
                 if (Gameplay::get("log-faction-disband", true))
                 {
                     FactionsPE::get()->getLogger()->info("The faction ".$myFaction->getName()." (".$myFaction->getId().") was disbanded due to the last player (".$this->getName().") leaving.");
