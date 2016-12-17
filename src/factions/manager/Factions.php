@@ -25,6 +25,7 @@ use factions\entity\IFaction;
 use factions\entity\Faction;
 use factions\flag\Flag;
 use factions\permission\Permission;
+use factions\relation\Relation;
 
 class Factions {
 
@@ -52,16 +53,16 @@ class Factions {
           "description" => "It's dangerous to go alone", # TODO: Translatable
           "perms" => [
               Permission::BUILD => [
-                  Permission::getAll(),
+                  Relation::getAll(),
               ],
               Permission::CONTAINER => [
-                  Permission::getAll(),
+                  Relation::getAll(),
               ],
               Permission::BUTTON => [
-                  Permission::getAll(),
+                  Relation::getAll(),
               ],
               Permission::DOOR => [
-                  Permission::getAll(),
+                  Relation::getAll(),
               ]
           ],
       ]);
