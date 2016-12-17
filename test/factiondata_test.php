@@ -1,4 +1,6 @@
 <?php
+var_dump(\factions\manager\Factions::getByName('test'));
+return;
 // Testing FactionData class
 use factions\data\FactionData;
 
@@ -12,5 +14,4 @@ $this->getDataProvider()->saveFaction($fd);
 
 // Load
 $nd = $this->getDataProvider()->loadFaction($source["id"]);
-var_dump($nd->getFlags());
 var_dump($nd);

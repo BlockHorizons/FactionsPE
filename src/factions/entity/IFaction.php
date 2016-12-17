@@ -184,6 +184,8 @@ interface IFaction {
 	 */
 	public function setFlags(array $flags);
 
+	public function setFlag(string $id, bool $value);
+
 	public function isExplosionsAllowed() : bool;
 
 	/*
@@ -196,7 +198,7 @@ interface IFaction {
 
 	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted);
 
-	public function getPermitted(Permission $perm) : array;
+	public function getPermitted($perm) : array;
 
 	public function isPermitted() : bool;
 
@@ -253,7 +255,7 @@ interface IFaction {
 	 */
 
 	public function getPower() : int;
-
+	
 	public function getPowerBoost() : int;
 
 	public function setPowerBoost(int $power);

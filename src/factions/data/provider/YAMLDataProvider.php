@@ -41,7 +41,6 @@ class YAMLDataProvider extends DataProvider {
 
 	public function saveFaction(FactionData $faction) {
 		$f = $this->getFactionFilePath($faction, ".yml");
-		@mkdir(dirname($f));
 		file_put_contents($f, yaml_emit($faction->__toArray()));
 	}
 

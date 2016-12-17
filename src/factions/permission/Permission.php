@@ -22,6 +22,7 @@ namespace factions\permission;
 use factions\utils\Text;
 use factions\relation\Relation;
 use factions\FactionsPE;
+use factions\entity\IMember;
 
 class Permission {
 
@@ -158,24 +159,23 @@ class Permission {
     {
         return self::getCreative(self::PRIORITY_BUILD, self::BUILD, self::BUILD, "edit the terrain", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true);
     }
-    // What is the standard (aka default) perm value?
-    // This value will be set for factions from the beginning.
-    // Example: ... set of Relationations ...
-    public static function getCreative(int $priority, string $id, string $name, string $desc, array $standard, bool $territory, bool $editable, bool $visible) : Perm
+
+    public static function getCreative(int $priority, string $id, string $name, string $desc, array $standard, bool $territory, bool $editable, bool $visible) : Permission
     {
         $ret = self::getById($id);
         if ($ret != null) {
             $ret->setRegistered(true);
             return $ret;
         }
-        $ret = new Perm($priority, $name, $desc, $standard, $territory, $editable, $visible);
+        $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
         self::$storage->attach($ret);
         $ret->setRegistered(true);
         return $ret;
     }
+
     /**
      * @param string $id
-     * @return Perm|NULL
+     * @return Permission|NULL
      */
     public static function getById(string $id)
     {
@@ -184,13 +184,12 @@ class Permission {
         }
         return null;
     }
+
     public static function getPermPainbuild()
     {
         return self::getCreative(self::PRIORITY_PAINBUILD, self::PAINBUILD, self::PAINBUILD, "edit, take damage", [], true, true, true);
     }
-    // Is this a territory perm meaning it has to do with territory construction, modification or interaction?
-    // True Examples: build, container, door, lever etc.
-    // False Examples: name, invite, home, sethome, deposit, withdraw etc.
+    
     public static function getPermDoor() {
         return self::getCreative(self::PRIORITY_DOOR, self::DOOR, self::DOOR, "use doors", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true);
     }
@@ -353,7 +352,7 @@ class Permission {
         $this->territory = $territory;
         return $this;
     }
-    public function has(IFPlayer $player, Faction $faction = NULL) : BOOL
+    public function has(IMember $player, Faction $faction = null) : bool
     {
         $faction = !$faction ? $player->getFaction() : $faction;
         $Relation = $faction->getRelationationTo($player);

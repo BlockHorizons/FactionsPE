@@ -46,7 +46,19 @@ final class Gameplay {
   }
 
   public static function get(string $key, $default = null) {
-    return self::$data[$key] ?? $default;
+    $data = self::$data;
+        if(strpos($key, ".")) {
+            $keys = explode(".", $key);
+            $i = 0;
+            while(isset($data[$keys[$i]])) {
+                $data = $data[$keys[$i]];
+                if(!is_array($data)) return $data;
+                $i++;
+                if(!isset($keys[$i])) return $data;
+            }
+        }
+        if(isset($data[$key])) return $data[$key];
+        return $default;
   }
 
 }

@@ -192,10 +192,10 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
                 return;
             }
             // no members left and faction isn't permanent, so disband it
-            if (Settings::get("logFactionDisband", true)) {
+            if (Gameplay::get("log.faction-disband", true)) {
                 FactionsPE::get()->getLogger()->info("The faction " . $this->getName() . " (" . $this->getId() . ") has been disbanded since it has no members left.");
             }
-            foreach (FPlayer::getAllOnline() as $player) {
+            foreach (Members::getAllOnline() as $player) {
                 $player->sendMessage(Text::parse("<i>The faction %var0<i> was disbanded.", $this->getName()));
             }
             $this->detach();
@@ -329,6 +329,10 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		$this->setFlag(Flag::OPEN, $open);
 	}
 
+	public function setFlag(string $id, bool $value) {
+		$this->setFlagId([$id => $value]);
+	}
+
 	/**
 	 * @param array string => bool
 	 */
@@ -392,11 +396,13 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 
 	/**
 	 * Get array of relations that has Permission
+	 * @param Permission|string
 	 * @return array
 	 */
-	public function getPermitted(Permission $perm) : array {
-        if(isset($this->getPermissionss()[$perm->getId()])) $rels = $this->getPermissions()[$perm->getId()];
-        return $rels ?? $perm->getStandard();
+	public function getPermitted($perm) : array {
+		$id = $perm instanceof Permission ? $perm->getId() : $perm;
+        if(isset($this->getPermissions()[$id])) $rels = $this->getPermissions()[$id];
+        return $rels ?? ($perm instanceof Permission ? $perm->getStandard() : []);
 	}
 
 	public function isPermitted() : bool {
@@ -408,7 +414,6 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	}
 
 	public function getPermissions() : array {
-		 // We start with default values ...
         $r = [];
         foreach (Permission::getAll() as $perm) {
             $r[$perm->getId()] = $this->perms[$perm->getId()] ?? $perm->getStandard();

@@ -28,7 +28,8 @@ use factions\utils\Gameplay;
 class OfflineMember extends MemberData implements IMember {
 
 	public function __construct(string $name, array $data = []) {
-		parent::__construct(array_merge(compact("name"), $data));
+		$sd = FactionsPE::get()->getDataProvider()->loadMember($name);
+		parent::__construct(array_merge(compact("name"), $data, $sd ? $sd->__toArray() : []));
 		Members::attach($this);
 	}
 
