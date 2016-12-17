@@ -35,7 +35,7 @@ use factions\flag\Flag;
 use factions\permission\Permission;
 use factions\engine\MainEngine;
 
-define("IN_DEV", file_exists(".dev"));
+define("IN_DEV", file_exists(dirname(__FILE__)."/.dev"));
 
 class FactionsPE extends PluginBase {
 

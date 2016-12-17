@@ -541,4 +541,10 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		return $this->getName()." (".$this->getId().")";
 	}
 
+	public static function createId() : string {
+		return implode("-", array_values(array_map(function($el) {
+			return implode("", $el);
+		}, array_chunk(str_split(uniqid() . substr(md5(mt_rand(0, PHP_INT_MAX)), 0, 3) ), 4))));
+	}
+
 }

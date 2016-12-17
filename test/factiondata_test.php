@@ -15,3 +15,4 @@ var_dump([
 	"normal" => $faction->isNormal(),
 	"none" => $faction->isNone(),
 	]);
+var_dump(Faction::createId());
