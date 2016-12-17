@@ -8,3 +8,6 @@ Estimated release date - 31. December.
 ###Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
 + [Simple-LibLoader](https://github.com/Chris-Prime/Simple-LibLoader)
+
+####Random screenshot
+[First member join](http://i.imgur.com/7XiOrNW.png)
