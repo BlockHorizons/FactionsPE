@@ -16,3 +16,7 @@ var_dump([
 	"none" => $faction->isNone(),
 	]);
 var_dump(Faction::createId());
+var_dump(Faction::createId());
+var_dump(Faction::createId());
+var_dump(Faction::createId());
+var_dump(Faction::createId());

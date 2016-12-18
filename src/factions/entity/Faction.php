@@ -32,6 +32,8 @@ use factions\utils\Gameplay;
 use factions\permission\Permission;
 use factions\flag\Flag;
 
+use localizer\Localizer;
+
 class Faction extends FactionData implements IFaction, RelationParticipator {
 
 	const NONE 			= "wilderness";
@@ -121,7 +123,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         if ($this->isValidHome($this->home)) return;
         $this->home = null;
         $this->save();
-        $this->sendMessage(new Translatable("home-out-of-bounds"));
+        $this->sendMessage(Localizer::translatable("home-out-of-bounds"));
 	}
 
 	public function isValidHome(Position $home) : bool {
@@ -542,9 +544,12 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	}
 
 	public static function createId() : string {
-		return implode("-", array_values(array_map(function($el) {
-			return implode("", $el);
-		}, array_chunk(str_split(uniqid() . substr(md5(mt_rand(0, PHP_INT_MAX)), 0, 3) ), 4))));
+		do { // Dangerous?
+			$id = implode("-", array_values(array_map(function($el) {
+				return implode("", $el);
+			}, array_chunk(str_split(md5(mt_rand(0, PHP_INT_MAX)) . md5(mt_rand(0, PHP_INT_MAX)) ), 4))));
+		} while (Factions::getById($id));
+		return substr($id, 0, 4 * 4 + 3);
 	}
 
 }
