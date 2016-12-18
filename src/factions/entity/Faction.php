@@ -175,14 +175,14 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         $factionId = $this->getId();
         if ($factionId == null) return;
         foreach (Members::getAll() as $member) {
-            if ($player->getFactionId() !== $factionId) continue;
+            if ($member->getFactionId() !== $factionId) continue;
             $this->members[] = $member;
         }
 	}
 
 	public function promoteNewLeader(IMember $leader = null) {
 		if ($this->isNone()) return;
-        if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("permanent-factions-disable-leader-promotion", true)) return;
+        if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) return;
         if ($leader and !$leader->hasFaction() or $leader->getFaction() !== $this) return;
         $oldLeader = $this->getLeader();
         // get list of officers, or list of normal members if there are no officers
@@ -204,7 +204,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
                 FactionsPE::get()->getLogger()->info("The faction " . $this->getName() . " (" . $this->getId() . ") has been disbanded since it has no members left.");
             }
             foreach (Members::getAllOnline() as $player) {
-                $player->sendMessage(Text::parse("<i>The faction %var0<i> was disbanded.", $this->getName()));
+                $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
             }
             $this->detach();
         } else {
@@ -212,10 +212,11 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
             if ($oldLeader != null) {
                 $oldLeader->setRole(Rel::MEMBER);
             }
-            /** @var FPlayer[] $replacements */
             $replacements[0]->setRole(Rel::LEADER);
-            $this->sendMessage(Text::parse("<i>Faction leader <h>%var0<i> has been removed. %var1<i> has been promoted as the new faction leader.", $oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()));
-            FactionsPE::get()->getLogger()->info("Faction " . $this->getName() . " (" . $this->getId() . ") leader was removed. Replacement leader: " . $replacements[0]->getName());
+            $this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
+            if(Gameplay::get('log.faction-new-leader', true)) {
+            	FactionsPE::get()->getLogger()->info("Faction " . $this->getName() . " (" . $this->getId() . ") leader was removed. Replacement leader: " . $replacements[0]->getName());
+        	}
         }
 	}
 

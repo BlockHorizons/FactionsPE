@@ -21,5 +21,16 @@
 language: en
 
 # gameplay settings
-gameplay: []
+gameplay:
+  log:
+    faction-disband: true
+    faction-new-leader: true
+  power:
+    player:
+      max: 10
+      min: -10
+  faction:
+    max-players: 15
+    disable-permanent-leader-promotion: true
+  homes-must-be-in-claimed-territories: true
 ...

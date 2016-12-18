@@ -27,6 +27,7 @@ trait MemberFilePath {
 	 * @param $ext with fullstop
 	 */
 	public function getMemberFilePath($member, string $ext) {
+		var_dump($member);
 		$name = strtolower(trim($member instanceof MemberData ? $member->getName() : $member));
 		return $this->getMain()->getDataFolder()."members/".substr($name, 0, 1)."/".$name.$ext;
 	}

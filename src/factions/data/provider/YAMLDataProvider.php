@@ -34,7 +34,7 @@ class YAMLDataProvider extends DataProvider {
 	}
 
 	public function saveMember(MemberData $member) {
-		$f = $this->getMemberFilePath($member, ".yml");
+		$f = $this->getMemberFilePath($member, ".yml");	
 		@mkdir(dirname($f));
 		file_put_contents($f, yaml_emit($member->__toArray()));
 	}

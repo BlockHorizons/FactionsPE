@@ -26,8 +26,9 @@ use localizer\Localizer;
 use factions\utils\Gameplay;
 use factions\FactionsPE;
 use factions\relation\Relation;
+use factions\relation\RelationParticipator;
 
-class OfflineMember extends MemberData implements IMember {
+class OfflineMember extends MemberData implements IMember, RelationParticipator {
 
 	public function __construct(string $name, array $data = []) {
 		$sd = FactionsPE::get()->getDataProvider()->loadMember($name);
@@ -71,9 +72,8 @@ class OfflineMember extends MemberData implements IMember {
         }
         FactionsPE::get()->getLogger()->info(
            Localizer::trans("member-faction-changed",
-                $this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc));
-        // Mark as changed
-        $this->changed();
+                [$this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc]));
+        $faction->reindexMembers();
 	}
 
 	public function getFaction() : Faction {
@@ -177,6 +177,28 @@ class OfflineMember extends MemberData implements IMember {
 
 	public function getRole() : string {
 		return $this->role;
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * RELATION
+	 * ----------------------------------------------------------
+	 */
+
+	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
+		return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
+	}
+
+	public function isFriend(RelationParticipator $observer, bool $ignorePeaceful = false) : bool {
+		return Relation::isFriend($this->getRelationTo($observer, $ignorePeaceful));
+	}
+
+	public function isEnemy(RelationParticipator $observer, bool $ignorePeaceful = false) : bool {
+		return Relation::isEnemy($this->getRelationTo($observer, $ignorePeaceful));
+	}
+
+	public function getColorTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
+		return Relation::getColorTo($this->getRelationTo($observer, $ignorePeaceful));
 	}
 
 
