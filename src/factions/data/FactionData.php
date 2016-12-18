@@ -112,7 +112,7 @@ class FactionData extends Data {
 		$this->id = $source["id"];
 		if(isset($source["members"])) {
 			foreach($source["members"] as $member) {
-				if(!($member instanceof IFPlayer)) {
+				if(!($member instanceof IMember)) {
 					$member = Members::get($member);
 				}
 				if($member->hasFaction() && $member->getFaction()->getId() !== $this->id){

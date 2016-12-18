@@ -176,7 +176,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         if ($factionId == null) return;
         foreach (Members::getAll() as $member) {
             if ($member->getFactionId() !== $factionId) continue;
-            $this->members[] = $member;
+            $this->members[] = $member->getName();
         }
 	}
 
