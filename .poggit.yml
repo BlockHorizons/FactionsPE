@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Chris-Prime/FactionsPE
+branches:
+- reborn
+projects:
+  FactionsPE:
+    path: ""
+  resources.languages.en:
+    path: resources/languages/en/
+...
