@@ -66,7 +66,6 @@ class MemberData extends Data {
     	$this->firstPlayed = $source["firstPlayed"] ?? time();
     	$this->lastPlayed = $source["lastPlayed"] ?? time();
     	$this->power = $source["power"] ?? 0;
-    	$this->role = $source["role"] ?? Relation::RECRUIT;
     	$this->title = $source["title"] ?? null;
     	if(isset($source["player"])){
 	    	if($source["player"] instanceof Player) {
@@ -84,10 +83,11 @@ class MemberData extends Data {
 
     public function __toArray() {
     	return [
+            //"factionId" => $this->factionId,
     		"firstPlayed" => $this->firstPlayed,
     		"lastPlayed" => $this->lastPlayed,
     		"power" => $this->power,
-    		"role" => $this->role,
+    		//"role" => $this->role,
     		"title" => $this->title,
     		"player" => $this->name
     	];

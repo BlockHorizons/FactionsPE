@@ -24,6 +24,7 @@ use pocketmine\Player;
 use factions\relation\RelationParticipator;
 use factions\relation\Relation;
 use factions\FactionsPE;
+use factions\manager\Plots;
 
 class Member extends OfflineMember {
 

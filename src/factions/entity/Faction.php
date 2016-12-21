@@ -28,9 +28,11 @@ use factions\relation\Relation;
 use factions\manager\Factions;
 use factions\manager\Members;
 use factions\manager\Permissions;
+use factions\manager\Plots;
 use factions\utils\Gameplay;
 use factions\permission\Permission;
 use factions\flag\Flag;
+use factions\FactionsPE;
 
 use localizer\Localizer;
 
@@ -54,6 +56,10 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	public function __construct(string $id, array $data) {
 		parent::__construct(array_merge(["id" => $id], $data));
 		Factions::attach($this);
+
+		if(isset($data["creator"]) && !$this->getLeader()) {
+			$this->members[Relation::LEADER] = $data["creator"];
+		}
 	}
 	
 
@@ -139,6 +145,28 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * MEMBERS
 	 * ----------------------------------------------------------
 	 */
+
+	/**
+	 * @var IMember[]
+	 */
+	public function getMembers() : array {
+		$r = [];
+		foreach ($this->getRawMembers() as $name) {
+			$r[] = Members::get($name);
+		}
+		return $r;
+	}
+
+	public function isMember(string $member) : bool {
+		return in_array($member, $this->members, true);
+	}
+
+	public function getRole(IMember $member) : string {
+		if($this->isMember($member->getName())) {
+			return array_search($member->getName(), $this->members);
+		}
+		return Relation::RECRUIT;
+	}
 	
 	/**
      * Returns this Faction's leader, if returned null and this faction isn't special
@@ -155,8 +183,8 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 
 	public function getMembersWhereRole(string $role) : array {
 		$ret = [];
-        foreach ($this->getPlayers() as $player) {
-            if ($player->getRole() === $rel) $ret[] = $player;
+        foreach ($this->getMembers() as $player) {
+            if ($player->getRole() === $role) $ret[] = $player;
         }
         return $ret;
 	}
@@ -168,27 +196,17 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	public function isAllMembersOffline() : bool {
 		return count($this->getOnlineMembers()) == 0;
 	}
-	
-	public function reindexMembers() {
-		$this->members = [];
 
-        $factionId = $this->getId();
-        if ($factionId == null) return;
-        foreach (Members::getAll() as $member) {
-            if ($member->getFactionId() !== $factionId) continue;
-            $this->members[] = $member->getName();
-        }
-	}
 
 	public function promoteNewLeader(IMember $leader = null) {
 		if ($this->isNone()) return;
         if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) return;
-        if ($leader and !$leader->hasFaction() or $leader->getFaction() !== $this) return;
+        if($leader && !$leader->hasFaction() or $leader && $leader->getFactionId() !== $this->getFactionId()) return;
         $oldLeader = $this->getLeader();
         // get list of officers, or list of normal members if there are no officers
-        $replacements = $leader instanceof Member ? [$leader] : $this->getPlayersWhereRole(Relation::OFFICER);
+        $replacements = $leader instanceof Member ? [$leader] : $this->getMembersWhereRole(Relation::OFFICER);
         if (empty($replacements)) {
-            $replacements = $this->getPlayersWhereRole(Relation::MEMBER);
+            $replacements = $this->getMembersWhereRole(Relation::MEMBER);
         }
         if (empty($replacements)) {
             // faction leader is the only member; one-man faction
@@ -203,10 +221,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
             if (Gameplay::get("log.faction-disband", true)) {
                 FactionsPE::get()->getLogger()->info("The faction " . $this->getName() . " (" . $this->getId() . ") has been disbanded since it has no members left.");
             }
-            foreach (Members::getAllOnline() as $player) {
-                $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
-            }
-            $this->detach();
+            $this->disband();
         } else {
             // promote new faction leader
             if ($oldLeader != null) {
@@ -218,6 +233,14 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
             	FactionsPE::get()->getLogger()->info("Faction " . $this->getName() . " (" . $this->getId() . ") leader was removed. Replacement leader: " . $replacements[0]->getName());
         	}
         }
+	}
+
+	public function disband() {
+		foreach (Members::getAllOnline() as $player) {
+	        $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
+	    }
+	    Factions::detach($this);
+	    FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
 	}
 
 	public function getOnlineMembers() : array {

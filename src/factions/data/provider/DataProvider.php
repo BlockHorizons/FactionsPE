@@ -71,6 +71,28 @@ abstract class DataProvider {
     return $this->main;
   }
 
+  public static function internalPriority($name, $ext = "") : int {
+    switch(strtolower($name)) {
+            case "wilderness".$ext:
+                return 1;
+            case "warzone".$ext:
+                return 2;
+            case "safezone".$ext:
+                return 3;
+            default: return PHP_INT_MAX;
+        }
+    }
+
+  public static function order(array $factions) {
+    usort($factions, function($a, $b){
+      $pa = self::internalPriority($a);
+      $pb = self::internalPriority($b);
+      if($pa !== $pb) return $pa <=> $pb;
+      return $a <=> $b;
+    });
+    return $factions;
+  }
+
 
   // ---------------------------------------------------------------------------
   // ABSTRACT FUNCTIONS
@@ -100,6 +122,13 @@ abstract class DataProvider {
    * @param string
    */
   public abstract function deleteFaction(string $identifier);
+
+  public abstract function savePlots(array $plots);
+
+  /**
+   * Must set plots using Plots::setPlots()
+   */
+  public abstract function loadPlots();
 
   public abstract function close();
 

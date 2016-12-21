@@ -117,7 +117,7 @@ interface IFaction {
 
 	public function isAllMembersOffline() : bool;
 	
-	public function reindexMembers();
+	// public function reindexMembers();
 
 	public function promoteNewLeader(IMember $member = null);
 

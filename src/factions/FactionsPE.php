@@ -31,6 +31,7 @@ use factions\data\provider\DataProvider;
 use factions\data\provider\YAMLDataProvider;
 use factions\manager\Factions;
 use factions\manager\Members;
+use factions\manager\Plots;
 use factions\flag\Flag;
 use factions\permission\Permission;
 use factions\engine\MainEngine;
@@ -95,6 +96,8 @@ class FactionsPE extends PluginBase {
     $this->getDataProvider()->loadFactions();
     Factions::createSpecialFactions();
     $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
+    # Load Plots
+    $this->getDataProvider()->loadPlots();
     # Register engines
     $this->runEngines();
 
@@ -102,6 +105,7 @@ class FactionsPE extends PluginBase {
     if(IN_DEV) {
       $this->runTests();
     }
+    return;
 
     $this->getLogger()->info(Localizer::trans("plugin.enabled"));
   }
@@ -114,6 +118,7 @@ class FactionsPE extends PluginBase {
 
     Members::saveAll();
     Factions::saveAll();
+    Plots::saveAll();
 
     if($this->getDataProvider() instanceof DataProvider) {
       $this->getDataProvider()->close();

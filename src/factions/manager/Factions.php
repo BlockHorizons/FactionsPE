@@ -22,6 +22,7 @@ namespace factions\manager;
 use pocketmine\IPlayer;
 
 use factions\entity\IFaction;
+use factions\entity\IMember;
 use factions\entity\Faction;
 use factions\flag\Flag;
 use factions\permission\Permission;
@@ -96,7 +97,14 @@ class Factions {
    */
   public static function getForPlayer(IPlayer $player) {
     foreach(self::$factions as $faction) {
-      if($player->isMember($player)) return $faction;
+      if($faction->isMember($player->getName())) return $faction;
+    }
+    return null;
+  }
+
+  public static function getForMember(IMember $member) {
+    foreach (self::$factions as $faction) {
+      if($faction->isMember($member->getName())) return $faction;
     }
     return null;
   }

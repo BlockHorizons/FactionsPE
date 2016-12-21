@@ -110,19 +110,8 @@ class FactionData extends Data {
 		// required fields
 		$this->name = $source["name"];
 		$this->id = $source["id"];
-		if(isset($source["members"])) {
-			foreach($source["members"] as $member) {
-				if(!($member instanceof IMember)) {
-					$member = Members::get($member);
-				}
-				if($member->hasFaction() && $member->getFaction()->getId() !== $this->id){
-						throw new Exception("can not assign player '{$member->getName()}' to new faction while he is member of other faction");					
-				}
-				$member->setFaction(Factions::getById($this->id));
-				$this->members[] = $member->getName();
-			}
-		}
 		// optional fields
+		$this->members = $source["members"] ?? [];
 		$this->createdAt = $source["createdAt"] ?? time();
 		$this->description = $source["description"] ?? null;
 		$this->motd = $source["motd"] ?? null;
@@ -136,7 +125,7 @@ class FactionData extends Data {
 			if(($level = FactionsPE::get()->getServer()->getLevelByName($p[3]))) {
 				$this->home = new Position((float) $p[0], (float) $p[1], (float) $p[2], $level);
 			} else {
-				FactionsPE::get()->getLogger()->warning(Localizer::trans("error.faction-load-invalid-level", $this->name, $source["home"]));
+				FactionsPE::get()->getLogger()->warning(Localizer::trans("plugin.faction-load-invalid-level", $this->name, $source["home"]));
 			}
 		}
 	}
@@ -190,7 +179,6 @@ class FactionData extends Data {
 
 	public function setName(string $name) {
 		$this->name = $name;
-		$this->changed();
 	}
 
 	/*
@@ -292,8 +280,8 @@ class FactionData extends Data {
 	 * MEMBERS
 	 * ----------------------------------------------------------
 	 */
-
-	public function getMembers() : array {
+	
+	public function getRawMembers() : array {
 		return $this->members;
 	}
 

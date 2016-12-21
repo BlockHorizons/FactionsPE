@@ -34,6 +34,8 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 		$sd = FactionsPE::get()->getDataProvider()->loadMember($name);
 		parent::__construct(array_merge(compact("name"), $data, $sd ? $sd->__toArray() : []));
 		Members::attach($this);
+
+		$this->updateFaction();
 	}
 
 	/*
@@ -41,6 +43,13 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	 * FACTION
 	 * ----------------------------------------------------------
 	 */
+
+	public function updateFaction() {
+		if(($f = Factions::getForMember($this)) instanceof IFaction) {
+			$this->setFaction($f);
+			$this->setRole($f->getRole($this));
+		}
+	}
 
 	public function getFactionId() : string {
 		if(!$this->factionId) return Faction::NONE;
@@ -73,7 +82,6 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
         FactionsPE::get()->getLogger()->info(
            Localizer::trans("member-faction-changed",
                 [$this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc]));
-        $faction->reindexMembers();
 	}
 
 	public function getFaction() : Faction {
@@ -211,7 +219,13 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	public function getPower(bool $limit = true) : int {
 		$p = $this->power;
 		if($limit) {
-			$p = max(min($this->power, Gameplay::get('min-player-power', -10)), Gameplay::get('max-player-power', 10));
+			$p = min(
+				max(
+					$this->power,
+					Gameplay::get('min-player-power', -10)
+				),
+				Gameplay::get('max-player-power', 10)
+			);
 		}
 		return $p - $this->getPowerBoost();
 	}

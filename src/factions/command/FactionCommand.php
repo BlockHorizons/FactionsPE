@@ -23,8 +23,9 @@ use factions\FactionsPE;
 use factions\manager\Permissions;
 
 use dominate\Command;
-use dominate\argument\Argument;
+use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
+use factions\command\requirement\FactionRequirement;
 
 use pocketmine\command\CommandSender;
 
@@ -38,8 +39,8 @@ class FactionCommand extends Command
         // Registering subcommands
         $this->addChild(new CreateFaction($plugin, 'create', 'Create a new faction', Permissions::CREATE, ['make', 'new']));
 
-        $this->addArgument(new Argument("sub-command", Argument::TYPE_BOOLEAN));
-        //$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
+        $this->addParameter(new Parameter("command"));
+        $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
     }
 
     /**
@@ -54,7 +55,7 @@ class FactionCommand extends Command
         if ($this->endPoint !== $this) return true;
         if (isset($args[0])) {
             if (!$this->getChild($args[0])) {
-                $sender->sendMessage(Localizer::trans("command.generic-usage", [$args[0]]));
+                $sender->sendMessage(Localizer::translatable("command.generic-usage", [$args[0]]));
             }
         }
         return true;

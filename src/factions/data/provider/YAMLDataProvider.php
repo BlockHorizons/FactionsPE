@@ -22,6 +22,7 @@ use factions\data\MemberData;
 use factions\data\FactionData;
 use factions\entity\Member;
 use factions\entity\Faction;
+use factions\manager\Plots;
 
 # Our best is yet to come (Howling at the moon)
 
@@ -53,10 +54,18 @@ class YAMLDataProvider extends DataProvider {
 
 	public function loadFaction(string $id) {
 		if(file_exists($f = $this->getFactionFilePath($id, ".yml"))) {
-			echo "Loaded $id\n";
 			return new Faction($id, yaml_parse(file_get_contents($f)));
 		}
 		return null;
+	}
+
+	public function savePlots(array $plots) {
+		file_put_contents($this->getMain()->getDataFolder()."plots.yml", yaml_emit($plots));
+	}
+
+	public function loadPlots() {
+		if(!file_exists(($f = $this->getMain()->getDataFolder()."plots.yml"))) return;
+		Plots::setPlots(yaml_parse_file($f));
 	}
 
 	/**
@@ -78,9 +87,13 @@ class YAMLDataProvider extends DataProvider {
 	}
 
 	public function loadFactions() {
-		foreach (new \RecursiveDirectoryIterator($this->getMain()->getDataFolder()."factions") as $file) {
-			if($file->isDir()) continue;
-			$this->loadFaction($file->getBasename(".yml"));
+		$special = [Faction::NONE, Faction::SAFEZONE, Faction::WARZONE];
+		$files = glob($this->getMain()->getDataFolder()."factions/*.yml");
+		$files = array_map(function($el){
+			return substr($el, strpos($el, "factions/") + 9, -4);
+		}, $files);
+		foreach(DataProvider::order($files) as $faction) {
+			$this->loadFaction($faction);
 		}
 	}
 
