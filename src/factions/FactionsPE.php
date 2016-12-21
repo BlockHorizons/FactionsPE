@@ -173,7 +173,7 @@ class FactionsPE extends PluginBase {
 
   public function loadIntegrations() : bool {
     $stop = false;
-    if($this->getConfig()->get('economy-support', true)) {
+    if($this->economyEnabled()) {
       
       $n = $this->getConfig()->get('economy-plugin', Economizer::DEFAULT_API);
       $plugin = $this->getServer()->getPluginManager()->getPlugin($n);
@@ -200,6 +200,12 @@ class FactionsPE extends PluginBase {
     return !$stop;
   }
 
+  /**
+   * Returns true if economy support is turned on
+   */
+  public function economyEnabled() : bool {
+    return (bool) $this->getConfig()->get('economy-support', true);
+  }
 
   /**
    * @internal
