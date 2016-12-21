@@ -8,3 +8,5 @@ players
 .dev
 # IDE res files
 .idea
+factions-pe.sublime-project
+factions-pe.sublime-workspace
