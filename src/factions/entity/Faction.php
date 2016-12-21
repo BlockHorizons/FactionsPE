@@ -58,7 +58,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		Factions::attach($this);
 
 		if(isset($data["creator"]) && !$this->getLeader()) {
-			$this->members[Relation::LEADER] = $data["creator"];
+			$this->members[Relation::LEADER] = $data["creator"] instanceof IMember ? $data["creator"]->getName() : $data["creator"];
 		}
 	}
 	
