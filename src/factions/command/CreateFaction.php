@@ -22,9 +22,23 @@ namespace factions\command;
 use factions\FactionsPE;
 use factions\manager\Permissions;
 use dominate\Command;
+use dominate\parameter\Parameter;
+use pocketmine\command\CommandSender;
 
 class CreateFaction extends Command {
 
-	
+	public function __construct(FactionsPE $plugin, $name, $description, $permission, $aliases) {
+		parent::__construct($plugin, $name, $description, $permission, $aliases);
+
+		$this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
+	}
+
+	public function execute(CommandSender $sender, $label, array $args) : bool {
+		if(!parent::execute($sender, $label, $args)) return true;
+
+		$sender->sendMessage("HELLO");
+
+		return true;
+	}
 
 }

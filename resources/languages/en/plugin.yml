@@ -27,3 +27,8 @@ dataprovider-error: "Data provider error: :0"
 invalid-locale: "Locale code ':locale' is not valid ISO-639_1 language code"
 
 factions-loaded: "<gold>:0<white> faction(s) were loaded"
+
+economy-plugin-not-found: "Economy plugin by name <gold>:name<white> was not found"
+economy-plugin-not-supported: "Plugin <gold>:name<white> is not supported economy provider"
+economy-plugin-selected: "Economy provider: <gold>:name"
+economy-not-ready: "Economy plugin <gold>:name<white> is not ready for use!"

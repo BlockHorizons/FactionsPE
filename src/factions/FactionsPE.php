@@ -21,6 +21,7 @@ namespace factions;
 use pocketmine\plugin\PluginBase;
 
 use localizer\Localizer;
+use economizer\Economizer;
 
 use sll\LibLoader;
 
@@ -60,6 +61,7 @@ class FactionsPE extends PluginBase {
   public function onLoad() {
     self::$instance = $this;
     LibLoader::loadLib($this->getFile(), "Localizer");
+    LibLoader::loadLib($this->getFile(), "Economizer");
     LibLoader::loadLib($this->getFile(), "Dominate");
 
     @mkdir($this->getDataFolder());
@@ -85,9 +87,9 @@ class FactionsPE extends PluginBase {
     $this->getLogger()->info(Localizer::trans("plugin.enabling"));
 
     # Load DataProvider
-    if(!$this->loadDataProvider()) return;
+    if(!$this->loadDataProvider()) goto stop;
     # Load Integrations
-    if(!$this->loadIntegrations()) return;
+    if(!$this->loadIntegrations()) goto stop;
     # Load Gameplay settings
     Gameplay::setData($this->getConfig()->get('gameplay'));
     # Register commands
@@ -105,9 +107,11 @@ class FactionsPE extends PluginBase {
     if(IN_DEV) {
       $this->runTests();
     }
-    return;
 
     $this->getLogger()->info(Localizer::trans("plugin.enabled"));
+    return;
+    stop:
+    $this->getServer()->getPluginManager()->disablePlugin($this);
   }
 
   public function onDisable() {
@@ -159,13 +163,6 @@ class FactionsPE extends PluginBase {
     return true;
   }
 
-  public function loadIntegrations() : bool {
-    return true; # TODO
-  }
-  // ---------------------------------------------------------------------------
-  // DATA-PROVIDER
-  // ---------------------------------------------------------------------------
-
   public function getDataProvider() {
     return $this->dataProvider;
   }
@@ -174,11 +171,35 @@ class FactionsPE extends PluginBase {
     $this->dataProvider = $provider;
   }
 
-  /*
-   * ----------------------------------------------------------
-   * TESTS
-   * ----------------------------------------------------------
-   */
+  public function loadIntegrations() : bool {
+    $stop = false;
+    if($this->getConfig()->get('economy-support', true)) {
+      
+      $n = $this->getConfig()->get('economy-plugin', Economizer::DEFAULT_API);
+      $plugin = $this->getServer()->getPluginManager()->getPlugin($n);
+      if(!$plugin) {
+        $this->getLogger()->info(Localizer::trans("economy-plugin-not-found", ["name" => $n]));
+        $stop = true;
+        goto end;
+      }
+      $t = Economizer::getTransistorFor($plugin);
+      if(!$t) {
+        $this->getLogger()->info(Localizer::trans("economy-plugin-not-supported", ["name" => $n]));
+        $stop = true;
+        goto end;
+      }
+      $this->economy = new Economizer($this, $t);
+      
+      if($this->economy->ready()) {
+        $this->getLogger()->info(Localizer::trans("economy-plugin-selected", ["name" => $this->economy->getName()]));
+      } else {
+        $this->getLogger()->info(Localizer::trans("economy-not-ready", ["name" => $this->economy->getName()]));
+      }
+    }
+    end:
+    return !$stop;
+  }
+
 
   /**
    * @internal

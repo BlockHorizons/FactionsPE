@@ -17,6 +17,7 @@ author: Chris Prime
 api: [ 2.0.0, 2.1.0 ]
 main: factions\FactionsPE
 version: 1.0.0_reborn
+softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd]
 
 permissions:
 # -------------------------------------------- #

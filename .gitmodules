@@ -7,3 +7,6 @@
 [submodule "lib/Dominate"]
 	path = lib/Dominate
 	url = https://github.com/Chris-Prime/Dominate
+[submodule "lib/Economizer"]
+	path = lib/Economizer
+	url = https://github.com/Chris-Prime/Economizer

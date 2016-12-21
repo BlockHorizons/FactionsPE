@@ -20,6 +20,10 @@
 # Plugin language
 language: en
 
+# Economy
+economy-support: true
+economy-plugin: "EconomyAPI"
+
 # gameplay settings
 gameplay:
   log:
