@@ -7,6 +7,7 @@ Estimated release date - 31. December.
 
 ###Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
++ [Economizer](https://github.com/Chris-Prime/Economizer)
 + [Simple-LibLoader](https://github.com/Chris-Prime/Simple-LibLoader)
 
 ####Random screenshot
