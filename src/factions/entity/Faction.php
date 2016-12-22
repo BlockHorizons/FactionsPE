@@ -35,6 +35,7 @@ use factions\flag\Flag;
 use factions\FactionsPE;
 
 use localizer\Localizer;
+use localizer\Translatable;
 
 class Faction extends FactionData implements IFaction, RelationParticipator {
 
@@ -574,6 +575,22 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 			}, array_chunk(str_split(md5(mt_rand(0, PHP_INT_MAX)) . md5(mt_rand(0, PHP_INT_MAX)) ), 4))));
 		} while (Factions::getById($id));
 		return substr($id, 0, 4 * 4 + 3);
+	}
+
+	/**
+	 * @param string $name
+	 * @return Translatable[]
+	 */
+	public static function validateName(string $name) : array {
+		$errors = [];
+		if(($l = strlen($name)) > ($m = Gameplay::get('faction-name.max-length', 12))) {
+			$errors[] = Localizer::translatable('faction-name-too-long', [$name, $l, "max" => $m]);
+		} elseif($l < ($mi = Gameplay::get('faction-name.min-length', 3))) {
+			$errors[] = Localizer::translatable('faction-name-too-short', [$name, $l, "min" => $mi]);
+		} elseif(!ctype_alpha($name)) {
+			$errors[] = Localizer::translatable('faction-name-not-alpha', [$name, $l]);
+		}
+		return $errors;
 	}
 
 }

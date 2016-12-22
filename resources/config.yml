@@ -29,6 +29,7 @@ gameplay:
   log:
     faction-disband: true
     faction-new-leader: true
+    faction-creation: true
   power:
     player:
       max: 10
@@ -36,5 +37,10 @@ gameplay:
   faction:
     max-players: 15
     disable-permanent-leader-promotion: true
+  faction-name:
+    max-length: 12
+    min-length: 3
+  price:
+    faction-creation: 5000
   homes-must-be-in-claimed-territories: true
 ...

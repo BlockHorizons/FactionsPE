@@ -24,6 +24,9 @@ use factions\manager\Permissions;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use localizer\Localizer;
+use factions\command\requirement\FactionRequirement;
 
 class CreateFaction extends Command {
 
@@ -31,12 +34,59 @@ class CreateFaction extends Command {
 		parent::__construct($plugin, $name, $description, $permission, $aliases);
 
 		$this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
+		$this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
 	}
 
 	public function execute(CommandSender $sender, $label, array $args) : bool {
 		if(!parent::execute($sender, $label, $args)) return true;
 
-		$sender->sendMessage("HELLO");
+		if(FactionsPE::get()->economyEnabled()) {
+			if($sender instanceof Player) {
+				if(($has = FactionsPE::get()->getEconomy()->getMoney($sender)) < ($need = Gameplay::get('price.faction-creation', 0)) ) {
+					$sender->sendMessage(Localizer::translatable('insufficient-fund', [
+						"has" => $has,
+						"need" => $need
+						]));
+					return true;	
+				}
+			}
+		}
+
+		$name = $this->readArgument(0);
+
+		$errors = Faction::validateName($name);
+		if(($c = count($errors)) > 0) {
+			$sender->sendMessage(Localizer::translatable('invalid-faction-name', [
+				"name" => $name,
+				"count" => $c
+				]));
+			foreach ($errors as $n => $error) {
+				$sender->sendMessage(Localizer::translatable('invalid-faction-name-error', [
+					"error" => $error,
+					"n" => $n + 1
+					]));
+			}
+		}
+
+		$fid = Faction::createId();
+		$creator = Members::get($sender);
+		$event = new FactionCreateEvent($creator, $fid, $name);
+		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
+		if($event->isCancelled()) return;
+
+		$faction = new Faction($fid, [
+			"name" => $name,
+			"creator" => $creator
+			]);
+
+		$event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);
+		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
+		// Ignore cancellation
+
+		$sender->sendMessage(Localizer::translatable('faction-created', compact("name")));
+		if(Gameplay::get('log.faction-creation', true)) {
+			FactionsPE::get()->getLogger()->info($sender->getName()." created new faction '".$name."'");
+		}
 
 		return true;
 	}

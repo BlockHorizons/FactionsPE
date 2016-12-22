@@ -2,7 +2,15 @@
 home-out-of-bounds: "Your faction home has been un-set since it is no longer in your territory."
 member-faction-changed: "setFactionId moved <h>:0 <i>aka <h>:1 <i>from <h>:2 <i>aka <h>:3 <i>to <h>:4 <i>aka <h>:5<i>."
 player-left-faction: "[P] :0<i> left :1<i>."
+
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
 faction-disbanded: "<i>The faction :0<i> was disbanded."
 faction-new-leader: "<i>Faction leader <h>:0<i> has been removed. :1<i> has been promoted as the new faction leader."
+
+faction-name-not-alpha: "Name must only consist of alphabet letters"
+faction-name-too-long: "Name length exceeds maximum :max length"
+faction-name-too-short: "Name length is smaller then minimum :min length"
+
+invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> errors found:"
+invalid-faction-name-error: ":n<green>: <white>:error"
 ...
