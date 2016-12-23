@@ -27,6 +27,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use localizer\Localizer;
 use factions\command\requirement\FactionRequirement;
+use factions\event\member\MembershipChangeEvent;
 
 class CreateFaction extends Command {
 
@@ -70,6 +71,7 @@ class CreateFaction extends Command {
 
 		$fid = Faction::createId();
 		$creator = Members::get($sender);
+
 		$event = new FactionCreateEvent($creator, $fid, $name);
 		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
 		if($event->isCancelled()) return;
