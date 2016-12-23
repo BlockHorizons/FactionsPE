@@ -28,6 +28,7 @@ use pocketmine\Player;
 use localizer\Localizer;
 use factions\command\requirement\FactionRequirement;
 use factions\event\member\MembershipChangeEvent;
+use factions\event\faction\FactionCreateEvent;
 
 class CreateFaction extends Command {
 

@@ -583,11 +583,16 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 */
 	public static function validateName(string $name) : array {
 		$errors = [];
+		if(Factions::getByName($name)) {
+			$errors[] = Localizer::translatable('faction-name-taken', [$name]);
+		}
 		if(($l = strlen($name)) > ($m = Gameplay::get('faction-name.max-length', 12))) {
 			$errors[] = Localizer::translatable('faction-name-too-long', [$name, $l, "max" => $m]);
-		} elseif($l < ($mi = Gameplay::get('faction-name.min-length', 3))) {
+		}
+		if($l < ($mi = Gameplay::get('faction-name.min-length', 3))) {
 			$errors[] = Localizer::translatable('faction-name-too-short', [$name, $l, "min" => $mi]);
-		} elseif(!ctype_alpha($name)) {
+		}
+		if(!ctype_alpha($name)) {
 			$errors[] = Localizer::translatable('faction-name-not-alpha', [$name, $l]);
 		}
 		return $errors;

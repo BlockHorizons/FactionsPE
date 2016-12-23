@@ -31,7 +31,7 @@ class MemberEvent extends Event {
 		$this->member = $member;
 	}
 
-	public function getMember() : IMember {
+	public function getMember() {
 		return $this->member;
 	}
 

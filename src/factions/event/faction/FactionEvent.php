@@ -31,7 +31,7 @@ class FactionEvent extends Event {
 		$this->faction = $faction;
 	}
 
-	public function getFaction() : Faction {
+	public function getFaction() {
 		return $this->faction;
 	}
 
