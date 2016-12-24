@@ -23,6 +23,7 @@ use pocketmine\event\Cancellable;
 
 use factions\manager\Members;
 use factions\entity\IMember;
+use factions\entity\Faction;
 
 class MembershipChangeEvent extends MemberEvent implements Cancellable {
 

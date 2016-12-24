@@ -30,7 +30,7 @@ class FactionRequirement extends SimpleRequirement {
 
 	public static function onClassLoaded() {
 		SimpleRequirement::$ERROR_MESSAGES[self::IN_FACTION] = "requirement.in-faction-error";
-		SimpleRequirement::$ERROR_MESSAGES[self::OUT_FACTION] = "requirement.in-faction-error";
+		SimpleRequirement::$ERROR_MESSAGES[self::OUT_FACTION] = "requirement.out-faction-error";
 	}
 
 	public function hasMet(CommandSender $sender, $silent = false) : bool {
@@ -39,7 +39,7 @@ class FactionRequirement extends SimpleRequirement {
 				case self::IN_FACTION:
 					return (Members::get($sender))->hasFaction();
 				case self::OUT_FACTION:
-					return (Members::get($sender))->hasFaction();
+					return !(Members::get($sender))->hasFaction();
 			}
 			return false;
 		});

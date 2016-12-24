@@ -23,8 +23,13 @@ use pocketmine\event\Event;
 use pocketmine\event\Cancellable;
 
 use factions\entity\Faction;
+use factions\entity\IMember;
 
-class FactionCreationEvent extends FactionEvent implements Cancellable {
+class FactionCreateEvent extends FactionEvent implements Cancellable {
+
+	public static $handlerList = null;
+	public static $eventPool = [];
+	public static $nextEvent = 0;
 
 	/** @var string */
 	protected $name, $factionId;

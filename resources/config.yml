@@ -21,7 +21,7 @@
 language: en
 
 # Economy
-economy-support: true
+economy-support: false
 economy-plugin: "EconomyAPI"
 
 # gameplay settings

@@ -29,6 +29,10 @@ use localizer\Localizer;
 use factions\command\requirement\FactionRequirement;
 use factions\event\member\MembershipChangeEvent;
 use factions\event\faction\FactionCreateEvent;
+use factions\utils\Gameplay;
+use factions\entity\Faction;
+use factions\manager\Members;
+use factions\entity\IMember;
 
 class CreateFaction extends Command {
 
@@ -40,7 +44,7 @@ class CreateFaction extends Command {
 	}
 
 	public function execute(CommandSender $sender, $label, array $args) : bool {
-		if(!parent::execute($sender, $label, $args)) return true;
+		if(!parent::execute($sender, $label, $args)) return false;
 
 		if(FactionsPE::get()->economyEnabled()) {
 			if($sender instanceof Player) {
@@ -54,7 +58,7 @@ class CreateFaction extends Command {
 			}
 		}
 
-		$name = $this->readArgument(0);
+		$name = $this->getArgument(0);
 
 		$errors = Faction::validateName($name);
 		if(($c = count($errors)) > 0) {
@@ -68,6 +72,7 @@ class CreateFaction extends Command {
 					"n" => $n + 1
 					]));
 			}
+			return true;
 		}
 
 		$fid = Faction::createId();
