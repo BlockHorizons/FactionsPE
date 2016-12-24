@@ -1,7 +1,5 @@
 ---
 home-out-of-bounds: "Your faction home has been un-set since it is no longer in your territory."
-member-faction-changed: "setFactionId moved <h>:0 <i>aka <h>:1 <i>from <h>:2 <i>aka <h>:3 <i>to <h>:4 <i>aka <h>:5<i>."
-player-left-faction: "[P] :0<i> left :1<i>."
 
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
 faction-disbanded: "<i>The faction :0<i> was disbanded."

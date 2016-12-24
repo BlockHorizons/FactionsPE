@@ -23,10 +23,12 @@ use factions\data\MemberData;
 use factions\manager\Members;
 use factions\manager\Factions;
 use localizer\Localizer;
+use factions\flag\Flag;
 use factions\utils\Gameplay;
 use factions\FactionsPE;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
+use factions\event\member\MembershipChangeEvent;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator {
 
@@ -105,15 +107,15 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	}
 
 	public function resetFactionData() {
-		$this->setFactionId(null);
-        $this->setRole(null);
-        $this->setTitle(null);
+		$this->factionId = null;
+		$this->role = null;
+		$this->title = null;
 	}
 
 	public function leave() {
 		$myFaction = $this->getFaction();
         $permanent = $myFaction->getFlag(Flag::PERMANENT);
-        if (count($this->getFaction()->getPlayers()) > 1)
+        if (count($this->getFaction()->getMembers()) > 1)
         {
             if (!$permanent && $this->getRole() === Rel::LEADER)
             {
@@ -127,19 +129,22 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
             }
         }
             // Event
-        $event = new PlayerMembershipChangeEvent($this, $myFaction, PlayerMembershipChangeEvent::REASON_LEAVE);
+        $event = new MembershipChangeEvent($this, $myFaction, MembershipChangeEvent::REASON_LEAVE);
 		FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
 		if ($event->isCancelled()) return;
-		if ($myFaction->isNormal())
-        {
-            foreach ($myFaction->getOnlinePlayers(true) as $player)
-			{
-                $player->sendMessage(Localizer::trans("player-left-faction", $this->getDisplayName(), $myFaction->getName()));
+		if ($myFaction->isNormal()) {
+            foreach ($myFaction->getOnlineMembers() as $player) {
+                $player->sendMessage(Localizer::trans("player-left-faction", [$this->getDisplayName(), $myFaction->getName()]));
             }
             FactionsPE::get()->getLogger()->info($this->getName()." left the faction: ".$myFaction->getName());
 		}
+		
 		$this->resetFactionData();
-		if ($myFaction->isNormal() && !$permanent && empty($myFaction->getPlayers()))
+		if(!$myFaction->removeMember($this)) {
+			echo "Failed to remove member data from faction"; # DEBUG
+		}
+
+		if ($myFaction->isNormal() && !$permanent && empty($myFaction->getMembers()))
         {
             $event = new FactionDisbandEvent($this->getFactionId(), $this);
 			FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);

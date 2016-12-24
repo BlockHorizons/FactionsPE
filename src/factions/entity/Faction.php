@@ -49,6 +49,9 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	const NAME_WARZONE 		= "Warzone";
 	const NAME_WILDERNESS 	= self::NAME_NONE;
 
+	const DISBAND_REASON_UNKNOWN 		= 0;
+	const DISBAND_REASON_EMPTY_FACTION 	= 1;
+
 	/**
 	 * Faction constructor
 	 * @param string 	$id
@@ -59,7 +62,13 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		Factions::attach($this);
 
 		if(isset($data["creator"]) && !$this->getLeader()) {
-			$this->members[Relation::LEADER] = $data["creator"] instanceof IMember ? $data["creator"]->getName() : $data["creator"];
+			$this->members[Relation::LEADER] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
+		}
+
+		if(Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
+			if(empty($this->members)) {
+				$this->disband();
+			}
 		}
 	}
 	
@@ -159,14 +168,38 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	}
 
 	public function isMember(string $member) : bool {
-		return in_array($member, $this->members, true);
+		$member = strtolower(trim($member));
+		foreach ($this->members as $name) {
+			if($member === strtolower(trim($name))) return true;
+		}
+		return false;
 	}
 
 	public function getRole(IMember $member) : string {
-		if($this->isMember($member->getName())) {
-			return array_search($member->getName(), $this->members);
+		$member = strtolower(trim($member->getName()));
+		foreach ($this->members as $role => $name) {
+			if(strtolower(trim($name)) === $member) return $role;
 		}
 		return Relation::RECRUIT;
+	}
+
+	/**
+	 * Member::leave() should be called first!
+	 * @param IMember $member
+	 * @return bool
+	 */
+	public function removeMember(IMember $member) : bool {
+		if(!$this->isMember($member->getName())) return false;
+		$members = $this->members;
+		$mir = $members[$this->getRole($member)];
+		foreach ($mir as $key => $m) {
+			if(strtolower(trim($m)) === strtolower(trim($member->getName()))) {
+				unset($mir[$key]);
+			}
+		}
+		$members[$this->getRole($member)] = $mir;
+		$this->members = $members;
+		return true;
 	}
 	
 	/**
@@ -219,10 +252,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
                 return;
             }
             // no members left and faction isn't permanent, so disband it
-            if (Gameplay::get("log.faction-disband", true)) {
-                FactionsPE::get()->getLogger()->info("The faction " . $this->getName() . " (" . $this->getId() . ") has been disbanded since it has no members left.");
-            }
-            $this->disband();
+            $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
         } else {
             // promote new faction leader
             if ($oldLeader != null) {
@@ -231,15 +261,33 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
             $replacements[0]->setRole(Rel::LEADER);
             $this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
             if(Gameplay::get('log.faction-new-leader', true)) {
-            	FactionsPE::get()->getLogger()->info("Faction " . $this->getName() . " (" . $this->getId() . ") leader was removed. Replacement leader: " . $replacements[0]->getName());
+            	FactionsPE::get()->getLogger()->info(Localizer::trans('log.new-leader', [
+            		$this->getName(), $this->getId(), $replacements[0]->getName()
+            		]));
         	}
         }
 	}
 
-	public function disband() {
+	public function disband($reason = self::DISBAND_REASON_UNKNOWN) {
+		if($this->getFlag(Flag::PERMANENT)) {
+			throw new \LogicException("can not disband permanent faction {$this->getName()} ({$this->getId()})");
+		}
 		foreach (Members::getAllOnline() as $player) {
 	        $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
 	    }
+	    if (Gameplay::get("log.faction-disband", true)) {
+	    	$args = [
+	    		"id" => $this->getId(),
+	    		"name" => $this->getName()
+	    	];
+	    	$msg = Localizer::trans('log.faction-disband-reason-unknown', $args);
+        	switch($reason) {
+            	case self::DISBAND_REASON_EMPTY_FACTION:
+            		$msg = Localizer::trans('log.faction-disband-reason-empty', $args);
+            		break;
+        	}
+        	FactionsPE::get()->getLogger()->info($msg);
+        }
 	    Factions::detach($this);
 	    FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
 	}

@@ -175,7 +175,7 @@ final class Text
         } elseif (is_array($value)) {
             $s = self::prettyPrint(json_encode($value));
         } elseif($value === null) {
-            $s = $color ? "<red>~" : "~";
+            $s = $color ? "<red>null" : "null";
         }else {
             $s = serialize($value);
         }

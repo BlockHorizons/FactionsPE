@@ -135,7 +135,7 @@ class Flag {
 
     public static function getCreative(int $priority, string $id, string $name, string $desc, string $descYes, string $descNo, bool $standard, bool $editable, bool $visible)
     {
-        $ret = self::getFlagById($id);
+        $ret = self::getById($id);
         if ($ret != null) {
             $ret->setRegistered(true);
             return $ret;
@@ -324,12 +324,12 @@ class Flag {
 
     public function isFlagStandard(string $flag)
     {
-        $flag = self::getFlagById($flag);
+        $flag = self::getById($flag);
         if ($flag === NULL) return false;
         return $flag->isStandard();
     }
 
-    public static function getFlagById(string $id)
+    public static function getById(string $id)
     {
         foreach (self::getAll() as $flag) {
             if ($flag->getId() === $id) return $flag;

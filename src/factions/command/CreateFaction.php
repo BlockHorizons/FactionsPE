@@ -32,13 +32,10 @@ use factions\event\faction\FactionCreateEvent;
 use factions\utils\Gameplay;
 use factions\entity\Faction;
 use factions\manager\Members;
-use factions\entity\IMember;
 
 class CreateFaction extends Command {
 
-	public function __construct(FactionsPE $plugin, $name, $description, $permission, $aliases) {
-		parent::__construct($plugin, $name, $description, $permission, $aliases);
-
+	public function setup() {
 		$this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
 		$this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
 	}
@@ -86,6 +83,7 @@ class CreateFaction extends Command {
 			"name" => $name,
 			"creator" => $creator
 			]);
+		$creator->updateFaction();
 
 		$event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);
 		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);

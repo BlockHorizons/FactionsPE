@@ -35,6 +35,7 @@ gameplay:
       max: 10
       min: -10
   faction:
+    destroy-empty-factions: true
     max-players: 15
     disable-permanent-leader-promotion: true
   faction-name:

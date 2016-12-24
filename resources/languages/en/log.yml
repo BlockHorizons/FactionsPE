@@ -1,0 +1,11 @@
+---
+#
+# All console messages
+#
+
+faction-disband-reason-empty: "The faction :name (:id) has been disbanded since it has no members left."
+faction-disband-reason-unknown: "The faction :name (:id) has been disbanded"
+member-faction-changed: "setFactionId moved <h>:0 <i>aka <h>:1 <i>from <h>:2 <i>aka <h>:3 <i>to <h>:4 <i>aka <h>:5<i>."
+player-left-faction: "[P] :0<i> left :1<i>."
+new-leader: "Faction :0 (:1) leader was removed. Replacement leader: :2"
+...

@@ -37,7 +37,13 @@ class FactionCommand extends Command
         parent::__construct($plugin, 'faction', 'Main Faction command', Permissions::MAIN, ['fac', 'f']);
 
         // Registering subcommands
-        $this->addChild(new CreateFaction($plugin, 'create', 'Create a new faction', Permissions::CREATE, ['make', 'new']));
+        $childs = [
+            new CreateFaction($plugin, 'create', 'Create a new faction', Permissions::CREATE, ['make', 'new']),
+            new LeaveFaction($plugin, 'leave', 'Leave your current faction', Permissions::LEAVE, ['quit']),
+        ];
+        foreach ($childs as $child) {
+            $this->addChild($child);
+        }
 
         $this->addParameter(new Parameter("command"));
     }

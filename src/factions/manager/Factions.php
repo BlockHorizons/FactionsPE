@@ -142,6 +142,7 @@ class Factions {
     public static function detach(IFaction $faction) {
       if(!self::contains($faction)) return;
       unset(self::$factions[$faction->getId()]);
+      unset($faction);
     }
 
     public static function getAll() : array {

@@ -26,6 +26,7 @@ use pocketmine\IPlayer;
 use factions\entity\IMember;
 use factions\entity\Member;
 use factions\entity\OfflineMember;
+use factions\utils\Text;
 
 class Members {
 
@@ -42,6 +43,8 @@ class Members {
    */
   public static function get($player, bool $create = true) : IMember
   {
+    if(!$player)
+      throw new \InvalidArgumentException("argument 1 passed to ".__CLASS__."::".__METHOD__." must be IMember, CommandSender or string, ".Text::toString($player, false)." given");
     if($player instanceof ConsoleCommandSender) {
       return self::get("Console");
     }
