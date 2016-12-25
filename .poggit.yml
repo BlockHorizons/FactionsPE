@@ -5,6 +5,4 @@ branches:
 projects:
   FactionsPE:
     path: ""
-  resources.languages.en:
-    path: resources/languages/en/
 ...
