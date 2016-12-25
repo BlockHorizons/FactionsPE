@@ -32,6 +32,7 @@ class YAMLDataProvider extends DataProvider {
 	protected function prepare() {
 		@mkdir($this->getMain()->getDataFolder()."factions");
 		@mkdir($this->getMain()->getDataFolder()."members");
+		@touch($this->getMain()->getDataFolder()."flags.yml");
 	}
 
 	public function saveMember(MemberData $member) {
@@ -95,6 +96,29 @@ class YAMLDataProvider extends DataProvider {
 		foreach(DataProvider::order($files) as $faction) {
 			$this->loadFaction($faction);
 		}
+	}
+
+	public function saveFlags(array $flags) {
+		$save = [];
+		foreach ($flags as $flag) {
+			$save[$flag->getId()] = $flag->__toArray();
+		}
+		file_put_contents($this->getFlagsFile(), yaml_emit($save));
+	}
+
+	public function loadFlags() {
+		if(file_exists($this->getFlagsFile())) {
+			$data = file_get_contents($this->getFlagsFile());
+			if(empty($data)) return;
+			$flags = yaml_parse($data);
+			foreach ($flags as $id => $flag) {
+				$this->loadFlag($id, $flag);
+			}
+		}
+	}
+
+	public function getFlagsFile() : string {
+		return $this->getMain()->getDataFolder()."flags.yml";
 	}
 
 	public function close() {

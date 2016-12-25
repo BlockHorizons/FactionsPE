@@ -28,6 +28,7 @@ use factions\relation\Relation;
 use factions\manager\Factions;
 use factions\manager\Members;
 use factions\manager\Permissions;
+use factions\manager\Flags;
 use factions\manager\Plots;
 use factions\utils\Gameplay;
 use factions\permission\Permission;
@@ -482,7 +483,7 @@ class Faction extends FactionData implements RelationParticipator {
 	}
 
 	public function isDefaultOpen() : bool {
-        return Flag::getFlagOpen()->isStandard();
+        return Flags::getById(Flag::OPEN)->isStandard();
     }
 
 	public function isOpen() : bool {
@@ -492,12 +493,12 @@ class Faction extends FactionData implements RelationParticipator {
 	public function getFlag(string $id) : bool {
         $ret = isset($this->flags[$id]) ? $this->flags[$id] : null;
         if ($ret !== null) return $ret;
-        $flag = Flag::getById($id);
+        $flag = Flags::getById($id);
         if ($flag === null) throw new \Exception("undefined flag '$id'");
         return $flag->isStandard();
 	}
 
-	public function setOpen(bool $open) {
+	public function setOpen(bool $open) {$flag->
 		$this->setFlag(Flag::OPEN, $open);
 	}
 
@@ -510,7 +511,7 @@ class Faction extends FactionData implements RelationParticipator {
 	 */
 	public function getFlags() : array {
 		$r = [];
-		foreach (Flag::getAll() as $flag) {
+		foreach (Flags::getAll() as $flag) {
 			$r[$flag->getId()] = $this->flags[$flag->getId()] ?? $flag->isStandard();
 		}
 		return $r;

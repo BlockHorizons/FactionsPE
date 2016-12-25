@@ -21,6 +21,8 @@ namespace factions\data\provider;
 use factions\FactionsPE;
 use factions\data\MemberData;
 use factions\data\FactionData;
+use factions\manager\Flags;
+use localizer\Localizer;
 
 abstract class DataProvider {
 
@@ -129,6 +131,18 @@ abstract class DataProvider {
    * Must set plots using Plots::setPlots()
    */
   public abstract function loadPlots();
+
+  public abstract function loadFlags();
+
+  public abstract function saveFlags(array $flags);
+
+  public function loadFlag(string $id, array $data) : bool {
+    $desc = Localizer::translatable($data["desc"]);
+    $descYes = Localizer::translatable($data["descYes"]);
+    $descNo = Localizer::translatable($data["descNo"]);
+    $flag = Flags::create($id, $data["priority"], $data["name"], $desc, $descYes, $descNo, $data["standard"], $data["editable"], $data["visible"]);
+    return Flags::contains($flag);
+  }
 
   public abstract function close();
 
