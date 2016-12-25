@@ -20,6 +20,7 @@
 namespace factions\command;
 
 use dominate\Command;
+use localizer\Localizer;
 
 use factions\manager\Members;
 use factions\command\requirement\FactionRequirement;
@@ -35,7 +36,13 @@ class LeaveFaction extends Command {
 	public function execute(CommandSender $sender, $label, array $args) : bool {
 		if(!parent::execute($sender, $label, $args)) return false;
 
-		Members::get($sender)->leave();		
+		$member = Members::get($sender);
+		$faction = $member->getFaction();
+		if($faction->leave($member)) {
+			$sender->sendMessage(Localizer::translatable('you-left-faction', [
+				"faction" => $faction->getName(),
+				]));
+		}		
 
 		return true;
 	}

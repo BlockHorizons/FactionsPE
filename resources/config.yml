@@ -30,6 +30,7 @@ gameplay:
     faction-disband: true
     faction-new-leader: true
     faction-creation: true
+    member-leave: true
   power:
     player:
       max: 10
@@ -44,4 +45,5 @@ gameplay:
   price:
     faction-creation: 5000
   homes-must-be-in-claimed-territories: true
+  can-leave-with-negative-power: false
 ...

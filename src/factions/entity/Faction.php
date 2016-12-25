@@ -33,11 +33,12 @@ use factions\utils\Gameplay;
 use factions\permission\Permission;
 use factions\flag\Flag;
 use factions\FactionsPE;
+use factions\event\member\MembershipChangeEvent;
 
 use localizer\Localizer;
 use localizer\Translatable;
 
-class Faction extends FactionData implements IFaction, RelationParticipator {
+class Faction extends FactionData implements RelationParticipator {
 
 	const NONE 			= "wilderness";
 	const SAFEZONE 		= "safezone";
@@ -62,7 +63,7 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 		Factions::attach($this);
 
 		if(isset($data["creator"]) && !$this->getLeader()) {
-			$this->members[Relation::LEADER] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
+			$this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
 		}
 
 		if(Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
@@ -161,24 +162,26 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 */
 	public function getMembers() : array {
 		$r = [];
-		foreach ($this->getRawMembers() as $name) {
-			$r[] = Members::get($name);
+		foreach ($this->getRawMembers() as $role => $members) {
+			foreach ($members as $name) {
+				$r[] = Members::get($name);	
+			}
 		}
 		return $r;
 	}
 
-	public function isMember(string $member) : bool {
-		$member = strtolower(trim($member));
-		foreach ($this->members as $name) {
-			if($member === strtolower(trim($name))) return true;
+	public function isMember(IMember $member) : bool {
+		$member = strtolower(trim($member->getName()));
+		foreach ($this->members as $members) {
+			if(in_array($member, $members)) return true;
 		}
 		return false;
 	}
 
 	public function getRole(IMember $member) : string {
 		$member = strtolower(trim($member->getName()));
-		foreach ($this->members as $role => $name) {
-			if(strtolower(trim($name)) === $member) return $role;
+		foreach ($this->members as $role => $members) {
+			if(in_array($member, $members)) return $role;
 		}
 		return Relation::RECRUIT;
 	}
@@ -189,17 +192,104 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
 	 * @return bool
 	 */
 	public function removeMember(IMember $member) : bool {
-		if(!$this->isMember($member->getName())) return false;
+		if(!$this->isMember($member)) return false;
 		$members = $this->members;
 		$mir = $members[$this->getRole($member)];
 		foreach ($mir as $key => $m) {
-			if(strtolower(trim($m)) === strtolower(trim($member->getName()))) {
+			if($m === strtolower(trim($member->getName()))) {
 				unset($mir[$key]);
 			}
 		}
 		$members[$this->getRole($member)] = $mir;
 		$this->members = $members;
 		return true;
+	}
+
+	/**
+	 * Will add $member to members list, only few additional checks will be performed
+	 * use {@link self::join(IMember $member)} instead
+	 * @param IMember $member
+	 * @param string $role valid faction rank
+	 * @return bool
+	 */
+	public function addMember(IMember $member, string $role) : bool {
+		if($this->isSpecial()) {
+			throw new \LogicException("special faction can't have members in it");
+		}
+		if($this->isMember($member)) return false;
+		if(($f = Factions::getForMember($member))) {
+			throw new \InvalidStateException("Can not add new member to faction 
+				'{$this->getName()}'. Member '{$member->getName()}' is member of faction '{$f->getName()}'");
+		}
+		// TODO: Check for player limit
+		if($role === Relation::LEADER) {
+			// Promoting new leader, but at first this member must be in this faction
+			$this->members[Relation::RECRUIT][] = strtolower(trim($member->getName()));
+			$this->promoteNewLeader($member);
+		} else {
+			if(!Relation::isRole($role)) {
+				throw new \InvalidArgumentException("\$role[=$role] must be valid faction rank");
+			}
+			$this->members[$role][] = strtolower(trim($member->getName()));
+		}
+		return true;
+	}
+
+	public function join(IMember $member, $role = Relation::RECRUIT) : bool {
+		
+	}
+
+	public function leave(IMember $member) : bool {
+		if(!$this->isMember($member)) {
+			throw new \InvalidArgumentException("\$member[={$member->getName()}] is not member of this faction[=$this]");
+		}
+        $permanent = $this->getFlag(Flag::PERMANENT);
+        if (count($this->getMembers()) > 1)
+        {
+            if (!$permanent && $member->getRole() === Rel::LEADER)
+            {
+                $member->sendMessage(Localizer::translatable('faction-leave-as-leader'));
+                return false;
+            }
+            if (!Gameplay::get("can-leave-with-negative-power", false) && $this->getPower() < 0)
+            {
+                $member->sendMessage(Localizer::translatable('faction-leave-with-negative-power'));
+                return false;
+            }
+        }
+            // Event
+        $event = new MembershipChangeEvent($member, $this, MembershipChangeEvent::REASON_LEAVE);
+		FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+		if($event->isCancelled()) return false;
+		
+		// Lets remove player from faction before announcing it, to avoid :facepalm:
+		try {
+
+			if(!$this->removeMember($member)) {
+				throw new \Exception("failed to remove member from faction for unknown reason");
+			}
+			$member->resetFactionData();
+
+		} catch(\Exception $e) {
+			$member->sendMessage(Localizer::translatable('faction-leave-exception', [$e->getMessage()]));
+			return false;
+		}
+
+		// Now we can announce
+		if ($this->isNormal()) {
+            foreach ($this->getOnlineMembers() as $player) {
+                $player->sendMessage(Localizer::translatable("member-left-faction", [$member->getDisplayName(), $$this->getName()]));
+            }
+            if(Gameplay::get('log.member-leave')) {
+            	FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-leave', [$member->getName(), $this->getName()]));
+        	}
+		}
+
+		// Disband the faction if necessary
+		if ($this->isNormal() && !$permanent && empty($this->getMembers())) {
+			$this->disband(Faction::DISBAND_REASON_EMPTY_FACTION);    
+        }
+        return true;
 	}
 	
 	/**
@@ -268,9 +358,9 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         }
 	}
 
-	public function disband($reason = self::DISBAND_REASON_UNKNOWN) {
+	public function disband($reason = self::DISBAND_REASON_UNKNOWN, $delete = true) {
 		if($this->getFlag(Flag::PERMANENT)) {
-			throw new \LogicException("can not disband permanent faction {$this->getName()} ({$this->getId()})");
+			throw new \LogicException("can not disband permanent faction $this ({$this->getId()})");
 		}
 		foreach (Members::getAllOnline() as $player) {
 	        $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
@@ -289,7 +379,8 @@ class Faction extends FactionData implements IFaction, RelationParticipator {
         	FactionsPE::get()->getLogger()->info($msg);
         }
 	    Factions::detach($this);
-	    FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
+	    if($delete)
+	    	FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
 	}
 
 	public function getOnlineMembers() : array {

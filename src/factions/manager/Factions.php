@@ -21,9 +21,8 @@ namespace factions\manager;
 
 use pocketmine\IPlayer;
 
-use factions\entity\IFaction;
-use factions\entity\IMember;
 use factions\entity\Faction;
+use factions\entity\IMember;
 use factions\flag\Flag;
 use factions\permission\Permission;
 use factions\relation\Relation;
@@ -31,7 +30,7 @@ use factions\relation\Relation;
 class Factions {
 
   /**
-   * @var IFaction[]
+   * @var Faction[]
    */
   private static $factions = [];
 
@@ -93,24 +92,21 @@ class Factions {
   }
 
   /**
-   * @return IFaction|null
+   * @return Faction|null
    */
   public static function getForPlayer(IPlayer $player) {
-    foreach(self::$factions as $faction) {
-      if($faction->isMember($player->getName())) return $faction;
-    }
-    return null;
+    return self::getForMember(Members::get($player));
   }
 
   public static function getForMember(IMember $member) {
     foreach (self::$factions as $faction) {
-      if($faction->isMember($member->getName())) return $faction;
+      if($faction->isMember($member)) return $faction;
     }
     return null;
   }
 
   /**
-   * @return IFaction|null
+   * @return Faction|null
    */
    public static function getById(string $id) {
      if(isset(self::$factions[$id])) {
@@ -120,7 +116,7 @@ class Factions {
    }
 
    /**
-    * @return IFaction|null
+    * @return Faction|null
     */
     public static function getByName(string $name) {
       $name = strtolower(trim($name));
@@ -130,16 +126,16 @@ class Factions {
       return null;
     }
 
-    public static function contains(IFaction $faction) : bool {
+    public static function contains(Faction $faction) : bool {
       return isset(self::$factions[$faction->getId()]);
     }
 
-    public static function attach(IFaction $faction) {
+    public static function attach(Faction $faction) {
       if(self::contains($faction)) return;
       self::$factions[$faction->getId()] = $faction;
     }
 
-    public static function detach(IFaction $faction) {
+    public static function detach(Faction $faction) {
       if(!self::contains($faction)) return;
       unset(self::$factions[$faction->getId()]);
       unset($faction);

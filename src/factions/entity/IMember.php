@@ -39,7 +39,12 @@ interface IMember {
 
 	public function getFactionId() : string;
 
-	public function setFactionId(string $fid);
+	/**
+	 * $silent is for internal use ONLY!
+	 * @param string $fid faction id
+	 * @param bool $silent = false
+	 */
+	public function setFactionId(string $fid, bool $silent = false);
 
 	public function getFaction() : Faction;
 	
@@ -52,8 +57,6 @@ interface IMember {
 	public function isNone() : bool;
 
 	public function resetFactionData();
-
-	public function leave();
 	
 	/*
 	 * ----------------------------------------------------------

@@ -23,12 +23,10 @@ use factions\data\MemberData;
 use factions\manager\Members;
 use factions\manager\Factions;
 use localizer\Localizer;
-use factions\flag\Flag;
 use factions\utils\Gameplay;
 use factions\FactionsPE;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
-use factions\event\member\MembershipChangeEvent;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator {
 
@@ -47,7 +45,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	 */
 
 	public function updateFaction() {
-		if(($f = Factions::getForMember($this)) instanceof IFaction) {
+		if(($f = Factions::getForMember($this)) instanceof Faction) {
 			$this->setFaction($f);
 			$this->setRole($f->getRole($this));
 		}
@@ -58,7 +56,8 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
         return $this->factionId;
 	}
 
-	public function setFactionId(string $fid) {
+
+	public function setFactionId(string $fid, bool $silent = false) {
 		// Detect Nochange
         if ($fid === $this->factionId) return;
         // Get the raw old value
@@ -81,9 +80,9 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
             $factionIdDesc = $faction->getId();
             $factionNameDesc = $faction->getName();
         }
-        FactionsPE::get()->getLogger()->info(
-           Localizer::trans("member-faction-changed",
-                [$this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc]));
+        if(Gameplay::get('log.member-faction-change', true) && !$silent) {
+        	FactionsPE::get()->getLogger()->info(Localizer::trans("log.member-faction-changed", [$this->getDisplayName(), $this->getName(), $oldFactionIdDesc, $oldFactionNameDesc, $factionIdDesc, $factionNameDesc]));
+    	}
 	}
 
 	public function getFaction() : Faction {
@@ -110,55 +109,6 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 		$this->factionId = null;
 		$this->role = null;
 		$this->title = null;
-	}
-
-	public function leave() {
-		$myFaction = $this->getFaction();
-        $permanent = $myFaction->getFlag(Flag::PERMANENT);
-        if (count($this->getFaction()->getMembers()) > 1)
-        {
-            if (!$permanent && $this->getRole() === Rel::LEADER)
-            {
-                $this->sendMessage(Localizer::trans('faction-leave-as-leader'));
-                return;
-            }
-            if (!Gameplay::get("can-leave-with-negative-power", false) && $this->getPower() < 0)
-            {
-                $this->sendMessage(Localizer::trans('faction-leave-with-negative-power'));
-                return;
-            }
-        }
-            // Event
-        $event = new MembershipChangeEvent($this, $myFaction, MembershipChangeEvent::REASON_LEAVE);
-		FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
-		if ($event->isCancelled()) return;
-		if ($myFaction->isNormal()) {
-            foreach ($myFaction->getOnlineMembers() as $player) {
-                $player->sendMessage(Localizer::trans("player-left-faction", [$this->getDisplayName(), $myFaction->getName()]));
-            }
-            FactionsPE::get()->getLogger()->info($this->getName()." left the faction: ".$myFaction->getName());
-		}
-		
-		$this->resetFactionData();
-		if(!$myFaction->removeMember($this)) {
-			echo "Failed to remove member data from faction"; # DEBUG
-		}
-
-		if ($myFaction->isNormal() && !$permanent && empty($myFaction->getMembers()))
-        {
-            $event = new FactionDisbandEvent($this->getFactionId(), $this);
-			FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
-			if ( ! $event->isCancelled())
-            {
-                // Remove this faction
-                $this->sendMessage(Localizer::trans("faction-disbanded-due-empty", [$myFaction->getName()]));
-                if (Gameplay::get("log-faction-disband", true))
-                {
-                    FactionsPE::get()->getLogger()->info("The faction ".$myFaction->getName()." (".$myFaction->getId().") was disbanded due to the last player (".$this->getName().") leaving.");
-                }
-                $myFaction->detach();
-            }
-		}
 	}
 	
 	/*

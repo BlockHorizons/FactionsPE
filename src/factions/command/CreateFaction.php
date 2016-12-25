@@ -19,19 +19,22 @@
 
 namespace factions\command;
 
-use factions\FactionsPE;
-use factions\manager\Permissions;
 use dominate\Command;
 use dominate\parameter\Parameter;
-use pocketmine\command\CommandSender;
-use pocketmine\Player;
+
 use localizer\Localizer;
+
 use factions\command\requirement\FactionRequirement;
 use factions\event\member\MembershipChangeEvent;
 use factions\event\faction\FactionCreateEvent;
+use factions\manager\Permissions;
 use factions\utils\Gameplay;
 use factions\entity\Faction;
 use factions\manager\Members;
+use factions\FactionsPE;
+
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class CreateFaction extends Command {
 
@@ -89,9 +92,18 @@ class CreateFaction extends Command {
 		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
 		// Ignore cancellation
 
+		if(FactionsPE::get()->economyEnabled()) {
+			if($sender instanceof Player) {
+				FactionsPE::get()->getEconomy()->takeMoney($sender, $need);
+			}
+		}
+
 		$sender->sendMessage(Localizer::translatable('faction-created', compact("name")));
 		if(Gameplay::get('log.faction-creation', true)) {
-			FactionsPE::get()->getLogger()->info($sender->getName()." created new faction '".$name."'");
+			FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-created-faction', [
+				$creator->getName(),
+				$faction->getName()
+				]));
 		}
 
 		return true;

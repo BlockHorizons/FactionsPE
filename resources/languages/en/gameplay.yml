@@ -4,11 +4,18 @@ home-out-of-bounds: "Your faction home has been un-set since it is no longer in 
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
 faction-disbanded: "<i>The faction :0<i> was disbanded."
 faction-new-leader: "<i>Faction leader <h>:0<i> has been removed. :1<i> has been promoted as the new faction leader."
+faction-leave-with-negative-power: "You can't leave your faction while having negative power"
+faction-leave-as-leader: "Disband faction or promote new leader for this faction to leave"
+player-left-faction: ":0 has left :1 faction"
+you-left-faction: "You've left :faction faction"
 
 faction-name-not-alpha: "Name must only consist of alphabet letters"
 faction-name-too-long: "Name length exceeds maximum :max length"
 faction-name-too-short: "Name length is smaller then minimum :min length"
+faction-name-taken: "Name is taken by other faction"
+faction-created: "Faction <gold>:name<white> created"
 
-invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> errors found:"
+invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> error(s) found:"
 invalid-faction-name-error: ":n<green>: <white>:error"
+
 ...
