@@ -207,7 +207,10 @@ class FactionsPE extends PluginBase {
     return (bool) $this->getConfig()->get('economy-support', true);
   }
 
-  public function getEconomy() : Economizer {
+  /**
+   * @return Economizer|null
+   */
+  public function getEconomy() {
     return $this->economy;
   }
 

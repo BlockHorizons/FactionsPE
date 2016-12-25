@@ -43,8 +43,9 @@ class Members {
    */
   public static function get($player, bool $create = true) : IMember
   {
-    if(!$player)
+    if(!$player) {
       throw new \InvalidArgumentException("argument 1 passed to ".__CLASS__."::".__METHOD__." must be IMember, CommandSender or string, ".Text::toString($player, false)." given");
+    }
     if($player instanceof ConsoleCommandSender) {
       return self::get("Console");
     }
