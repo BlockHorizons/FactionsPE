@@ -1,6 +1,7 @@
 ![Factions - PE](https://raw.githubusercontent.com/Chris-Prime/FactionsPE/reborn/resources/logo.png "FactionsPE Logo")
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Factions-PE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Poggit-CI](https://poggit.pmmp.io/ci.badge/Chris-Prime/FactionsPE/FactionsPE)](https://poggit.pmmp.io/ci/Chris-Prime/FactionsPE/FactionsPE)
 
 ###Under heavy-develpopment
 Estimated release date - 31. December.
