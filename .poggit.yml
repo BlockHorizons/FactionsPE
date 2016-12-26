@@ -5,6 +5,8 @@ branches:
 projects:
   FactionsPE:
     path: ""
-  resources.languages.en:
-    path: resources/languages/en/
+    libs:
+     - local: Localizer
+     - local: Economizer
+     - local: Dominate
 ...
