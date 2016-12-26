@@ -5,4 +5,8 @@ branches:
 projects:
   FactionsPE:
     path: ""
+    libs:
+     - local: Localizer
+     - local: Economizer
+     - local: Dominate
 ...
