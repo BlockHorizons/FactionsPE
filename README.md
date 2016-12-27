@@ -10,6 +10,7 @@ Estimated release date - 31. December.
 + [Localizer](https://github.com/Chris-Prime/Localizer)
 + [Economizer](https://github.com/Chris-Prime/Economizer)
 + [Simple-LibLoader](https://github.com/Chris-Prime/Simple-LibLoader)
++ [Dominate](https://github.com/Chris-Prime/Dominate)
 
 ####Random screenshot
 [First member join](http://i.imgur.com/7XiOrNW.png)
