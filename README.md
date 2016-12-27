@@ -13,5 +13,5 @@ Estimated release date - 31. December.
 + [Dominate](https://github.com/Chris-Prime/Dominate)
 
 ####Random screenshots
-+ [![First member join](http://i.imgur.com/7XiOrNW.png)
-+ [![It's alive](http://i.imgur.com/8SM9lur.png)
++ [First member join](http://i.imgur.com/7XiOrNW.png)
++ [It's alive](http://i.imgur.com/8SM9lur.png)
