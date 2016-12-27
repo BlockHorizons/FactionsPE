@@ -578,7 +578,12 @@ class Faction extends FactionData implements RelationParticipator {
         return $rels ?? ($perm instanceof Permission ? $perm->getStandard() : []);
 	}
 
-	public function isPermitted() : bool {
+	/**
+	 * @param string $rel relation id
+	 * @param Permission|string $perm
+	 * @return bool
+	 */
+	public function isPermitted(string $rel, $perm) : bool {
         return in_array($rel, $this->getPermitted($perm), true);
 	}
 

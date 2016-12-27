@@ -18,4 +18,10 @@ faction-created: "Faction <gold>:name<white> created"
 invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> error(s) found:"
 invalid-faction-name-error: ":n<green>: <white>:error"
 
+invite-add-success: "Player <green>:0<white> has been invited"
+player-already-invited: "Player <green>:0<white> is already invited to your faction"
+invite-add-inform-target: "You've been invited to <gold>:faction<white> by <green>:player<white>"
+invite-add-inform-target-suggestion: "Accept invitation by executing: <gold>:command"
+invitation-deleted: "Player <green>:0<white> is no longed invited to your faction"
+not-invited: "Player <green>:0<white> is not even invited"
 ...

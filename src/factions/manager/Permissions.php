@@ -20,6 +20,11 @@
 namespace factions\manager;
 
 use factions\permission\Permission;
+use factions\FactionsPE;
+use factions\relation\Relation;
+
+use localizer\Translatable;
+use localizer\Localizer;
 
 final class Permissions {
 
@@ -139,12 +144,99 @@ final class Permissions {
         return isset(self::$permissions[$perm->getId()]);
     }
 
-    public static function create(int $priority, string $id, string $name, string $desc, array $standard, bool $territory, bool $editable, bool $visible) : Permission {
+    public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible) : Permission {
         $ret = self::getById($id);
         if($ret) return $ret;
         $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
         self::attach($ret);
         return $ret;
+    }
+
+    /**
+     * Creates a Permissions
+     */
+    public static function init() {
+        $perms = [
+            Permission::BUILD => [
+                Permission::PRIORITY_BUILD, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true
+            ],
+            Permission::PAINBUILD => [
+                Permission::PRIORITY_PAINBUILD, [], true, true, true
+            ],
+            Permission::DOOR => [
+                Permission::PRIORITY_DOOR, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true
+            ],
+            Permission::BUTTON => [
+                Permission::PRIORITY_BUTTON, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true
+            ],
+            Permission::LEVER => [
+                Permission::PRIORITY_LEVER, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true
+            ],
+            Permission::CONTAINER => [
+                Permission::PRIORITY_CONTAINER, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true
+            ],
+            Permission::NAME => [
+                Permission::PRIORITY_NAME, [Relation::LEADER], false, true, true
+            ],
+            Permission::DESC => [
+                Permission::PRIORITY_DESC, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::MOTD => [
+                Permission::PRIORITY_MOTD, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::INVITE => [
+                Permission::PRIORITY_INVITE, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::KICK => [
+                Permission::PRIORITY_KICK, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::TITLE => [
+                Permission::PRIORITY_TITLE, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::HOME => [
+                Permission::PRIORITY_HOME, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], false, true, true
+            ],
+            Permission::STATUS => [
+                Permission::PRIORITY_STATUS, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::SETHOME => [
+                Permission::PRIORITY_SETHOME, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::DEPOSIT => [
+                Permission::PRIORITY_DEPOSIT, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY, Relation::TRUCE, Relation::NEUTRAL, Relation::ENEMY], false, false, false
+            ],
+            Permission::WITHDRAW => [
+                Permission::PRIORITY_WITHDRAW, [Relation::LEADER], false, true, true
+            ],
+            Permission::TERRITORY => [
+                Permission::PRIORITY_TERRITORY, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::ACCESS => [
+                Permission::PRIORITY_ACCESS, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::CLAIMNEAR => [
+                Permission::PRIORITY_CLAIMNEAR, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], false, false, false
+            ],
+            Permission::RELATION => [
+                Permission::PRIORITY_RELATION, [Relation::LEADER, Relation::OFFICER], false, true, true
+            ],
+            Permission::DISBAND => [
+                Permission::PRIORITY_DISBAND, [Relation::LEADER], false, true, true
+            ],
+            Permission::PERMS => [
+                Permission::PRIORITY_PERMS, [Relation::LEADER], false, true, true
+            ],
+            Permission::FLAGS => [
+                Permission::PRIORITY_FLAGS, [Relation::LEADER], false, true, true
+            ]
+        ];
+        foreach ($perms as $perm => $data) {
+            self::create($data[0], $perm, $perm, Localizer::translatable("permission.".$perm), $data[1], $data[2], $data[3], $data[4]);
+        }   
+    }
+
+    public static function saveAll() {
+        FactionsPE::get()->getDataProvider()->savePermissions(self::getAll());
     }
 
     public static function getAll() : array {

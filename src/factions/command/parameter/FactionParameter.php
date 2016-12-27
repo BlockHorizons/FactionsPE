@@ -23,13 +23,14 @@ use pocketmine\command\CommandSender;
 
 use factions\entity\Faction;
 use factions\manager\Factions;
+use factions\manager\Members;
 
 use dominate\parameter\Parameter;
 
 class FactionParameter extends Parameter {
 
 	public function __construct(string $name, int $type = null, int $index = null) {
-		parent::__construct($name, $type, $inedx);
+		parent::__construct($name, $type, $index);
 		$this->type = self::class; // This is hacky way for the error messages to show correctly
 	}
 
@@ -43,14 +44,16 @@ class FactionParameter extends Parameter {
 	 */
 	public function read(string $input, CommandSender $sender = null) {
 		$silent = $sender ? false : true;
-		$faction = Factions::get($input, false);
-		if($faction) {
-			if($this->isValid($faction, $sender)) {
-				if(!$silent) {
-					$sender->sendMessage($this->createErrorMessage($sender, $input));
-				}
-				return null;
+		if($input === "me" && $sender) {
+			$faction = Members::get($sender, true)->getFaction();
+		} else {
+			$faction = Factions::get($input, false);
+		}
+		if(!$this->isValid($faction, $sender)) {
+			if(!$silent) {
+				$sender->sendMessage($this->createErrorMessage($sender, $input));
 			}
+			return null;
 		}
 		return $faction;
 	}

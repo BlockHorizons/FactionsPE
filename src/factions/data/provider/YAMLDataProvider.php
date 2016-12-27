@@ -33,6 +33,7 @@ class YAMLDataProvider extends DataProvider {
 		@mkdir($this->getMain()->getDataFolder()."factions");
 		@mkdir($this->getMain()->getDataFolder()."members");
 		@touch($this->getMain()->getDataFolder()."flags.yml");
+		@touch($this->getMain()->getDataFolder()."permissions.yml");
 	}
 
 	public function saveMember(MemberData $member) {
@@ -117,8 +118,31 @@ class YAMLDataProvider extends DataProvider {
 		}
 	}
 
+	public function loadPermissions() {
+		if(file_exists($this->getPermsFile())) {
+			$data = file_get_contents($this->getPermsFile());
+			if(empty($data)) return;
+			$perms = yaml_parse($data);
+			foreach ($perms as $id => $perm) {
+				$this->loadPermission($id, $perm);
+			}
+		}
+	}
+
+  	public function savePermissions(array $permissions) {
+  		$s = [];
+  		foreach ($permissions as $perm) {
+  			$s[$perm->getId()] = $perm->__toArray();
+  		}
+  		file_put_contents($this->getPermsFile(), yaml_emit($s));
+  	}
+
 	public function getFlagsFile() : string {
 		return $this->getMain()->getDataFolder()."flags.yml";
+	}
+
+	public function getPermsFile() : string {
+		return $this->getMain()->getDataFolder()."permissions.yml";
 	}
 
 	public function close() {

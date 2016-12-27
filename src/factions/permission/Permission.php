@@ -25,62 +25,65 @@ use factions\FactionsPE;
 use factions\entity\IMember;
 use factions\manager\Permissions;
 
+use localizer\Translatable;
+
 class Permission {
 
-	const BUILD = "build";
+	const BUILD     = "build";
     const PAINBUILD = "painbuild";
-    const DOOR = "door";
-    const BUTTON = "button";
-    const LEVER = "lever";
+    const DOOR      = "door";
+    const BUTTON    = "button";
+    const LEVER     = "lever";
     const CONTAINER = "container";
-    const NAME = "name";
-    const DESC = "desc";
-    const MOTD = "motd";
-    const INVITE = "invite";
-    const KICK = "kick";
-    const TITLE = "title";
-    const HOME = "home";
-    const SETHOME = "sethome";
-    const DEPOSIT = "deposit";
-    const WITHDRAW = "withdraw";
+    const NAME      = "name";
+    const DESC      = "desc";
+    const MOTD      = "motd";
+    const INVITE    = "invite";
+    const KICK      = "kick";
+    const TITLE     = "title";
+    const HOME      = "home";
+    const SETHOME   = "sethome";
+    const DEPOSIT   = "deposit";
+    const WITHDRAW  = "withdraw";
     const TERRITORY = "territory";
-    const ACCESS = "access";
+    const ACCESS    = "access";
     const CLAIMNEAR = "claimnear";
-    const RELATION = "Relation";
-    const DISBAND = "disband";
-    const FLAGS = "flags";
-    const PERMS = "perms";
-    const STATUS = "status";
+    const RELATION  = "Relation";
+    const DISBAND   = "disband";
+    const FLAGS     = "flags";
+    const PERMS     = "perms";
+    const STATUS    = "status";
     
-    const PRIORITY_BUILD = 1000;
-    const PRIORITY_PAINBUILD = 2000;
-    const PRIORITY_DOOR = 3000;
-    const PRIORITY_BUTTON = 4000;
-    const PRIORITY_LEVER = 5000;
-    const PRIORITY_CONTAINER = 6000;
-    const PRIORITY_NAME = 7000;
-    const PRIORITY_DESC = 8000;
-    const PRIORITY_MOTD = 9000;
-    const PRIORITY_INVITE = 10000;
-    const PRIORITY_KICK = 11000;
-    const PRIORITY_TITLE = 12000;
-    const PRIORITY_HOME = 13000;
-    const PRIORITY_SETHOME = 14000;
-    const PRIORITY_DEPOSIT = 15000;
-    const PRIORITY_WITHDRAW = 16000;
-    const PRIORITY_TERRITORY = 17000;
-    const PRIORITY_ACCESS = 18000;
-    const PRIORITY_CLAIMNEAR = 19000;
-    const PRIORITY_RELATION = 20000;
-    const PRIORITY_DISBAND = 21000;
-    const PRIORITY_FLAGS = 22000;
-    const PRIORITY_PERMS = 23000;
-    const PRIORITY_STATUS = 24000;
+    const PRIORITY_BUILD        = 1000;
+    const PRIORITY_PAINBUILD    = 2000;
+    const PRIORITY_DOOR         = 3000;
+    const PRIORITY_BUTTON       = 4000;
+    const PRIORITY_LEVER        = 5000;
+    const PRIORITY_CONTAINER    = 6000;
+    const PRIORITY_NAME         = 7000;
+    const PRIORITY_DESC         = 8000;
+    const PRIORITY_MOTD         = 9000;
+    const PRIORITY_INVITE       = 10000;
+    const PRIORITY_KICK         = 11000;
+    const PRIORITY_TITLE        = 12000;
+    const PRIORITY_HOME         = 13000;
+    const PRIORITY_SETHOME      = 14000;
+    const PRIORITY_DEPOSIT      = 15000;
+    const PRIORITY_WITHDRAW     = 16000;
+    const PRIORITY_TERRITORY    = 17000;
+    const PRIORITY_ACCESS       = 18000;
+    const PRIORITY_CLAIMNEAR    = 19000;
+    const PRIORITY_RELATION     = 20000;
+    const PRIORITY_DISBAND      = 21000;
+    const PRIORITY_FLAGS        = 22000;
+    const PRIORITY_PERMS        = 23000;
+    const PRIORITY_STATUS       = 24000;
 
     protected $priority = 0;
-    protected $name = "defaultName";
+    protected $name;
 
-    protected $desc = "defaultDesc";
+    /** @var Translatable */
+    protected $desc;
     	
     /**
      * Relationations
@@ -103,7 +106,7 @@ class Permission {
      */
     private $visible = true;
 
-    public function __construct(int $priority, string $name, $desc, array $standard, bool $territory, bool $editable, bool $visible) {
+    public function __construct(int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible) {
         $this->priority = $priority;
         $this->name = $name;
         $this->desc = $desc;
@@ -111,61 +114,6 @@ class Permission {
         $this->territory = $territory;
         $this->editable = $editable;
         $this->visible = $visible;
-    }
-
-
-    /**
-     * Creates a Permissions
-     */
-    public static function init() {
-    	// BUILD
-    	Permissions::create(self::PRIORITY_BUILD, self::BUILD, self::BUILD, "edit the terrain", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true);
-    	// PAIN_BUILD
-        Permissions::create(self::PRIORITY_PAINBUILD, self::PAINBUILD, self::PAINBUILD, "edit, take damage", [], true, true, true);
-        // DOOR
-        Permissions::create(self::PRIORITY_DOOR, self::DOOR, self::DOOR, "use doors", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true);
-        // BUTTON
-        Permissions::create(self::PRIORITY_BUTTON, self::BUTTON, self::BUTTON, "use stone buttons", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true);
-        // LEVER
-        Permissions::create(self::PRIORITY_LEVER, self::LEVER, self::LEVER, "use levers", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], true, true, true);
-        // CONTAINER
-        Permissions::create(self::PRIORITY_CONTAINER, self::CONTAINER, self::CONTAINER, "use containers", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true);
-        // NAME
-        Permissions::create(self::PRIORITY_NAME, self::NAME, self::NAME, "set name", [Relation::LEADER], false, true, true);
-        // DESC
-        Permissions::create(self::PRIORITY_DESC, self::DESC, self::DESC, "set description", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // MOTD
-        Permissions::create(self::PRIORITY_MOTD, self::MOTD, self::MOTD, "set motd", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // INVITE
-        Permissions::create(self::PRIORITY_INVITE, self::INVITE, self::INVITE, "invite players", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // KICK
-        Permissions::create(self::PRIORITY_KICK, self::KICK, self::KICK, "kick members", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // TITLE
-        Permissions::create(self::PRIORITY_TITLE, self::TITLE, self::TITLE, "set titles", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // HOME
-        Permissions::create(self::PRIORITY_HOME, self::HOME, self::HOME, "teleport home", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], false, true, true);
-        // STATUS
-        Permissions::create(self::PRIORITY_STATUS, self::STATUS, self::STATUS, "show status", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // SET_HOME
-        Permissions::create(self::PRIORITY_SETHOME, self::SETHOME, self::SETHOME, "set the home", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // DEPOSIT
-        Permissions::create(self::PRIORITY_DEPOSIT, self::DEPOSIT, self::DEPOSIT, "deposit money", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY, Relation::TRUCE, Relation::NEUTRAL, Relation::ENEMY], false, false, false);
-        // WITHDRAW
-        Permissions::create(self::PRIORITY_WITHDRAW, self::WITHDRAW, self::WITHDRAW, "withdraw money", [Relation::LEADER], false, true, true);
-        // TERRITORY
-        Permissions::create(self::PRIORITY_TERRITORY, self::TERRITORY, self::TERRITORY, "claim or unclaim", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // ACCESS
-        Permissions::create(self::PRIORITY_ACCESS, self::ACCESS, self::ACCESS, "grant territory", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // CLAIM_NEAR
-        Permissions::create(self::PRIORITY_CLAIMNEAR, self::CLAIMNEAR, self::CLAIMNEAR, "claim nearby", [Relation::LEADER, Relation::OFFICER, Relation::MEMBER, Relation::RECRUIT, Relation::ALLY], false, false, false);
-        // RELATION
-        Permissions::create(self::PRIORITY_RELATION, self::RELATION, self::RELATION, "change Relationations", [Relation::LEADER, Relation::OFFICER], false, true, true);
-        // DISBAND
-        Permissions::create(self::PRIORITY_DISBAND, self::DISBAND, self::DISBAND, "disband the faction", [Relation::LEADER], false, true, true);
-        // FLAGS
-        Permissions::create(self::PRIORITY_FLAGS, self::FLAGS, self::FLAGS, "manage flags", [Relation::LEADER], false, true, true);
-        // PERMS
-        Permissions::create(self::PRIORITY_PERMS, self::PERMS, self::PERMS, "manage permissions", [Relation::LEADER], false, true, true);
     }
 
     public static function getStateHeaders() : string {
@@ -200,7 +148,7 @@ class Permission {
         return $this;
     }
 
-    public function getDescription() : String {
+    public function getDescription() : Translatable {
         return $this->desc;
     }
 
@@ -213,6 +161,9 @@ class Permission {
         return $this->standard;
     }
 
+    /**
+     * @param array $standard relation ids
+     */
     public function setStandard(array $standard) : Permission {
         $this->standard = $standard;
         return $this;
@@ -282,6 +233,17 @@ class Permission {
 
     public function getId() : string {
         return $this->name;
+    }
+
+    public function __toArray() {
+        return [
+            "priority" => $this->priority,
+            "desc" => $this->desc->getKey(),
+            "standard" => $this->standard,
+            "territory" => $this->territory,
+            "editable" => $this->editable,
+            "visible" => $this->visible
+        ];
     }
 
 }

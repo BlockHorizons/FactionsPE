@@ -41,8 +41,7 @@ class Members {
    * @param $player
    * @return IMember|Member|OfflineMember|null
    */
-  public static function get($player, bool $create = true) : IMember
-  {
+  public static function get($player, bool $create = true) {
     if(!$player) {
       throw new \InvalidArgumentException("argument 1 passed to ".__CLASS__."::".__METHOD__." must be IMember, CommandSender or string, ".Text::toString($player, false)." given");
     }
@@ -72,6 +71,7 @@ class Members {
           if(!$ret->isNone()) self::detach($ret); // player was stored in offline instance altough he's online
           else return $ret;
         }
+        return $ret;
       }
       if($create)
         return self::createOffline($player);

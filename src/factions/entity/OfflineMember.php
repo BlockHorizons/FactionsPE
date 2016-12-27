@@ -46,7 +46,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 
 	public function updateFaction() {
 		if(($f = Factions::getForMember($this)) instanceof Faction) {
-			$this->setFaction($f);
+			$this->setFactionId($f->getId(), true);
 			$this->setRole($f->getRole($this));
 		}
 	}

@@ -22,6 +22,7 @@ use factions\FactionsPE;
 use factions\data\MemberData;
 use factions\data\FactionData;
 use factions\manager\Flags;
+use factions\manager\Permissions;
 use localizer\Localizer;
 
 abstract class DataProvider {
@@ -142,6 +143,16 @@ abstract class DataProvider {
     $descNo = Localizer::translatable($data["descNo"]);
     $flag = Flags::create($id, $data["priority"], $data["name"], $desc, $descYes, $descNo, $data["standard"], $data["editable"], $data["visible"]);
     return Flags::contains($flag);
+  }
+
+  public abstract function loadPermissions();
+
+  public abstract function savePermissions(array $permissions);
+
+  public function loadPermission(string $id, array $data) : bool {
+    $desc = Localizer::translatable("permission.".$id);
+    $flag = Permissions::create($data["priority"], $id, $id, $desc, $data["standard"], $data["territory"], $data["editable"], $data["visible"]);
+    return Permissions::contains($flag);
   }
 
   public abstract function close();

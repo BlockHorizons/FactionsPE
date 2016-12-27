@@ -31,16 +31,16 @@ use dominate\parameter\Parameter;
 
 class MemberParameter extends Parameter {
 
-	const ONLINE_MEMBER 	= "member";
-	const OFFLINE_MEMBER 	= "offline-member";
-	const CONSOLE_MEMBER 	= "console-member";
-	const ANY_MEMBER		= "any-member";
+	const ONLINE_MEMBER 	= 0x15;
+	const OFFLINE_MEMBER 	= 0x16;
+	const CONSOLE_MEMBER 	= 0x17;
+	const ANY_MEMBER		= 0x18;
 
 	public static function onClassLoaded() {
 		Parameter::$ERROR_MESSAGES[self::ONLINE_MEMBER] 	= "parameter.type-member-error";
 		Parameter::$ERROR_MESSAGES[self::OFFLINE_MEMBER] 	= "parameter.type-member-error";
-		Parameter::$ERROR_MESSAGES[self::CONSOLE_MEMBER] 	= "parameter.type-console-member";
-		Parameter::$ERROR_MESSAGES[self::ANY_MEMBER]		= "parameter.type-any-member";
+		Parameter::$ERROR_MESSAGES[self::CONSOLE_MEMBER] 	= "parameter.type-console-member-error";
+		Parameter::$ERROR_MESSAGES[self::ANY_MEMBER]		= "parameter.type-any-member-error";
 	}
 
 	/**
@@ -49,39 +49,41 @@ class MemberParameter extends Parameter {
 	 */
 	public function read(string $input, CommandSender $sender = null) {
 		$silent = $sender ? false : true;
-		$member = Members::get($input, false);
-		if($member) {
-			if($this->isValid($member, $sender)) {
-				if(!$silent) {
-					$sender->sendMessage($this->createErrorMessage($sender, $input));
-				}
-				return null;
+		if($input === "self" && $sender) {
+			$member = Members::get($sender, true);
+		} else {
+			$member = Members::get($input, false);
+		}
+		if(!$this->isValid($member, $sender)) {
+			if(!$silent) {
+				$sender->sendMessage($this->createErrorMessage($sender, $input));
 			}
+			return null;
 		}
 		return $member;
 	}
 
 	public function isValid($value, CommandSender $sender = null) : bool {
 		switch ($this->type) {
-				case self::ONLINE_MEMBER:
-					if($member instanceof Member && $member->isOnline()) {
-						return true;
-					} else {
-						return false;
-					}
-				case self::OFFLINE_MEMBER:
-					if($member instanceof OfflineMember) {
-						return true;
-					} else {
-						return false;
-					}
-				case self::CONSOLE_MEMBER:
-					return $member instanceof FConsole;
-				case self::ANY_MEMBER:
-					return $member instanceof IMember;
-				default:
+			case self::ONLINE_MEMBER:
+				if($value instanceof Member && $value->isOnline()) {
+					return true;
+				} else {
 					return false;
-			}
+				}
+			case self::OFFLINE_MEMBER:
+				if($value instanceof OfflineMember) {
+					return true;
+				} else {
+					return false;
+				}
+			case self::CONSOLE_MEMBER:
+				return $value instanceof FConsole;
+			case self::ANY_MEMBER:
+				return $value instanceof IMember;
+			default:
+				return false;
+		}
 	}
 
 }
