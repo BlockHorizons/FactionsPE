@@ -41,8 +41,9 @@ class Member extends OfflineMember {
 	private $autoClaimFaction;
 
 	public function __construct(Player $player) {
-		parent::__construct($player->getName(),
-			["lastPlayed" => time()]);
+		parent::__construct($player->getName());
+
+		$this->lastPlayed = time();
 		$this->factionHereId = Plots::getFactionAt($player)->getId();
 	}
 

@@ -58,26 +58,11 @@ class MainEngine extends Engine
 {
    
    public function onPlayerLogin(PlayerPreLoginEvent $event) {
-   		Members::get($event->getPlayer())->updateLastActivity();
+   	Members::get($event->getPlayer())->updateLastActivity();
    }
    
    public function onPlayerJoin(PlayerJoinEvent $event) {
-   		if(IN_DEV) {
-   			$player = Members::get($event->getPlayer());
-   			$this->getLogger()->info(Text::parse("----------------- <gold> {$player->getName()} <white> -----------------"));
-   			$this->getLogger()->info(Text::parse("hasFaction: " . Text::toString($player->hasFaction(), true)));
-   			if($player->hasFaction()) {
-   				$this->getLogger()->info("faction: " . Text::toString($player->getFaction()->__toString(), true));
-   				$this->getLogger()->info("role: " . ucfirst(Text::toString($player->getRole())), true);
-   			}
-   			$this->getLogger()->info("power: " . Text::toString($player->getPower(false), true));
-   			$this->getLogger()->info("limited-power: " . Text::toString($player->getPower(true), true));
-   			$this->getLogger()->info("hasTitle: " . Text::toString($player->hasTitle(), true));
-   			$this->getLogger()->info("title: " . Text::toString($player->getTitle(), true));
-   			$this->getLogger()->info("lastPlayed: " . Text::toString($player->getLastPlayed(), true) . " (".date("Y-m-d H:i:s", $player->getLastPlayed()).")");
-   			$this->getLogger()->info("firstPlayed: " . Text::toString($player->getFirstPlayed(), true) . " (".date("Y-m-d H:i:s", $player->getFirstPlayed()).")");
-   			$this->getLogger()->info(str_repeat("-", strlen("-----------------") * 2 + 4 + strlen($player->getName())));
-   		}
+
    }
 
    public function onPlayerQuit(PlayerQuitEvent $event) {

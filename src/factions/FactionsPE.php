@@ -34,6 +34,7 @@ use factions\manager\Factions;
 use factions\manager\Members;
 use factions\manager\Plots;
 use factions\manager\Flags;
+use factions\entity\FConsole;
 use factions\permission\Permission;
 use factions\engine\MainEngine;
 
@@ -102,6 +103,8 @@ class FactionsPE extends PluginBase {
     $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
     # Load Plots
     $this->getDataProvider()->loadPlots();
+    # attach Console object
+    Members::attach(new FConsole());
     # Register engines
     $this->runEngines();
 
@@ -111,6 +114,7 @@ class FactionsPE extends PluginBase {
     }
 
     $this->getLogger()->info(Localizer::trans("plugin.enabled"));
+
     return;
     stop:
     $this->getServer()->getPluginManager()->disablePlugin($this);

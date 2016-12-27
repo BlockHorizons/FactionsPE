@@ -498,7 +498,7 @@ class Faction extends FactionData implements RelationParticipator {
         return $flag->isStandard();
 	}
 
-	public function setOpen(bool $open) {$flag->
+	public function setOpen(bool $open) {
 		$this->setFlag(Flag::OPEN, $open);
 	}
 
