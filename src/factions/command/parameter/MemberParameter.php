@@ -21,6 +21,14 @@ namespace factions\command\parameter;
 
 use pocketmine\command\CommandSender;
 
+use factions\entity\FConsole;
+use factions\entity\IMember;
+use factions\entity\OfflineMember;
+use factions\entity\Member;
+use factions\manager\Members;
+
+use dominate\parameter\Parameter;
+
 class MemberParameter extends Parameter {
 
 	const ONLINE_MEMBER 	= "member";
