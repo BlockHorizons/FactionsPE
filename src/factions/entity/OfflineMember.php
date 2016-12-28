@@ -22,6 +22,7 @@ namespace factions\entity;
 use factions\data\MemberData;
 use factions\manager\Members;
 use factions\manager\Factions;
+use factions\manager\Permissions;
 use localizer\Localizer;
 use factions\utils\Gameplay;
 use factions\FactionsPE;
@@ -32,7 +33,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 
 	public function __construct(string $name, array $data = []) {
 		$sd = FactionsPE::get()->getDataProvider()->loadMember($name);
-		parent::__construct(array_merge(compact("name"), $data, $sd ? $sd->__toArray() : []));
+		parent::__construct(array_merge($data, $sd ? $sd->__toArray() : []));
 		Members::attach($this);
 
 		$this->updateFaction();
@@ -102,7 +103,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	}
 
 	public function isNone() : bool {
-		$this->factionId !== Faction::NONE;
+		return $this->factionId !== Faction::NONE;
 	}
 
 	public function resetFactionData() {
@@ -214,7 +215,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	public function isOverriding() : bool {
 		if ($this->overriding === NULL) return false;
         if ($this->overriding === FALSE) return false;
-        if ($this->getPlayer() instanceof Player && !$this->getPlayer()->hasPermission(FactionsPE::OVERRIDE)) {
+        if ($this->getPlayer() instanceof Player && !$this->getPlayer()->hasPermission(Permissions::OVERRIDE)) {
             $this->setOverriding(false);
             return false;
         }

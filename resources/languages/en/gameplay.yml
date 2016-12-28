@@ -6,7 +6,7 @@ faction-disbanded: "<i>The faction :0<i> was disbanded."
 faction-new-leader: "<i>Faction leader <h>:0<i> has been removed. :1<i> has been promoted as the new faction leader."
 faction-leave-with-negative-power: "You can't leave your faction while having negative power"
 faction-leave-as-leader: "Disband faction or promote new leader for this faction to leave"
-player-left-faction: ":0 has left :1 faction"
+member-left-faction: ":0 has left your faction"
 you-left-faction: "You've left :faction faction"
 
 faction-name-not-alpha: "Name must only consist of alphabet letters"
@@ -24,4 +24,12 @@ invite-add-inform-target: "You've been invited to <gold>:faction<white> by <gree
 invite-add-inform-target-suggestion: "Accept invitation by executing: <gold>:command"
 invitation-deleted: "Player <green>:0<white> is no longed invited to your faction"
 not-invited: "Player <green>:0<white> is not even invited"
+
+faction-member-limit-exceeded: "<b>!<white> The faction :0 is at limit of :1 members, so :2 cannot currently join"
+faction-requires-invitations: "You can't join this faction because you're not invited!"
+faction-join-with-negative-power: ":who cannot join a faction with a negative power level."
+new-member-join-inform-faction: "<i>:0 <i>joined <lime>your faction<i>."
+new-member-join-inform-self: "<i>You <i>joined <lime>:0<white> faction"
+new-member-join-inform-other: "<i>:0 <i>successfully joined :1<i>."
+member-tried-join-inform-faction: ":0 tried to join your faction."
 ...

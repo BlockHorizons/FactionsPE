@@ -31,13 +31,14 @@ gameplay:
     faction-new-leader: true
     faction-creation: true
     member-leave: true
+    member-join: true
   power:
     player:
       max: 10
       min: -10
   faction:
     destroy-empty-factions: true
-    max-players: 15
+    member-limit: 10
     disable-permanent-leader-promotion: true
   faction-name:
     max-length: 12
@@ -46,4 +47,5 @@ gameplay:
     faction-creation: 5000
   homes-must-be-in-claimed-territories: true
   can-leave-with-negative-power: false
+  can-join-with-negative-power: false
 ...

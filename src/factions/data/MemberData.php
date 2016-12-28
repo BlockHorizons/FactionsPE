@@ -23,6 +23,7 @@ use factions\FactionsPE;
 use factions\relation\Relation;
 use factions\manager\Members;
 use factions\entity\Faction;
+use pocketmine\Player;
 
 class MemberData extends Data {
 
@@ -77,19 +78,17 @@ class MemberData extends Data {
     	if($this->player) {
     		$this->name = $this->player->getName();
     	} else {
-    		$this->name = $source["name"] ?? ($source["player"] ?? "");
+    		$this->name = $source["name"];
     	}
     }
 
     public function __toArray() {
     	return [
-            //"factionId" => $this->factionId,
     		"firstPlayed" => $this->firstPlayed,
     		"lastPlayed" => $this->lastPlayed,
     		"power" => $this->power,
-    		//"role" => $this->role,
     		"title" => $this->title,
-    		"player" => $this->name
+    		"name" => $this->name
     	];
     }
 

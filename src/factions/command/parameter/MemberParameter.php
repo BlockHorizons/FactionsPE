@@ -49,7 +49,7 @@ class MemberParameter extends Parameter {
 	 */
 	public function read(string $input, CommandSender $sender = null) {
 		$silent = $sender ? false : true;
-		if($input === "self" && $sender) {
+		if(($input === "me" || $input === "self") && $sender) {
 			$member = Members::get($sender, true);
 		} else {
 			$member = Members::get($input, false);
@@ -64,6 +64,7 @@ class MemberParameter extends Parameter {
 	}
 
 	public function isValid($value, CommandSender $sender = null) : bool {
+		if($value === null) return false;
 		switch ($this->type) {
 			case self::ONLINE_MEMBER:
 				if($value instanceof Member && $value->isOnline()) {

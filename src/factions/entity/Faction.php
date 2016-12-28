@@ -228,7 +228,7 @@ class Faction extends FactionData implements RelationParticipator {
 			$this->members[Relation::RECRUIT][] = strtolower(trim($member->getName()));
 			$this->promoteNewLeader($member);
 		} else {
-			if(!Relation::isRole($role)) {
+			if(!Relation::isRankValid($role)) {
 				throw new \InvalidArgumentException("\$role[=$role] must be valid faction rank");
 			}
 			$this->members[$role][] = strtolower(trim($member->getName()));
@@ -247,7 +247,7 @@ class Faction extends FactionData implements RelationParticipator {
         $permanent = $this->getFlag(Flag::PERMANENT);
         if (count($this->getMembers()) > 1)
         {
-            if (!$permanent && $member->getRole() === Rel::LEADER)
+            if (!$permanent && $member->getRole() === Relation::LEADER)
             {
                 $member->sendMessage(Localizer::translatable('faction-leave-as-leader'));
                 return false;
@@ -279,7 +279,7 @@ class Faction extends FactionData implements RelationParticipator {
 		// Now we can announce
 		if ($this->isNormal()) {
             foreach ($this->getOnlineMembers() as $player) {
-                $player->sendMessage(Localizer::translatable("member-left-faction", [$member->getDisplayName(), $$this->getName()]));
+                $player->sendMessage(Localizer::translatable("member-left-faction", [$member->getDisplayName()]));
             }
             if(Gameplay::get('log.member-leave')) {
             	FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-leave', [$member->getName(), $this->getName()]));
@@ -393,7 +393,7 @@ class Faction extends FactionData implements RelationParticipator {
 	}
 
 	public function sendMessage($message) {
-		foreach ($this->getOnlinePlayers() as $player) {
+		foreach ($this->getOnlineMembers() as $player) {
             $player->sendMessage($message);
         }
 	}
@@ -444,7 +444,7 @@ class Faction extends FactionData implements RelationParticipator {
 	 */
 	public function setInvited($player, bool $invited) {
 		if(!$invited)
-			unset($this->invitedPlayers[array_search($player instanceof IMember ? $player->getName() : $player, $this->invitedPlayers)]);
+			unset($this->invitedPlayers[array_search(strtolower(trim($player instanceof IMember ? $player->getName() : $player)), $this->invitedPlayers)]);
 		else
 			$this->invitedPlayers[] = strtolower(trim($player instanceof IMember ? $player->getName() : $player));
 	}
@@ -700,7 +700,7 @@ class Faction extends FactionData implements RelationParticipator {
 	public function getPower() : int {
 		if ($this->getFlag(Flag::INFINITY_POWER)) return PHP_INT_MAX;
         $ret = 0;
-        foreach ($this->getPlayers() as $fplayer) {
+        foreach ($this->getMembers() as $fplayer) {
             $ret += $fplayer->getPower();
         }
         $ret += $this->getPowerBoost();

@@ -44,10 +44,10 @@ class FactionParameter extends Parameter {
 	 */
 	public function read(string $input, CommandSender $sender = null) {
 		$silent = $sender ? false : true;
-		if($input === "me" && $sender) {
+		if(($input === "me" || $input === "self") && $sender) {
 			$faction = Members::get($sender, true)->getFaction();
 		} else {
-			$faction = Factions::get($input, false);
+			$faction = Factions::getByName($input, false);
 		}
 		if(!$this->isValid($faction, $sender)) {
 			if(!$silent) {
