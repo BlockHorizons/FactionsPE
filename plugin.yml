@@ -14,7 +14,7 @@
 ##
 name: FactionsPE
 author: Chris Prime
-api: [ 2.0.0, 2.1.0 ]
+api: [2.0.0, 2.1.0, 3.0.0-ALPHA1]
 main: factions\FactionsPE
 version: 1.0.0_reborn
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd]
