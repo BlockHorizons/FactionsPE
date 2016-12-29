@@ -20,34 +20,28 @@
 namespace factions\command\requirement;
 
 use pocketmine\command\CommandSender;
-use dominate\requirement\SimpleRequirement;
+use dominate\requirement\Requirement;
 use factions\manager\Members;
-use factions\permission\Permission;
 use localizer\Translatable;
 
-class FactionPermission extends SimpleRequirement {
+class FactionRole extends Requirement {
 
-	/** @var Permission */
-	public $permission;
+	/** @var string */
+	protected $role;
 
-	/**
-	 * @param Permission $permission
-	 */
-	public function __construct(Permission $permission) {
-		$this->permission = $permission;
-	}
-	
-	public function createErrorMessage(CommandSender $sender = null) : Translatable {
-		return new Translatable("requirement.faction-permission-error", ['perm_desc' => $this->permission->getDescription()]);
+	public function __construct(string $role) {
+		$this->role = $role;
+		$this->type = self::class;
 	}
 
 	public function hasMet(CommandSender $sender, $silent = false) : bool {
-		$member = Members::get($sender);
-		$r = $member->getFaction()->isPermitted($member->getRole(), $this->permission);
-		if(!$r && !$silent) {
-			$sender->sendMessage($this->createErrorMessage($sender));
-		}
-		return $r;
+		return Members::get($sender)->getRole() === $this->role;
+	}
+
+	public function createErrorMessage(CommandSender $sender = null) : Translatable {
+		return new Translatable("requirement.role-error", [
+			"role" => $this->role
+			]);
 	}
 
 }

@@ -28,7 +28,7 @@ permissions:
       factions.access.faction: {description: grant faction access, with the proper fperm, default: true}
       factions.access.player: {description: grant player access, with the proper fperm, default: true}
       factions.access.view: {description: view access, default: true}
-      factions.override: {description: enable override mode, default: true}
+      factions.override: {description: enable override mode, default: op}
       factions.claim: {description: claim faction territory, default: true}
       factions.claim.one: {description: claim a single chunk, default: true}
       factions.claim.auto: {description: claim as you walk around, default: true}
@@ -49,11 +49,11 @@ permissions:
       factions.home: {description: teleport to faction home, default: true}
       factions.invite: {description: manage invites, default: true}
       factions.invite.list: {description: list invited players, default: true}
-      factions.invite.list.other: {description: list invited players of another factions, default: true}
+      factions.invite.list.other: {description: list invited players of another factions, default: op}
       factions.invite.add: {description: invite player, default: true}
       factions.invite.remove: {description: revoke an invite, default: true}
       factions.join: {description: join faction, default: true}
-      factions.join.others: {description: have another player join faction, default: true}
+      factions.join.others: {description: have another player join faction, default: op}
       factions.kick: {description: kick player from faction, default: true}
       factions.leave: {description: leave your faction, default: true}
       factions.list: {description: list all factions, default: true}
@@ -61,7 +61,7 @@ permissions:
       factions.map: {description: show territory map, default: true}
       factions.money: {description: manage faction money, default: true}
       factions.money.balance: {description: show faction money, default: true}
-      factions.money.balance.any: {description: show another factions money, default: true}
+      factions.money.balance.any: {description: show another factions money, default: op}
       factions.money.deposit: {description: deposit to faction, default: true}
       factions.money.f2f: {description: transfer f --> f, default: true}
       factions.money.f2p: {description: transfer f --> p, default: true}
@@ -73,8 +73,8 @@ permissions:
       factions.perm.list: {description: list perms, default: true}
       factions.perm.set: {description: set perms, default: true}
       factions.perm.show: {description: show perms, default: true}
-      factions.player: {description: show player information}
-      factions.powerboost: {description: set powerboost, default: true}
+      factions.player: {description: show player information, default: op}
+      factions.powerboost: {description: set powerboost, default: op}
       factions.rank: {description: manage/show ranks, default: true}
       factions.rank.show: {description: show rank, default: true}
       factions.rank.action: {description: change rank, default: true}
@@ -85,10 +85,10 @@ permissions:
       factions.seechunk: {description: see the chunk you stand in, default: true}
       factions.seechunkold: {description: see the chunk you stand in, default: true}
       factions.sethome: {description: set the faction home, default: true}
-      factions.setpower: {description: set power, default: true}
+      factions.setpower: {description: set power, default: op}
       factions.status: {description: show status, default: true}
       factions.name: {description: set faction name, default: true}
-      factions.title: {description: set player title, default: true}
+      factions.title: {description: set player title, default: op}
       factions.title.color: {description: set player title with color, default: true}
       factions.territorytitles: {description: toggle territory titles, default: true}
       factions.unclaim: {description: unclaim faction territory, default: true}

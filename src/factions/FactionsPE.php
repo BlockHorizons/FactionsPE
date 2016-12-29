@@ -16,6 +16,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace factions;
 
 use pocketmine\plugin\PluginBase;
@@ -30,6 +31,7 @@ use factions\utils\Text;
 use factions\command\FactionCommand;
 use factions\data\provider\DataProvider;
 use factions\data\provider\YAMLDataProvider;
+use factions\data\provider\JSONDataProvider;
 use factions\manager\Factions;
 use factions\manager\Members;
 use factions\manager\Plots;
@@ -42,6 +44,10 @@ use factions\engine\MainEngine;
 define("IN_DEV", file_exists(dirname(__FILE__)."/.dev"));
 
 class FactionsPE extends PluginBase {
+
+  private static $engines = [
+    MainEngine::class
+  ];
 
   /** @var FactionsPE */
   private static $instance;
@@ -74,8 +80,7 @@ class FactionsPE extends PluginBase {
     Localizer::setParser(function(string $text){
       return Text::parse($text);
     });
-
-    $this->saveDefaultConfig();
+    //$this->saveDefaultConfig();
     if(Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
       Localizer::$globalLocale = strtolower(trim($lan));
     } else {
@@ -109,7 +114,9 @@ class FactionsPE extends PluginBase {
     # attach Console object
     Members::attach(new FConsole());
     # Register engines
-    $this->runEngines();
+    $this->runEngines()/**
+   * @internal
+   */;
 
     # Run tests
     if(IN_DEV) {
@@ -147,14 +154,19 @@ class FactionsPE extends PluginBase {
   // LOADER FUNCTIONS
   // ---------------------------------------------------------------------------
 
-  public function loadDataProvider() : bool
-  {
+  /**
+   * @internal
+   */
+  private function loadDataProvider() : bool {
     try {
-      switch (strtolower(trim($this->getConfig()->get('data-provider')))) {
+      switch (strtolower(trim($this->getConfig()->get('data-provider')["type"]))) {
         default:
         case 'yaml':
         case 'yml':
           $this->setDataProvider(new YAMLDataProvider($this));
+          break;
+        case 'json':
+          $this->setDataProvider(new JSONDataProvider($this));
           break;
         case 'sql':
         case 'sqlite':
@@ -182,10 +194,13 @@ class FactionsPE extends PluginBase {
     $this->dataProvider = $provider;
   }
 
-  public function loadIntegrations() : bool {
+  /**
+   * @internal
+   */
+  private function loadIntegrations() : bool {
     $stop = false;
     if($this->economyEnabled()) {
-      
+
       $n = $this->getConfig()->get('economy-plugin', Economizer::DEFAULT_API);
       $plugin = $this->getServer()->getPluginManager()->getPlugin($n);
       if(!$plugin) {
@@ -200,7 +215,7 @@ class FactionsPE extends PluginBase {
         goto end;
       }
       $this->economy = new Economizer($this, $t);
-      
+
       if($this->economy->ready()) {
         $this->getLogger()->info(Localizer::trans("economy-plugin-selected", ["name" => $this->economy->getName()]));
       } else {
@@ -246,7 +261,9 @@ class FactionsPE extends PluginBase {
    * @internal
    */
   private function runEngines() {
-    $this->getServer()->getPluginManager()->registerEvents(new MainEngine($this), $this);
+    foreach (self::$engines as $engine) {
+      $this->getServer()->getPluginManager()->registerEvents(new $engine($this), $this);
+    }
   }
 
 }

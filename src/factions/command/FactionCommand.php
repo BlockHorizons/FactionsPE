@@ -42,6 +42,8 @@ class FactionCommand extends Command
             new LeaveFaction($plugin, 'leave', 'Leave your current faction', Permissions::LEAVE, ['quit']),
             new Invite($plugin, "invite", "Invite someone to your faction", Permissions::INVITE, ["inv"]),
             new Join($plugin, "join", "Join to a faction", Permissions::JOIN),
+            new Close($plugin, "close", "Allow only invited players to join", Permissions::CLOSE),
+            new Open($plugin, "open", "Let anyone join", Permissions::OPEN),
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

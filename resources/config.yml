@@ -24,6 +24,17 @@ language: en
 economy-support: false
 economy-plugin: "EconomyAPI"
 
+# Data provider settings
+# Supported types as of now: yaml, json
+data-provider:
+  type: "YAML"
+  mysql:
+    host: 127.0.0.1
+    user: guest
+    password: secret
+    database: factions-pe
+
+
 # gameplay settings
 gameplay:
   log:

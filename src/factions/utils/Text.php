@@ -26,16 +26,16 @@ final class Text
 {
 
     private function __construct() {}
-    
+
     public static function parse(string $text) : string {
         return self::parseColorVars($text);
     }
-    
+
     public static function getRolePrefix($role) : STRING
     {
         return $role;
     }
-    
+
     public static function parseColorVars(&$string) : STRING
     {
         $string = preg_replace_callback(
@@ -52,7 +52,7 @@ final class Text
             "<under>", "<underline>", "<italic>", "<em>", "<reset>", "<l>",
             "<logo>", "<a>", "<art>", "<n>", "<notice>", "<i>", "<info>",
             "<g>", "<good>", "<b>", "<bad>", "<k>", "<key>", "<v>",
-            "<value>", "<h>", "<highlight>", "<c>", "<command>", "<p>", "<param>", 
+            "<value>", "<h>", "<highlight>", "<c>", "<command>", "<p>", "<param>",
         ];
         $with = ["", "§0", "§1", "§2", "§3", "§4", "§c",
             "§5", "§6", "§6", "§7", "§8", "§8", "§9",
@@ -76,13 +76,13 @@ final class Text
         }
         return $string;
     }
-    
+
     public static function str_replace_first(string $from, string $to, string &$subject)
     {
         $from = '/'.preg_quote($from, '/').'/';
         $subject = preg_replace($from, $to, $subject, 1);
     }
-    
+
     public static function getRelationColor($rel){
         switch(strtolower($rel)) {
             case "neutral":
@@ -96,23 +96,23 @@ final class Text
         }
         return "";
     }
-    
+
     public static function titleize($string){
         return TextFormat::GOLD . str_repeat("_", 7) . ".[ " . TextFormat::WHITE . $string . TextFormat::GOLD . " ]." . str_repeat("_", 7);
     }
-    
+
     public static function aan(string $string){
         if(self::strpos(substr($string, 0, 1), ["a", "e", "o", "i", "u"], 0) === 0) {
             return "an";
         }
         return "a";
     }
-    
+
     public static function getNicedEnum(string $string) {
         # todo
         return $string;
     }
-    
+
     public static function strpos(string $haystack, $needle, $offset = 0) {
         if(!is_array($needle)) $needle = [$needle];
         foreach($needle as $n) {
@@ -120,12 +120,12 @@ final class Text
         }
         return false;
     }
-    
+
     public static function randomColor() {
         $colors = [ "§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9", "§a", "§b", "§c", "§d", "§e", "§f"];
         return $colors[array_rand($colors)];
     }
-    
+
     public static function rainbow(string $text, bool $reverse = false, $repeat = true, $repeatReverse = true, $offset = 0) {
         $colors = ["§4", "§c", "§6", "§e", "§2", "§a", "§b", "§3", "§1", "§9", "§d", "§5", "§f", "§7", "§8"];
         if($reverse) $colors = array_reverse($colors);
@@ -147,7 +147,7 @@ final class Text
         }
         return $r;
     }
-        
+
     /**
      * @param mixed $value
      * @param bool $color = false
@@ -236,6 +236,52 @@ final class Text
         }
 
         return $result;
+    }
+
+    /**
+     * DON"T LOOK AT THIS!
+     */
+    public static function var_dump($value) {
+        $cnt = 0;
+        if(!is_array($value)) $values = [$value];
+        else $values = $value;
+        $o = "";
+        foreach($values as $var){
+            switch(true){
+                case is_array($var):
+                    $o .= str_repeat("  ", $cnt) . "array(" . count($var) . ") {" . PHP_EOL;
+                    foreach($var as $key => $value){
+                        $o .= str_repeat("  ", $cnt + 1) . "[" . (is_integer($key) ? $key : '"' . $key . '"') . "]=>" . PHP_EOL;
+                        ++$cnt;
+                        self::var_dump($value);
+                        --$cnt;
+                    }
+                    $o .= str_repeat("  ", $cnt) . "}" . PHP_EOL;
+                    break;
+                case is_int($var):
+                    $o .= str_repeat("  ", $cnt) . "int(" . TextFormat::AQUA . $var . TextFormat::WHITE . ")" .  PHP_EOL;
+                    break;
+                case is_float($var):
+                    $o .= str_repeat("  ", $cnt) . "float(" . TextFormat::GRAY . $var . TextFormat::WHITE . ")" .  PHP_EOL;
+                    break;
+                case is_bool($var):
+                    $o .= str_repeat("  ", $cnt) . "bool(" . TextFormat::GREEN . ($var === true ? "true" : "false") . TextFormat::WHITE . ")"  .  PHP_EOL;
+                    break;
+                case is_string($var):
+                    $o .= str_repeat("  ", $cnt) . "string(" . TextFormat::AQUA . strlen($var) . TextFormat::WHITE . ")" . TextFormat::GOLD . " \"$var\"" . PHP_EOL;
+                    break;
+                case is_resource($var):
+                    $o .= str_repeat("  ", $cnt) . "resource() of type (" . TextFormat::RED . get_resource_type($var) . TextFormat::WHITE . ")" . PHP_EOL;
+                    break;
+                case is_object($var):
+                    $o .= str_repeat("  ", $cnt) . "object(" . TextFormat::DARK_PURPLE . get_class($var) . TextFormat::WHITE . ")" . PHP_EOL;
+                    break;
+                case is_null($var):
+                    $o .= str_repeat("  ", $cnt) . "NULL" . PHP_EOL;
+                    break;
+            }
+        }
+        FactionsPE::get()->getLogger()->info("var_dump:\n".$o);
     }
 
 }

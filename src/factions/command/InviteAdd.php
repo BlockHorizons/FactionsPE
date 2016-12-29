@@ -63,7 +63,7 @@ class InviteAdd extends Command {
 
         $faction->setInvited($member, true);
         $sender->sendMessage(Localizer::translatable('invite-add-success', [$member->getDisplayName()]));
-        if($member->isOnline()) $p->sendMessage(Localizer::parse('invite-add-inform-target', [
+        if($member->isOnline()) $member->sendMessage(Localizer::parse('invite-add-inform-target', [
             "player" => $sender->getDisplayName(), 
             "faction" => $faction->getName()
             ]));

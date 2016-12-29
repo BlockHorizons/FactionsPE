@@ -30,15 +30,15 @@ final class Relation
 {
 
     private static $relLevels = array(
-        Rel::RECRUIT => 1000,
-        Rel::MEMBER => 2000,
-        Rel::OFFICER => 3000,
-        Rel::LEADER => 4000,
+        self::RECRUIT => 1000,
+        self::MEMBER => 2000,
+        self::OFFICER => 3000,
+        self::LEADER => 4000,
         // Relations
-        Rel::ALLY => 5000,
-        Rel::NEUTRAL => 6000,
-        Rel::TRUCE => 7000,
-        Rel::ENEMY => 8000
+        self::ALLY => 5000,
+        self::NEUTRAL => 6000,
+        self::TRUCE => 7000,
+        self::ENEMY => 8000
     );
 
     private function __construct(){}
@@ -53,21 +53,11 @@ final class Relation
     const NEUTRAL = "neutral";
     const ENEMY = "enemy";
 
-    public static function isRankValid($rank) : bool
-    {
-        $rank = self::fromString($rank);
-        if ($rank === self::MEMBER or
-            $rank === self::OFFICER or
-            $rank === self::LEADER or
-            $rank === self::RECRUIT
-        ) {
-            return true;
-        }
-        return false;
+    public static function isRankValid($rank) : bool {
+        return self::isLowerThan(self::fromString($rank), self::ALLY);
     }
 
-    public static function fromString(string $rel)
-    {
+    public static function fromString(string $rel) {
         switch (strtolower(trim($rel))) {
             case 'ally':
             case 'allies':
@@ -115,8 +105,7 @@ final class Relation
     }
 
 
-    public static function getColor($rel) : string
-    {
+    public static function getColor($rel) : string {
         $rel = self::fromString($rel);
         switch ($rel) {
             case self::ALLY:
@@ -140,9 +129,8 @@ final class Relation
         }
     }
 
-    public static function getAll() : array
-    {
-        return [self::LEADER, self::OFFICER, self::MEMBER, self::RECRUIT, self::NEUTRAL, self::ALLY, self::TRUCE, self::ENEMY];
+    public static function getAll() : array {
+        return [self::RECRUIT, self::MEMBER, self::OFFICER, self::LEADER, self::ALLY, self::TRUCE, self::NEUTRAL, self::ENEMY];
     }
 
     public static function getRelationOfThatToMe(RelationParticipator $me, RelationParticipator $that, bool $ignorePeaceful = false) : string {
@@ -188,21 +176,21 @@ final class Relation
     }
 
     public static function isAtLeast($relA, $relB) : bool {
-        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
-        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
+        $lA = self::$relLevels[$relA] ?? 0;
+        $lB = self::$relLevels[$relB] ?? 0;
         return $lA >= $lB;
     }
 
     public static function isLowerThan($relA, $relB) : bool {
-        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
-        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
+        $lA = self::$relLevels[$relA] ?? 0;
+        $lB = self::$relLevels[$relB] ?? 0;
         return $lA < $lB;
     }
 
     public static function isHigherThan($relA, $relB) : bool {
-        $lA = isset(self::$relLevels[$relA]) ? self::$relLevels[$relA] : 0;
-        $lB = isset(self::$relLevels[$relB]) ? self::$relLevels[$relB] : 0;
-        return $lA < $lB;
+        $lA = self::$relLevels[$relA] ?? 0;
+        $lB = self::$relLevels[$relB] ?? 0;
+        return $lA > $lB;
     }
 
 }
