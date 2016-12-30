@@ -6,20 +6,8 @@ projects:
   FactionsPE:
     path: ""
     libs:
-     - local: Localizer
-     - local: Economizer
-     - local: Dominate
-     - local: Simple-LibLoader
-  Localizer:
-    path: lib/Localizer
-    type: library
-  Economizer:
-    path: lib/Economizer
-    type: library
-  Dominate:
-    path: lib/Dominate
-    type: library
-  Simple-LibLoader:
-    path: src/sll
-    type: library
+     - local: lib/Localizer
+     - local: lib/Economizer
+     - local: lib/Dominate
+     - local: src/sll
 ...
