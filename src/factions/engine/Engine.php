@@ -34,6 +34,15 @@ abstract class Engine implements Listener {
 
 	public function __construct(FactionsPE $main) {
 		$this->main = $main;
+
+		$this->setup();
+	}
+
+	/**
+	 * Do whatever you need
+	 */
+	public function setup() {
+		# Do nothing
 	}
 
 	public function getMain() : FactionsPE {

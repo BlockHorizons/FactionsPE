@@ -35,7 +35,7 @@ class FactionParameter extends Parameter {
 	}
 
 	public static function onClassLoaded() {
-		Parameter::$ERROR_MESSAGES[self::class] = "parameter.faction-type-error";
+		Parameter::$ERROR_MESSAGES[self::class] = "parameter.type-faction-error";
 	}
 
 	/**

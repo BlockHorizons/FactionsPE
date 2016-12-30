@@ -38,7 +38,13 @@ class Member extends OfflineMember {
 	protected $mapAutoUpdating = false;
 	
 	/** @var Faction|null $autoClaimFaction */
-	private $autoClaimFaction;
+	private $getAutoClaimFaction;
+
+	/** 
+	 * Is player chatting with his faction mates?
+	 * @var bool 
+	 */
+	protected $fchat = false;
 
 	public function __construct(Player $player) {
 		parent::__construct($player->getName(), compact("player"));
@@ -85,6 +91,24 @@ class Member extends OfflineMember {
 		$this->mapAutoUpdating = $mapAutoUpdating;
 		// Mark as changed
 		$this->changed();
+	}
+
+	/*
+	 * ----------------------------------------------------------
+	 * F-CHAT
+	 * ----------------------------------------------------------
+	 */
+
+	public function isFactionChatOn() : bool {
+		return $this->fchat;
+	}
+
+	public function toggleFactionChat() {
+		$this->fchat = !$this->fchat;
+	}
+
+	public function setFactionChat(bool $value) {
+		$this->fchat = $value;
 	}
 	
 	/*

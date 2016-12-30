@@ -82,6 +82,10 @@ class MemberData extends Data {
     	}
     }
 
+    public function getPlayer() {
+        return $this->player;
+    }
+
     public function __toArray() {
     	return [
     		"firstPlayed" => $this->firstPlayed,

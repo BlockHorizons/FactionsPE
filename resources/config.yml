@@ -34,6 +34,10 @@ data-provider:
     password: secret
     database: factions-pe
 
+# Chat
+# Set this to false if you want to use PureChat
+# Although this might not make trouble, but let's save computer resources. Shall we?
+chat-formatter: true
 
 # gameplay settings
 gameplay:
@@ -59,4 +63,14 @@ gameplay:
   homes-must-be-in-claimed-territories: true
   can-leave-with-negative-power: false
   can-join-with-negative-power: false
+  chat:
+    player: "{NAME}: {MESSAGE}"
+    member: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}"
+    member-title: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}"
+    faction-chat: "<gold>{BADGE}<gray>{NAME}<white>:<gray> {MESSAGE}"
+    badge:
+      leader: "^"
+      officer: "**"
+      member: "*"
+      recruit: "-"
 ...

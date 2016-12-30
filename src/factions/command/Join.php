@@ -88,10 +88,10 @@ class Join extends Command {
         # TODO: Rewrite this
         $mplayer->resetFactionData();
         $mplayer->setFaction($faction);
-        $mplayer->updateFaction();
         $faction->addMember($mplayer, Relation::RECRUIT);
         // remove invitation
         $faction->setInvited($mplayer, false);
+        $mplayer->updateFaction();
 
         if (Gameplay::get("log.member-join", true)) {
             if ($samePlayer) {

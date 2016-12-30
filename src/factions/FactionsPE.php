@@ -40,13 +40,15 @@ use factions\manager\Permissions;
 use factions\entity\FConsole;
 use factions\permission\Permission;
 use factions\engine\MainEngine;
+use factions\engine\ChatEngine;
 
 define("IN_DEV", file_exists(dirname(__FILE__)."/.dev"));
 
 class FactionsPE extends PluginBase {
 
   private static $engines = [
-    MainEngine::class
+    MainEngine::class,
+    ChatEngine::class,
   ];
 
   /** @var FactionsPE */
