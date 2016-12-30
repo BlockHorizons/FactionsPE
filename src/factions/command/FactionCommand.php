@@ -32,8 +32,7 @@ use pocketmine\command\CommandSender;
 class FactionCommand extends Command
 {
 
-    public function __construct(FactionsPE $plugin)
-    {
+    public function __construct(FactionsPE $plugin) {
         parent::__construct($plugin, 'faction', 'Main Faction command', Permissions::MAIN, ['fac', 'f']);
 
         // Registering subcommands
