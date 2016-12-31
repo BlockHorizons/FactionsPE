@@ -1,0 +1,13 @@
+---
+faction-disband-reason-empty: "The faction :name (:id) has been disbanded since it has no members left."
+faction-disband-reason-unknown: "The faction :name (:id) has been disbanded"
+
+member-faction-changed: "Member::setFactionId() moved <h>:0 <i>aka <h>:1 <i>from <h>:2 <i>aka <h>:3 <i>to <h>:4 <i>aka <h>:5<i>."
+member-leave: ":0 has left :1 faction"
+member-kick: ":by kicked :who from the faction :faction"
+member-created-faction: ":0 created new faction :1"
+player-joined-faction-by-other: ":0 moved the player :1 into the faction :2."
+player-joined-faction: ":0 joined the faction :1."
+new-leader: "Faction :0 (:1) leader was removed. Replacement leader: :2"
+override: ":player set overriding mode to :overriding"
+...

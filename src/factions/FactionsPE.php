@@ -82,7 +82,7 @@ class FactionsPE extends PluginBase {
     Localizer::setParser(function(string $text){
       return Text::parse($text);
     });
-    //$this->saveDefaultConfig();
+    $this->saveDefaultConfig();
     if(Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
       Localizer::$globalLocale = strtolower(trim($lan));
     } else {

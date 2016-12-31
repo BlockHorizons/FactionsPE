@@ -1,0 +1,57 @@
+---
+home-out-of-bounds: "Your faction home has been un-set since it is no longer in your territory."
+
+faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
+faction-disbanded: "<i>The faction :0<i> was disbanded."
+faction-new-leader: "<i>Faction leader <h>:0<i> has been removed. :1<i> has been promoted as the new faction leader."
+faction-leave-with-negative-power: "You can't leave your faction while having negative power"
+faction-leave-as-leader: "Disband faction or promote new leader for this faction to leave"
+member-left-faction: ":0 has left your faction"
+you-left-faction: "You've left :faction faction"
+
+faction-name-not-alpha: "Name must only consist of alphabet letters"
+faction-name-too-long: "Name length exceeds maximum :max length"
+faction-name-too-short: "Name length is smaller then minimum :min length"
+faction-name-taken: "Name is taken by other faction"
+faction-created: "Faction <gold>:name<white> created"
+
+invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> error(s) found:"
+invalid-faction-name-error: ":n<green>: <white>:error"
+
+invite-add-success: "Player <green>:0<white> has been invited"
+player-already-invited: "Player <green>:0<white> is already invited to your faction"
+invite-add-inform-target: "You've been invited to <gold>:faction<white> by <green>:player<white>"
+invite-add-inform-target-suggestion: "Accept invitation by executing: <gold>:command"
+invitation-deleted: "Player <green>:0<white> is no longed invited to your faction"
+not-invited: "Player <green>:0<white> is not even invited"
+
+faction-member-limit-exceeded: "<b>!<white> The faction :0 is at limit of :1 members, so :2 cannot currently join"
+faction-requires-invitations: "You can't join this faction because you're not invited!"
+faction-join-with-negative-power: ":who cannot join a faction with a negative power level."
+new-member-join-inform-faction: "<i>:0 <i>joined <lime>your faction<i>."
+new-member-join-inform-self: "<i>You <i>joined <lime>:0<white> faction"
+new-member-join-inform-other: "<i>:0 <i>successfully joined :1<i>."
+member-tried-join-inform-faction: ":0 tried to join your faction."
+
+faction-already-closed: "Your faction is already closed silly, perhaps you want to open it again? If so try <i>/f open<white>"
+faction-closed: "Faction has been closed. Now players have to be invited to join."
+
+faction-already-opened: "Your faction is already open silly, perhaps you want to close it again? If so try <i>/f close<white>"
+faction-opened: "Faction is now open. Anyone can join."
+
+cant-kick-yourself: "<b>You can't kick yourself.\nYou might want to: :command"
+cant-kick-leader: "<b>The leader cannot be kicked."
+cant-kick-higher-rank: "<b>You can't kick people of higher rank than yourself."
+cant-kick-same-rank: "<b>You can't kick people of the same rank as yourself."
+cant-kick-member-with-negative-power: "<b>You can't kick that person until their power is positive."
+member-kicked-inform-faction: ":by<i> kicked :who<i> from the faction! :O"
+member-kicked-inform-target: ":by<i> kicked you from :faction<i>! :O"
+member-kicked-from-other-faction: "<i>You kicked :who<i> from the faction :faction<i>!"
+
+help-header: "--- Showing help page :page of :max ---"
+help-line: ":color/f :name:<white>&r :desc"
+no-help-for-command: "<red>No help for command: :command"
+
+overriding-enabled: "You <green>enabled<white> overriding mode"
+overriding-disabled: "You <red>disabled<white> overriding mode"
+...

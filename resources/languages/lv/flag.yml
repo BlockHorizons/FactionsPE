@@ -1,0 +1,57 @@
+---
+open-desc: "Can the faction be joined without an invite?"
+open-desc-no: "An invite is required to join."
+open-desc-yes: "Anyone can join. No invite required."
+
+monsters-desc: "Can monsters spawn in this territory?"
+monsters-desc-no: "Monsters can NOT spawn in this territory."
+monsters-desc-yes: "Monsters can spawn in this territory."
+
+animals-desc: "Can animals spawn in this territory?"
+animals-desc-no: "Animals can NOT spawn in this territory."
+animals-desc-yes: "Animals can spawn in this territory."
+
+power_loss-desc: "Is power lost on death in this territory?"
+power_loss-desc-no: "Power is NOT lost on death in this territory."
+power_loss-desc-yes: "Power is lost on death in this territory."
+
+pvp-desc: "Can you PVP in territory?"
+pvp-desc-no: "You can NOT PVP in this territory."
+pvp-desc-yes: "You can PVP in this territory."
+
+friendly_fire-desc: "Can allies hurt each other in this territory?"
+friendly_fire-desc-no: "Friendly fire is off here."
+friendly_fire-desc-yes: "Friendly fire is on here."
+
+explosions-desc: "Can explosions occur in this territory?"
+explosions-desc-no: "Explosions can occur in this territory."
+explosions-desc-yes: "Explosions can NOT occur in this territory."
+
+offline_explosions-desc: "Can explosions occur if faction is offline?"
+offline_explosions-desc-no: "No explosions if faction is offline."
+offline_explosions-desc-yes: "Explosions if faction is offline."
+
+fire_spread-desc: "Can fire spread in territory?"
+fire_spread-desc-no: "Fire can NOT spread in this territory."
+fire_spread-desc-yes: "Fire can spread in this territory."
+
+ender_grief-desc: "Can endermen grief in this territory?"
+ender_grief-desc-no: "Endermen can NOT grief in this territory."
+ender_grief-desc-yes: "Endermen can grief in this territory."
+
+zombie_grief-desc: "Can zombies break doors in this territory?"
+zombie_grief-desc-no: "Zombies can NOT break doors in this territory."
+zombie_grief-desc-yes: "Zombies can break doors in this territory."
+
+peaceful-desc: "Is the faction in truce with everyone?"
+peaceful-desc-no: "The faction relations work as usual."
+peaceful-desc-yes: "The faction is in truce with everyone."
+
+inf_power-desc: "Does the faction have infinite power?"
+inf_power-desc-no: "The faction power works as usual."
+inf_power-desc-yes: "The faction has infinite power."
+
+permanent-desc: "Is the faction immune to deletion?"
+permanent-desc-no: "The faction can NOT be deleted."
+permanent-desc-yes: "The faction can be deleted."
+...

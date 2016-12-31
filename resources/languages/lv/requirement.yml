@@ -1,0 +1,13 @@
+---
+# Simple requirements
+op-error: "You must be op to execute this command"
+not-op-error: "You can't be op to execute this command"
+alive-error: "You must be alive to execute this command"
+dead-error: "You must be dead to execute this command"
+player-error: "Please run this command from in-game"
+
+faction-permission-error: "You don't have permission to :perm_desc"
+
+out-faction-error: "You must be without a faction to execute this command"
+in-faction-error: "You must be in faction to execute this command"
+...

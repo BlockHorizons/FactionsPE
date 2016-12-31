@@ -15,20 +15,20 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-enabling: "Aktivizēts..."
+enabling: "Aktivizē..."
 disabling: "Deaktivizē..."
 
 enabled: "Aktivizēts"
-disabled: "Deaktivizē"
+disabled: "Deaktivizēts"
 
 dataprovider-set: "Datu sniedzējs: <gold>:0"
-dataprovider-error: "Datu sniedzējs kļūme: :0"
+dataprovider-error: "Datu sniedzēja kļūme: :0"
 
-invalid-locale: "Lokālais kods ':locale' nav derīgs ISO-639_1 Valodas kods"
+invalid-locale: "Lokālais kods ':locale' nav derīgs ISO-639_1 valodas kods"
 
-factions-loaded: "<golds>:0white> frakcija(s) tika ielādētas"
+factions-loaded: "<gold>:0<white> frakcija(s) tika ielādētas"
 
-economy-plugin-not-found: "Ekonomikas spraudnis pēc vārda nav atrasts <gold>:name<white> netika atrasts"
+economy-plugin-not-found: "Ekonomikas spraudnis pēc vārda <gold>:name<white> netika atrasts"
 economy-plugin-not-supported: "Spraudnis <gold>:name<white> nav atbalstīts ekonomikas sniedzējs"
 economy-plugin-selected: "Ekonomikas sniedzējs: <gold>:name"
 economy-not-ready: "Ekonomikas sniedzējs <gold>:name<white> nav gatavs lietošanai!"
