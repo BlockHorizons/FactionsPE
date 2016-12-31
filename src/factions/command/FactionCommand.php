@@ -37,12 +37,15 @@ class FactionCommand extends Command
 
         // Registering subcommands
         $childs = [
+            new Help($plugin, "help", "Show FactionsPE command help page", Permissions::HELP, ["?"]),
             new CreateFaction($plugin, 'create', 'Create a new faction', Permissions::CREATE, ['make', 'new']),
             new LeaveFaction($plugin, 'leave', 'Leave your current faction', Permissions::LEAVE, ['quit']),
             new Invite($plugin, "invite", "Invite someone to your faction", Permissions::INVITE, ["inv"]),
             new Join($plugin, "join", "Join to a faction", Permissions::JOIN),
             new Close($plugin, "close", "Allow only invited players to join", Permissions::CLOSE),
             new Open($plugin, "open", "Let anyone join", Permissions::OPEN),
+            new Kick($plugin, "kick", "Kick a member from a faction", Permissions::KICK),
+            new Override($plugin, "override", "Turn on overriding mode", Permissions::OVERRIDE, ["admin"]),
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

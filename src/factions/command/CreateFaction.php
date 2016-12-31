@@ -21,6 +21,7 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
+use dominate\requirement\SimpleRequirement;
 
 use localizer\Localizer;
 
@@ -40,6 +41,7 @@ class CreateFaction extends Command {
 
 	public function setup() {
 		$this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
+		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
 		$this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
 	}
 

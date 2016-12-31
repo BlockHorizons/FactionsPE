@@ -53,6 +53,7 @@ final class Permissions {
     const FLAG_LIST = "factions.flag.list";
     const FLAG_SET = "factions.flag.set";
     const FLAG_SHOW = "factions.flag.show";
+    const HELP = "factions.help";
     const HOME = "factions.home";
     const INFO = "factions.info";
     const INVITE = "factions.invite";

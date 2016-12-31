@@ -47,6 +47,8 @@ gameplay:
     faction-creation: true
     member-leave: true
     member-join: true
+    member-kick: true
+    override: true
   power:
     player:
       max: 10

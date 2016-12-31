@@ -30,6 +30,7 @@ final class Relation
 {
 
     private static $relLevels = array(
+        self::NONE => 0,
         self::RECRUIT => 1000,
         self::MEMBER => 2000,
         self::OFFICER => 3000,
@@ -44,6 +45,7 @@ final class Relation
     private function __construct(){}
 
     // ID's has to be human readable for configurations
+    const NONE = "none";
     const LEADER = "leader";
     const OFFICER = "officer";
     const MEMBER = "member";

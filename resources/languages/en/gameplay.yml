@@ -38,4 +38,20 @@ faction-closed: "Faction has been closed. Now players have to be invited to join
 
 faction-already-opened: "Your faction is already open silly, perhaps you want to close it again? If so try <i>/f close<white>"
 faction-opened: "Faction is now open. Anyone can join."
+
+cant-kick-yourself: "<b>You can't kick yourself.\nYou might want to: :command"
+cant-kick-leader: "<b>The leader cannot be kicked."
+cant-kick-higher-rank: "<b>You can't kick people of higher rank than yourself."
+cant-kick-same-rank: "<b>You can't kick people of the same rank as yourself."
+cant-kick-member-with-negative-power: "<b>You can't kick that person until their power is positive."
+member-kicked-inform-faction: ":by<i> kicked :who<i> from the faction! :O"
+member-kicked-inform-target: ":by<i> kicked you from :faction<i>! :O"
+member-kicked-from-other-faction: "<i>You kicked :who<i> from the faction :faction<i>!"
+
+help-header: "--- Showing help page :page of :max ---"
+help-line: ":color/f :name:<white>&r :desc"
+no-help-for-command: "<red>No help for command: :command"
+
+overriding-enabled: "You <green>enabled<white> overriding mode"
+overriding-disabled: "You <red>disabled<white> overriding mode"
 ...

@@ -35,6 +35,7 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable {
 	const REASON_LEAVE 		= 0x1;
 	const REASON_JOIN 		= 0x2;
 	const REASON_CREATE 	= 0x3;
+	const REASON_KICK		= 0x4;
 
 	/** @var Faction */
 	protected $faction;

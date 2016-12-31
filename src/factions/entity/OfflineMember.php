@@ -140,7 +140,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	}
 
 	public function getRole() : string {
-		return $this->role;
+		return $this->role ?? Relation::NONE;
 	}
 
 	/*
@@ -223,8 +223,6 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 	}
 
 	public function setOverriding(bool $overriding) {
-		if ($overriding === false) $overriding = null;
-	    if ($this->overriding === $overriding) return;
 	    $this->overriding = $overriding;
 	}
 

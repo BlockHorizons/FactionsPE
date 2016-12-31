@@ -23,6 +23,7 @@ use factions\FactionsPE;
 use factions\relation\RelationParticipator;
 use factions\relation\Relation;
 use factions\entity\IMember;
+use factions\manager\Factions;
 
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;
@@ -47,7 +48,7 @@ class FConsole implements IMember, RelationParticipator {
    * @return Faction
    */
   public function getFaction() : Faction {
-    return Factions::getById(FactionsPE::FACTION_ID_NONE);
+    return Factions::getById(FactionsPE::NONE);
   }
 
   public function setFaction(Faction $faction) {

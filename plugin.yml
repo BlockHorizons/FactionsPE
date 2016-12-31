@@ -24,6 +24,7 @@ permissions:
     default: false
     description: grant all faction permissions
     children:
+      factions.help: {description: see help page, default: true}
       factions.access: {description: manage access, with the proper fperm, default: true}
       factions.access.faction: {description: grant faction access, with the proper fperm, default: true}
       factions.access.player: {description: grant player access, with the proper fperm, default: true}
