@@ -46,6 +46,7 @@ class FactionCommand extends Command
             new Open($plugin, "open", "Let anyone join", Permissions::OPEN),
             new Kick($plugin, "kick", "Kick a member from a faction", Permissions::KICK),
             new Override($plugin, "override", "Turn on overriding mode", Permissions::OVERRIDE, ["admin"]),
+            new Map($plugin, "map", "Show Factions map", Permissions::MAP),
         ];
         foreach ($childs as $child) {
             $this->addChild($child);
