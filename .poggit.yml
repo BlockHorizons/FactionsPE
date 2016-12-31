@@ -6,6 +6,7 @@ branches:
 projects:
   FactionsPE:
     path: ""
+    model: default
     libs:
      - local: lib/Localizer
      - local: lib/Economizer
