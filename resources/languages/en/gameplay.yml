@@ -1,4 +1,6 @@
 ---
+command-child-none: "No command by token <blue>:token<white> was found"
+
 home-out-of-bounds: "Your faction home has been un-set since it is no longer in your territory."
 
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
