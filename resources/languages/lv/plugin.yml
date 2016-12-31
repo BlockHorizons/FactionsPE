@@ -1,0 +1,34 @@
+#
+#   FactionsPE: PocketMine-MP Plugin
+#   Copyright (C) 2016  Chris Prime
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+enabling: "Aktivizēts..."
+disabling: "Deaktivizē..."
+
+enabled: "Aktivizēts"
+disabled: "Deaktivizē"
+
+dataprovider-set: "Datu sniedzējs: <gold>:0"
+dataprovider-error: "Datu sniedzējs kļūme: :0"
+
+invalid-locale: "Lokālais kods ':locale' nav derīgs ISO-639_1 Valodas kods"
+
+factions-loaded: "<golds>:0white> frakcija(s) tika ielādētas"
+
+economy-plugin-not-found: "Ekonomikas spraudnis pēc vārda nav atrasts <gold>:name<white> netika atrasts"
+economy-plugin-not-supported: "Spraudnis <gold>:name<white> nav atbalstīts ekonomikas sniedzējs"
+economy-plugin-selected: "Ekonomikas sniedzējs: <gold>:name"
+economy-not-ready: "Ekonomikas sniedzējs <gold>:name<white> nav gatavs lietošanai!"
