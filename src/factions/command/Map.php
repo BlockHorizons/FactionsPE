@@ -27,12 +27,13 @@ use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 use factions\utils\Collections;
+use factions\manager\Members;
 
 class Map extends Command {
 	
 	public function setup() {
 		# /faction map <auto-update>
-		$this->addParameter(new Parameter("auto-update", Parameter::TYPE_BOOLEAN));
+		$this->addParameter((new Parameter("auto-update", Parameter::TYPE_BOOLEAN))->setDefaultValue(null));
 	}
 
 	public function execute(CommandSender $sender, $label, array $args) {
@@ -40,7 +41,7 @@ class Map extends Command {
 
 		if (isset($args[0])) {
             $val = $args[0];
-            $fsender = FPlayer::get($sender);
+            $fsender = Members::get($sender);
             if ($val) {
                 $fsender->setMapAutoUpdating(true);
                 $fsender->sendMessage(Localizer::translatable("map-auto-update-enabled"));
