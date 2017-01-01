@@ -21,6 +21,7 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
+use dominate\requirement\SimpleRequirement;
 
 use localizer\Localizer;
 
@@ -34,6 +35,7 @@ class Map extends Command {
 	public function setup() {
 		# /faction map <auto-update>
 		$this->addParameter((new Parameter("auto-update", Parameter::TYPE_BOOLEAN))->setDefaultValue(null));
+		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
 	}
 
 	public function execute(CommandSender $sender, $label, array $args) {
