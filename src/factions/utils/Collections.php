@@ -69,7 +69,7 @@ class Collections {
                 }
                 if (!$overflown && $chrIdx >= strlen(self::MAP_KEY_CHARS)) $overflown = true;
                 $herePs = $topLeftPs->add($dx, 0, $dz);
-                $hereFaction = Plots::getFactionAt(Plots::fromHash($herePs->x . ":" . $herePs->z . ":" . $observer->getLevel()->getName()));
+                $hereFaction = $herePs->getOwnerFaction();
                 $contains = in_array($hereFaction, $fList, true);
                 if ($hereFaction->isNone()) {
                     $row .= self::MAP_KEY_WILDERNESS;
