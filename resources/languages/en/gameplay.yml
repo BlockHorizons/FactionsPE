@@ -56,8 +56,8 @@ no-help-for-command: "<red>No help for command: :command"
 overriding-enabled: "You <green>enabled<white> overriding mode"
 overriding-disabled: "You <red>disabled<white> overriding mode"
 
-command-child-none: "<i>The sub command <aqua>%var0 <i>couldn't be found."
-command-too-ambiguous: "<i>The token %var0 <i>is ambiguous."
-command-suggestion-header: "<i>No sub command by token <aqua>%var0<i> was found, did you meant:"
-command-suggestion: "<gold>%var1 <gray>-<white> %var2"
+command-child-none: "<i>The sub command <aqua>:0 <i>couldn't be found."
+command-too-ambiguous: "<i>The token :0 <i>is ambiguous."
+command-suggestion-header: "<i>No sub command by token <aqua>:0<i> was found, did you meant:"
+command-suggestion: "<gold>:1 <gray>-<white> :2"
 ...
