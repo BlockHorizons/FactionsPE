@@ -68,16 +68,12 @@ class Plots {
     /**
      * Will stringify plot position to identify it
      *
-     * @param Position $pos
-     * @param bool $chunk = false, Set to true if components in Position is chunk coordinates.
+     * @param Plot $pos
      * @return string
      */
-    public static function hash(Position $pos, $chunk = false) : string
+    public static function hash(Plot $pos) : string
     {
-        if (!$chunk) 
-            return ($pos->x >> 4) . ":" . ($pos->z >> 4) . ":" . $pos->level->getName();
-        else 
-            return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
+        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
     }
 
 

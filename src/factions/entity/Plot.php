@@ -81,7 +81,9 @@ class Plot extends Position {
     }
 
     public function addX($x) : Plot {
-        return $this->add($x);
+        $x = ($x instanceof Vector3) ? $x->x : $x;
+        $this->add($x, 0, 0);
+        return $this;
     }
 
     public function addZ($z) : Plot {

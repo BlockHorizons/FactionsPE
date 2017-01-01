@@ -49,7 +49,7 @@ class Collections {
         $halfHeight = $height / 2;
         $width = $halfWidth * 2 + 1;
         $height = $halfHeight * 2 + 1;
-        $topLeftPs = new Plot($centerPs->x + -$halfWidth, $centerPs->z + -$halfHeight);
+        $topLeftPs = new Plot($centerPs->x + -$halfWidth, $centerPs->z + -$halfHeight, $observer->getLevel());
         // Get the compass
         $asciiCompass = ASCIICompass::getASCIICompass($inDegrees, TextFormat::RED, TextFormat::GOLD);
         // Make room for the list of names
@@ -68,7 +68,7 @@ class Collections {
                     continue;
                 }
                 if (!$overflown && $chrIdx >= strlen(self::MAP_KEY_CHARS)) $overflown = true;
-                $herePs = $topLeftPs->add($dx, 0, $dz);
+                $herePs = $topLeftPs->addX($dx)->addZ($dz);
                 $hereFaction = $herePs->getOwnerFaction();
                 $contains = in_array($hereFaction, $fList, true);
                 if ($hereFaction->isNone()) {
