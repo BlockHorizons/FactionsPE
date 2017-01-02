@@ -68,15 +68,18 @@ class Collections {
                     continue;
                 }
                 if (!$overflown && $chrIdx >= strlen(self::MAP_KEY_CHARS)) $overflown = true;
-                $herePs = $topLeftPs->addX($dx)->addZ($dz);
+
+                # TODO: Rewrite this
+                $herePs = new Plot($topLeftPs->x + $dx, $topLeftPs->z + $dz, $topLeftPs->level);
                 $hereFaction = $herePs->getOwnerFaction();
                 $contains = in_array($hereFaction, $fList, true);
+                
                 if ($hereFaction->isNone()) {
                     $row .= self::MAP_KEY_WILDERNESS;
                 } elseif (!$contains && $overflown) {
                     $row .= self::MAP_KEY_OVERFLOW;
                 } else {
-                    if (!$contains) $fList[$chars{$chrIdx++}] = $hereFaction;;
+                    if (!$contains) $fList[$chars{$chrIdx++}] = $hereFaction;
                     $fchar = array_search($hereFaction, $fList);
                     $row .= $hereFaction->getColorTo(Members::get($observer)) . $fchar;
                 }

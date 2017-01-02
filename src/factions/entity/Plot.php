@@ -36,7 +36,6 @@ class Plot extends Position {
      */
     public function __construct($x, $z = 0, Level $level = null)
     {
-        parent::__construct($x, 0, $z, $level);
         if($x instanceof Position) {
             $this->x = $x->x >> 4;
             $this->z = $x->z >> 4;
@@ -77,18 +76,18 @@ class Plot extends Position {
     }
 
     public function hash() : string {
-        return $this->x . ":" . $this->z . ":" . $this->level->getName();
+        return Plots::hash($this);
     }
 
     public function addX($x) : Plot {
         $x = ($x instanceof Vector3) ? $x->x : $x;
-        $this->add($x, 0, 0);
+        $this->x += $x;
         return $this;
     }
 
     public function addZ($z) : Plot {
         $z = ($z instanceof Vector3) ? $z->z : $z;
-        $this->add(0, 0, $z);
+        $this->z += $z;
         return $this;
     }
 

@@ -21,7 +21,8 @@ namespace factions\relation;
 
 use factions\utils\Gameplay;
 use factions\utils\Text;
-use pocketmine\factions\TextFormat;
+
+use pocketmine\utils\TextFormat;
 
 use factions\entity\Faction;
 use factions\entity\IMember;
