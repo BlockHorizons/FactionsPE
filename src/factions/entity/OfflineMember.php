@@ -178,12 +178,28 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator 
 			$p = min(
 				max(
 					$this->power,
-					Gameplay::get('min-player-power', -10)
+					$this->getPowerMin()
 				),
-				Gameplay::get('max-player-power', 10)
+				$this->getPowerMax()
 			);
 		}
 		return $p - $this->getPowerBoost();
+	}
+
+	public function getDefaultPower() : int {
+		return (int) Gameplay::get('power.player.default', 10);
+	}
+
+	public function getPowerPerDeath() : int {
+		return (int) Gameplay::get('power.player.per-death', 5);
+	}
+
+	public function getPowerMax() : int {
+		return (int) Gameplay::get('power.player.max', 100);
+	}
+
+	public function getPowerMin() : int {
+		return (int) Gameplay::get('power.player.min', -100);
 	}
 
 	public function hasPowerBoost() : bool {

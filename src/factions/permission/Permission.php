@@ -24,6 +24,7 @@ use factions\relation\Relation;
 use factions\FactionsPE;
 use factions\entity\IMember;
 use factions\manager\Permissions;
+use factions\entity\Faction;
 
 use localizer\Translatable;
 
@@ -48,7 +49,7 @@ class Permission {
     const TERRITORY = "territory";
     const ACCESS    = "access";
     const CLAIMNEAR = "claimnear";
-    const RELATION  = "Relation";
+    const RELATION  = "relation";
     const DISBAND   = "disband";
     const FLAGS     = "flags";
     const PERMS     = "perms";
@@ -180,13 +181,13 @@ class Permission {
 
     public function has(IMember $player, Faction $faction = null) : bool {
         $faction = !$faction ? $player->getFaction() : $faction;
-        $Relation = $faction->getRelationationTo($player);
-        $ret =  $player->isOverriding() ? true : $faction->isPermitted($this, $Relation);
+        $Relation = $faction->getRelationTo($player);
+        $ret =  $player->isOverriding() ? true : $faction->isPermitted($Relation, $this);
         return $ret;
     }
 
     public function factionHas(Faction $factionA, Faction $factionB) {
-        $Relation = $factionA->getRelationationTo($factionB);
+        $Relation = $factionA->getRelationTo($factionB);
         return $factionB->isPermitted($this, $Relation);
     }
 

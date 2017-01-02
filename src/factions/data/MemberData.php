@@ -66,7 +66,7 @@ class MemberData extends Data {
     public function __construct(array $source) {
     	$this->firstPlayed = $source["firstPlayed"] ?? time();
     	$this->lastPlayed = $source["lastPlayed"] ?? time();
-    	$this->power = $source["power"] ?? 0;
+    	$this->power = $source["power"] ?? $this->getDefaultPower(); # What if not extended by IMember ?
     	$this->title = $source["title"] ?? null;
     	if(isset($source["player"])){
 	    	if($source["player"] instanceof Player) {

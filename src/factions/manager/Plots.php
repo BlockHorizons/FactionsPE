@@ -29,6 +29,8 @@ use factions\entity\IMember;
 use factions\FactionsPE;
 use factions\event\LandChangeEvent;
 
+use localizer\Localizer;
+
 class Plots {
 
     /** @var string[] hash => faction */
@@ -91,7 +93,7 @@ class Plots {
      * @param Faction $faction
      * @return Plot[]
      */
-    public function getFactionPlots(Faction $faction) : array
+    public static function getFactionPlots(Faction $faction) : array
     {
         $r = [];
         foreach (self::$plots as $plot => $faction) {
@@ -122,13 +124,18 @@ class Plots {
      * Try claim more than one chunk
      * @param Faction $newFaction
      * @param IMember $player
-     * @param array $chunks
+     * @param Plot[] $plots
      */
-    public static function tryClaim(Faction $newFaction, IMember $player, array $chunks)
+    public static function tryClaim(Faction $newFaction, IMember $player, array $plots)
     {
-        foreach ($chunks as $chunk) {
-            $chunk->setComponents($chunk->x << 4, 0, $chunk->z << 4);
-            self::claim($newFaction, $player, $chunk, false);
+        if($newFaction->isNone()) {
+            foreach ($plots as $plot) {
+                $plot->unclaim($newFaction, $player);
+            }
+        } else {
+            foreach ($plots as $plot) {
+                $plot->claim($newFaction, $player);
+            }
         }
     }
 
@@ -149,10 +156,19 @@ class Plots {
                 if($e->isCancelled()) return false;
             }
         } else {
+            if(!$silent && $player) $player->sendMessage(Localizer::translatable('plot-already-claimed', [
+                "x" => $plot->x,
+                "z" => $plot->z, 
+                "faction" => $oldFaction->getName()
+            ]));
             return false;
         }
         self::$plots[$plot->hash()] = $faction->getId();
-        if (!$silent && $player) $player->sendMessage(Localizer::translatable('plot-claimed', [(($pos->x >> 4) . ":" . ($pos->z >> 4)), $oldFaction->getName()]));
+        if (!$silent && $player) $player->sendMessage(Localizer::translatable('plot-claimed', [
+            "x" => $plot->x,
+            "z" => $plot->z, 
+            "faction" => $faction->getName()
+        ]));
         return true;
     }
 
@@ -163,7 +179,7 @@ class Plots {
      * @return bool
      */
     public static function unclaim(Plot $plot, $silent = false) : bool {
-        if (($id = self::getOwnerId($pos, $chunk)) !== Faction::NONE) {
+        if (($id = self::getOwnerId($plot)) !== Faction::NONE) {
             if (($faction = Factions::getById($id)) instanceof Faction) {
                 if (!$silent) {
                     $player = $faction->getLeader();
@@ -186,7 +202,7 @@ class Plots {
      * @param Level $world
      * @return Plot[]
      */
-    public static function getFactionPlotsInWorld(Faction $faction, Level $world) : array
+    public static function getFactionPlotsInLevel(Faction $faction, Level $world) : array
     {
         $plots = self::getFactionPlots($faction);
         $r = [];

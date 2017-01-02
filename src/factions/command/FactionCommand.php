@@ -47,6 +47,8 @@ class FactionCommand extends Command
             new Kick($plugin, "kick", "Kick a member from a faction", Permissions::KICK),
             new Override($plugin, "override", "Turn on overriding mode", Permissions::OVERRIDE, ["admin"]),
             new Map($plugin, "map", "Show Factions map", Permissions::MAP),
+            new Claim($plugin, "claim", "Claim this plot", Permissions::CLAIM),
+            new Unclaim($plugin, "unclaim", "Unclaim this plot", Permissions::UNCLAIM)
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

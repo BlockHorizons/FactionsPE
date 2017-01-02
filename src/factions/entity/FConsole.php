@@ -91,6 +91,22 @@ class FConsole implements IMember, RelationParticipator {
     return PHP_INT_MAX;
   }
 
+  public function getDefaultPower() : int {
+    return $this->getPower();
+  }
+
+  public function getPowerMax() : int {
+    return $this->getPower();
+  }
+
+  public function getPowerMin() : int {
+    return $this->getPower();
+  }
+
+  public function getPowerPerDeath() : int {
+    return 0;
+  }
+
   public function getPowerBoost() : int {
     return PHP_INT_MAX;
   }

@@ -68,4 +68,29 @@ cant-hurt-in-their-territory: "<i>You can't hurt :0<i> in their own territory un
 cant-hurt-allies: "<i>You can't hurt allies<i>."
 cant-hurt-factionless: "<i>You can't hurt players who are not currently in a faction."
 cant-hurt-while-factionless: "<i>You can't hurt other players until you join a faction."
+
+invalid-radius: "<rose>If you specify radius, it must be at least 1."
+radius-exceeds-allowed: "<b>The maximum radius allowed is <h>:0<b>."
+
+plot-claimed: "Plot at <green>:x<white>, <green>:z<white> is now owned by <green>:faction"
+plot-unclaimed: "Plot at <green>:x<white>, <green>:z<white> now belongs to wilderness"
+plot-already-claimed: "Plot at <green>:x<white>, <green>:z<white> already belongs to your faction <green>:faction"
+
+# MainEngine
+claiming-disabled-in-world: "<b>Land claiming is disabled in <h>:0<b>."
+not-enough-members-to-claim: "<b>Factions must have at least <h>:0<b> members to claim land."
+claim-limit-reached: "<b>Limit reached. You can't claim more land."
+not-enough-power-to-claim: "<b>You don't have enough power to claim that land."
+plot-must-be-connected-to-owned-one: "<b>You can only claim additional land which is connected to your first claim or controlled by another faction!"
+plot-must-be-connected-faction-territory: "<b>You can only claim additional land which is connected to your first claim!"
+claim-from-others-not-allowed: "<b>You may not claim land from others."
+cant-claim-due-to-relation: "<b>You can't claim this land due to your relation with the current owner."
+cant-claim-owner-too-strong: ":0<i> owns this land and is strong enough to keep it."
+must-start-claim-at-border: "<b>You must start claiming land at the border of the territory."
+no-perm-to-claim-for: "<b>You don't have permission to claim land for <h>:0<b>."
+painbuild-warning: "<b>It is painful to build in the territory of :0<b>."
+
+no-powerloss-due-to-faction: "<i>You didn't lose any power since the territory you died in works that way."
+no-powerloss-due-to-world: "<i>You didn't lose any power due to the world you died in."
+power-level-inform-on-death: "<i>Your power is now <h>:0 / :1"
 ...

@@ -583,7 +583,7 @@ class Faction extends FactionData implements RelationParticipator {
 	 * @param Permission|string $perm
 	 * @return bool
 	 */
-	public function isPermitted(string $rel, $perm) : bool {
+	public function isPermitted($rel, $perm) : bool {
         return in_array($rel, $this->getPermitted($perm), true);
 	}
 
@@ -672,7 +672,7 @@ class Faction extends FactionData implements RelationParticipator {
 	 */
 
 	public function getAllPlots() : array {
-		return Plots::get()->getFactionPlots($this);
+		return Plots::getFactionPlots($this);
 	}
 
 	public function getPlotsCountInLevel(Level $level) : int {
@@ -680,7 +680,7 @@ class Faction extends FactionData implements RelationParticipator {
 	}
 
 	public function getPlotsInLevel(Level $level) : array {
-		return Plots::get()->getPlotsInLevel($level, $this);
+		return Plots::getFactionPlotsInLevel($this, $level);
 	}
 
 	public function hasLandInflation() : bool {

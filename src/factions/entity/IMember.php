@@ -85,6 +85,14 @@ interface IMember {
 
 	public function getPower(bool $limit = true) : int;
 
+	public function getDefaultPower() : int;
+
+	public function getPowerMax() : int;
+
+	public function getPowerMin() : int;
+
+	public function getPowerPerDeath() : int;
+
 	public function hasPowerBoost() : bool;
 
 	public function setPowerBoost(int $boost);

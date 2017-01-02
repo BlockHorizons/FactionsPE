@@ -53,7 +53,7 @@ class Plot extends Position {
         Plots::unclaim($this, false);
     }
 
-    public function claim(Faction $faction, IFPlayer $player = null) {
+    public function claim(Faction $faction, IMember $player = null) {
         if ($player === null) {
             $player = $faction->getLeader();
         }
