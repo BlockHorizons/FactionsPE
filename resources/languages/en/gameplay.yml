@@ -56,10 +56,10 @@ no-help-for-command: "<red>No help for command: :command"
 overriding-enabled: "You <green>enabled<white> overriding mode"
 overriding-disabled: "You <red>disabled<white> overriding mode"
 
-command-child-none: "<i>The sub command <aqua>:0 <i>couldn't be found."
-command-too-ambiguous: "<i>The token :0 <i>is ambiguous."
-command-suggestion-header: "<i>No sub command by token <aqua>:0<i> was found, did you meant:"
-command-suggestion: "<gold>:1 <gray>-<white> :2"
+command-child-none: "<i>The sub command <aqua>:token <i>couldn't be found."
+command-too-ambiguous: "<i>The token :token <i>is ambiguous."
+command-suggestion-header: "<i>No sub command by token <aqua>:token<i> was found, did you meant:"
+command-suggestion: "<gold>:match <gray>-<white> :desc"
 
 # Combat
 pvp-disabled-in: "<i>PVP is disabled in :0."
