@@ -10,7 +10,7 @@ FactionsPE is currently installed on my server: __synch.scalacube.org:19132__
 As of 30th December, the FactionsPE is now usable. Check out how to install this plugin [at the wiki](https://github.com/Chris-Prime/FactionsPE/wiki/Installation) :+1:
 
 ###This project is under heavy development.
-Estimated release date - 31. December.
+Project is now considered a stable for production, feel free to use.
 
 ###Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
