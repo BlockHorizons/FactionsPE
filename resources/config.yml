@@ -36,7 +36,6 @@ data-provider:
 
 # Chat
 # Set this to false if you want to use PureChat
-# Although this might not make trouble, but let's save computer resources. Shall we?
 chat-formatter: true
 
 # gameplay settings
@@ -54,6 +53,7 @@ gameplay:
       max: 100
       min: -100
       per-death: 5
+      default: 10
   faction:
     destroy-empty-factions: true
     member-limit: 10

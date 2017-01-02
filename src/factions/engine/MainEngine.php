@@ -84,7 +84,7 @@ class MainEngine extends Engine {
         }
         catch(\Exception $throwable) {
             $event->setCancelled(true);
-            echo $throwable->getTraceAsString();
+            // echo $throwable->getTraceAsString();
         }
     }
 
