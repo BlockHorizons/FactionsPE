@@ -15,6 +15,7 @@ faction-name-too-long: "Name length exceeds maximum :max length"
 faction-name-too-short: "Name length is smaller then minimum :min length"
 faction-name-taken: "Name is taken by other faction"
 faction-created: "Faction <gold>:name<white> created"
+faction-create-insufficient-fund: "You don't have enough money to create faction! You have <gold>:has<white> although you need <gold>:need<white>."
 
 invalid-faction-name: "Chosen name is not valid. <yellow>:count<white> error(s) found:"
 invalid-faction-name-error: ":n<green>: <white>:error"

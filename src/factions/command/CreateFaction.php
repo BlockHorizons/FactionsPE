@@ -51,7 +51,7 @@ class CreateFaction extends Command {
 		if(FactionsPE::get()->economyEnabled()) {
 			if($sender instanceof Player) {
 				if(($has = FactionsPE::get()->getEconomy()->getMoney($sender)) < ($need = Gameplay::get('price.faction-creation', 0)) ) {
-					$sender->sendMessage(Localizer::translatable('insufficient-fund', [
+					$sender->sendMessage(Localizer::translatable('faction-create-insufficient-fund', [
 						"has" => $has,
 						"need" => $need
 						]));
