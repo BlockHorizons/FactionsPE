@@ -41,6 +41,7 @@ use factions\entity\FConsole;
 use factions\permission\Permission;
 use factions\engine\MainEngine;
 use factions\engine\ChatEngine;
+use factions\engine\CombatEngine;
 
 define("IN_DEV", file_exists(dirname(__FILE__)."/.dev"));
 
@@ -49,6 +50,7 @@ class FactionsPE extends PluginBase {
   private static $engines = [
     MainEngine::class,
     ChatEngine::class,
+    CombatEngine::class,
   ];
 
   /** @var FactionsPE */
@@ -143,6 +145,8 @@ class FactionsPE extends PluginBase {
     Plots::saveAll();
     Flags::saveAll();
     Permissions::saveAll();
+
+    Flags::flush();
 
     if($this->getDataProvider() instanceof DataProvider) {
       $this->getDataProvider()->close();

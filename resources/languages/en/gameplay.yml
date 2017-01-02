@@ -60,4 +60,12 @@ command-child-none: "<i>The sub command <aqua>:0 <i>couldn't be found."
 command-too-ambiguous: "<i>The token :0 <i>is ambiguous."
 command-suggestion-header: "<i>No sub command by token <aqua>:0<i> was found, did you meant:"
 command-suggestion: "<gold>:1 <gray>-<white> :2"
+
+# Combat
+pvp-disabled-in: "<i>PVP is disabled in :0."
+player-tried-to-hurt-you: ":0<i> tried to hurt you."
+cant-hurt-in-their-territory: "<i>You can't hurt :0<i> in their own territory unless you declare them as an enemy."
+cant-hurt-allies: "<i>You can't hurt allies<i>."
+cant-hurt-factionless: "<i>You can't hurt players who are not currently in a faction."
+cant-hurt-while-factionless: "<i>You can't hurt other players until you join a faction."
 ...

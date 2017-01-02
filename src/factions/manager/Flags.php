@@ -123,5 +123,11 @@ class Flags {
         return self::getById($id);
     }
 
+    /**
+     * Detaches all flags
+     */
+    public static function flush() {
+        self::$flags = [];
+    }
 
 }
