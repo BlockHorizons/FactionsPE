@@ -20,9 +20,11 @@
 namespace factions\event\member;
 
 use pocketmine\event\Event;
+use pocketmine\event\Cancellable;
+
 use factions\entity\IMember;
 
-class MemberPowerChangeEvent extends MemberEvent {
+class MemberPowerChangeEvent extends MemberEvent implements Cancellable {
 
 	public static $handlerList = null;
 	public static $eventPool = [];

@@ -19,16 +19,15 @@
 
 namespace factions\relation;
 
-use factions\utils\Gameplay;
-use factions\utils\Text;
-
 use pocketmine\utils\TextFormat;
 
+use factions\utils\Gameplay;
+use factions\utils\Text;
 use factions\entity\Faction;
 use factions\entity\IMember;
+use factions\flag\Flag;
 
-final class Relation
-{
+final class Relation {
 
     private static $relLevels = array(
         self::NONE => 0,
@@ -100,7 +99,7 @@ final class Relation
 
 
     public static function isFriend(string $relation) : bool {
-        return $relation === self::ALLY;
+        return $relation === self::ALLY || self::isRankValid($relation);
     }
 
     public static function isEnemy(string $relation) : bool {
@@ -145,19 +144,17 @@ final class Relation
         if ($myFaction === $thatFaction) {
             $ret = self::MEMBER;
             // Do officer and leader check
-            //P.p.log("getRelationOfThatToMe the factions are the same for "+that.getClass().getSimpleName()+" and observer "+me.getClass().getSimpleName());
             if ($that instanceof IMember) {
                 $ret = $that->getRole();
-                //P.p.log("getRelationOfThatToMe it was a player and role is "+ret);
             }
         } else if (!$ignorePeaceful && ($thatFaction->getFlag(Flag::PEACEFUL) || $myFaction->getFlag(Flag::PEACEFUL))) {
             $ret = self::TRUCE;
         } else {
             // The faction with the lowest wish "wins"
-            if (self::isLowerThan($thatFaction->getRelationWish($myFaction), $myFaction->getRelationWish($thatFaction))) {
-                $ret = $thatFaction->getRelationWish($myFaction);
+            if (self::isLowerThan(($tw = $thatFaction->getRelationWish($myFaction)), ($mw = $myFaction->getRelationWish($thatFaction)))) {
+                return $tw;
             } else {
-                $ret = $myFaction->getRelationWish($thatFaction);
+                return $mw;
             }
         }
         return $ret;
@@ -167,10 +164,14 @@ final class Relation
         if ($object instanceof Faction) {
             return $object;
         } elseif ($object instanceof IMember) {
-            return $object->getFaction();
+            if($object->hasFaction()) {
+                return $object->getFaction();
+            } else {
+                return null;
+            }
         }
         # Error
-        return NULL;
+        return null;
     }
 
     public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that)  : string {

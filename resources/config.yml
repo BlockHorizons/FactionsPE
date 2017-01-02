@@ -79,13 +79,14 @@ gameplay:
   home:
     enabled: true
     teleport-to-on-death: true
-  worlds-pvp-rules-enabled: [world]
+  worlds-pvp-rules-enabled: []
   worlds-claiming-enabled: [world]
   worlds-power-loss-enabled: [world]
   players-who-bypass-all-protection: []
   disable-pvp-for-factionless-players: true
   enable-pvp-against-factionless-in-attackers-land: true
   enable-pvp-between-factionless-players: true
+  enable-pvp-for-factionless-players: true
   set-radius-max: 50
   handle-exploit-tnt-water-log: true
   show-motd-on-join: true
@@ -99,4 +100,6 @@ gameplay:
   materials-edit-on-interact: []
   materials-container: []
   materials-doors: []
+  materials-edit-tools: []
+  materials-edit-tools-dupe-bug: []
 ...

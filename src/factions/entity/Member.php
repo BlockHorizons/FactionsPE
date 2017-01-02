@@ -123,11 +123,11 @@ class Member extends OfflineMember {
 	}
 
 	public function isInOwnTerritory() : bool {
-		return Plots::get()->getFactionAt($this->player) === $this->getFaction();
+		return Plots::getFactionAt($this->player) === $this->getFaction();
 	}
 
 	public function isInEnemyTerritory() : bool {
-		return Plots::get()->getFactionAt($this->player)->getRelationTo($this) === Relation::ENEMY;
+		return Plots::getFactionAt($this->player)->getRelationTo($this) === Relation::ENEMY;
 	}
 	/**
 	 * @return Position

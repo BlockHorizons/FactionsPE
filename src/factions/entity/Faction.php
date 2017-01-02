@@ -676,7 +676,7 @@ class Faction extends FactionData implements RelationParticipator {
 	}
 
 	public function getPlotsCountInLevel(Level $level) : int {
-		return count($this->getPlotsInLevel());
+		return count($this->getPlotsInLevel($level));
 	}
 
 	public function getPlotsInLevel(Level $level) : array {

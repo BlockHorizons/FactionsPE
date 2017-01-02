@@ -90,10 +90,10 @@ class Plots {
      * @param Faction $faction
      * @return Plot[]
      */
-    public static function getFactionPlots(Faction $faction) : array {
+    public static function getFactionPlots(Faction $f) : array {
         $r = [];
         foreach (self::$plots as $plot => $faction) {
-            if($faction === $faction->getId()) $r[] = self::fromHash($plot);
+            if($faction === $f->getId()) $r[] = self::fromHash($plot);
         }
         return $r;
     }

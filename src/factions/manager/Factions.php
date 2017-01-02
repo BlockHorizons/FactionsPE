@@ -52,18 +52,10 @@ class Factions {
           ],
           "description" => "It's dangerous to go alone", # TODO: Translatable
           "perms" => [
-              Permission::BUILD => [
-                  Relation::getAll(),
-              ],
-              Permission::CONTAINER => [
-                  Relation::getAll(),
-              ],
-              Permission::BUTTON => [
-                  Relation::getAll(),
-              ],
-              Permission::DOOR => [
-                  Relation::getAll(),
-              ]
+              Permission::BUILD => Relation::getAll(),
+              Permission::CONTAINER => Relation::getAll(),
+              Permission::BUTTON => Relation::getAll(),
+              Permission::DOOR => Relation::getAll()
           ],
       ]);
     }

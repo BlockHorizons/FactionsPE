@@ -181,6 +181,7 @@ class Permission {
 
     public function has(IMember $player, Faction $faction = null) : bool {
         $faction = !$faction ? $player->getFaction() : $faction;
+        if(!$faction) return false;
         $Relation = $faction->getRelationTo($player);
         $ret =  $player->isOverriding() ? true : $faction->isPermitted($Relation, $this);
         return $ret;

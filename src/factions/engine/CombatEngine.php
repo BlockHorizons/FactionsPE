@@ -41,89 +41,81 @@ class CombatEngine extends Engine {
      */
     public function onPlayerDamage(EntityDamageEvent $event)
     {
-        if ($event->isCancelled()) {
-            return;
+        if ($event->isCancelled()) {            return;
         }
         if ($event instanceof EntityDamageByEntityEvent) {
             if($event->getEntity() instanceof Player === false) return;
             if (CombatEngine::canCombatDamageHappen($event, true) === false) {
-                $event->setCancelled(true);
-            }
+                $event->setCancelled(true);            }
         } else {
             if (CombatEngine::canDamageHappen($event, true) === false) {
-                $event->setCancelled(true);
-            }
+                $event->setCancelled(true);            }
         }
     }
 
     public static function canCombatDamageHappen(EntityDamageByEntityEvent $event, $notify = true) : bool {
 		
-        // If the defender is a player ...
 		$victim = $event->getEntity();
-		// ... and the attacker is someone else ...
-		$attacker = $event->getDamager();
-		// ... gather defender PS and faction information ...
-		$defenderPosFaction = Plots::get()->getFactionAt($victim);
-		// ... fast evaluate if the attacker is overriding ...
-		$mattacker = $attacker instanceof Player ? Members::get($attacker) : null;
+        $attacker = $event->getDamager();
+        $mattacker = $attacker instanceof Player ? Members::get($attacker) : null;
         $mdefender = Members::get($victim);
-		
-        if ($mattacker != null && $mdefender->isOverriding()) return true;
-		
-        // ... PVP flag may cause a damage block ...
-		if ($defenderPosFaction->getFlag(Flag::PVP) == false) {
-            if ($attacker instanceof Player) {
-				if ($notify) {
-                    $attacker = Members::get($attacker);
-					$attacker->sendMessage(Localizer::translatable("pvp-disabled-in", [$defenderPosFaction->getName()]));
-				}
-				return false;
-			}
-            return $defenderPosFaction->getFlag(Flag::MONSTERS);
-        }
-		$mattacker = Members::get($mattacker);
-		// ... does this player bypass all protection? ...
-		// ... gather attacker PS and faction information ...
-		$attackerPos = $attacker->getPosition();
-		$attackerPosFaction = Plots::get()->getFactionAt($attackerPos);
-		// ... PVP flag may cause a damage block ...
-		// (just checking the defender as above isn't enough. What about the attacker? It could be in a no-pvp area)
-		// NOTE: This check is probably not that important but we could keep it anyways.
-		if ($attackerPosFaction->getFlag(Flag::PVP) == false) {
-            $ret = false;
-            if (!$ret && $notify){ 
-                $attacker->sendMessage(Localizer::translatable("pvp-disabled-in", [$attackerPosFaction->getName()]));
+        $defendFaction = $mdefender->getFaction();
+        $attackFaction = $mattacker->getFaction();
+
+        if ($mattacker !== null && $mdefender->isOverriding()) return true;
+        
+        $victimPosFac = Plots::getFactionAt($victim);
+        
+        if($mattacker->hasFaction() || $mdefender->hasFaction()) {
+            if($mattacker->getFaction() === $mdefender->getFaction() && !$victimPosFac->getFlag(Flag::FRIENDLY_FIRE) || Relation::isFriend($relation = $defendFaction->getRelationTo($attackFaction)))
+            {
+                if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-allies"));
+                return false;
             }
-            return $ret;
         }
-		// ... are PVP rules completely ignored in this world? ...
-		if (in_array($attackerPos->getLevel()->getName(), Gameplay::get("worlds-pvp-rules-enabled", []), true)) return true;
-		$defendFaction = $mdefender->getFaction();
-		$attackFaction = $mattacker->getFaction();
-		if ($attackFaction->isNone() && Gameplay::get("disable-pvp-for-factionless-players", true)){
-            $attacker->sendMessage(Localizer::translatable("cant-hurt-while-factionless"));
+
+        $attackerPosFac = Plots::getFactionAt($attacker);
+        
+        if (!$victimPosFac->getFlag(Flag::PVP))
+        {
+            if ($attacker instanceof Player)
+            {
+                if ($notify) $attacker->sendMessage(Localizer::translatable("pvp-disabled-in", [$victimPosFac->getName()]));
+                return false;
+            }
+            return $victimPosFac->getFlag(Flag::MONSTERS);
+        }
+
+        if (!$attackerPosFac->getFlag(Flag::PVP))
+        {
+            if ($notify) $attacker->sendMessage(Localizer::translatable("pvp-disabled-in", [$attackerPosFac->getName()]));
             return false;
-        } elseif ($defendFaction->isNone()) {
-            if ($defenderPosFaction == $attackFaction && Gameplay::get("enable-pvp-against-factionless-in-attackers-land", true)) {
-                // Allow PVP vs. Factionless in attacker's faction territory
+        }
+
+        // ... are PVP rules completely ignored in this world? ...
+        if (in_array($attacker->getLevel()->getName(), Gameplay::get("worlds-pvp-rules-enabled", []), true)) return true;
+
+        if ($defendFaction->isNone()) 
+        {
+            if ($victimPosFac === $attackFaction && Gameplay::get("enable-pvp-against-factionless-in-attackers-land", true))
+            {
                 return true;
-            } elseif (Gameplay::get("disable-pvp-for-factionless-players", true)) {
+            } elseif (Gameplay::get("disable-pvp-for-factionless-players", true))
+            {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-factionless"));
                 return false;
             } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
-                // Allow factionless vs factionless
                 return true;
             }
-        }
-		$relation = $defendFaction->getRelationTo($attackFaction);
-		// Check the relation
-		if (Relation::isFriend($relation) && !$defenderPosFaction->getFlag(Flag::FRIENDLY_FIRE)) {
-            if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-allies"));
-            return false;
-        }
+        } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-for-factionless-players", true))
+        {
+            $attacker->sendMessage(Localizer::translatable("cant-hurt-while-factionless"));
+            return false;        
+        } 
+
 		// You can not hurt neutrals in their own territory.
-		$ownTerritory = $mdefender->isInOwnTerritory();
-		if ($mdefender->hasFaction() && $ownTerritory && $relation === Relation::NEUTRAL) {
+		if ($mdefender->hasFaction() && $mdefender->isInOwnTerritory() && $relation === Relation::NEUTRAL) 
+        {
             if ($notify) {
                 $attacker->sendMessage(Localizer::translatable("cant-hurt-in-their-territory", [$mdefender->getDisplayName()]));
                 $mdefender->sendMessage(Localizer::translatable("player-tried-to-hurt-you", [$attacker->getDisplayName()]));
