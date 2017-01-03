@@ -430,7 +430,7 @@ class MainEngine extends Engine {
         if (in_array($id, Gameplay::get("materials-container", []), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
         if (in_array($id, Gameplay::get("materials-doors", []), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if ($id === Block::STONE_BUTTON && !Permissions::getById(Permission::BUTTON)->has($me, $factionHere)) return false;
-        if ($id === Block::LEVER && !Permissions::getById(Permission::LEVEL)->has($me, $factionHere)) return false;
+        if ($id === Block::LEVER && !Permissions::getById(Permission::LEVER)->has($me, $factionHere)) return false;
         if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         return true;
     }
