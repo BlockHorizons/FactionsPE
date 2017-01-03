@@ -59,6 +59,14 @@ class ChatEngine extends Engine {
 				$p[] = $member->getPlayer();
 			}
 			$event->setRecipients($p, Members::get("CONSOLE"));
+			if(count($p) === 1) {
+
+				$member->toggleFactionChat();
+				$player->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
+
+				$event->setCancelled(true);
+				return;
+			}
 			$format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
 		}
 		if($this->format || isset($format)) {

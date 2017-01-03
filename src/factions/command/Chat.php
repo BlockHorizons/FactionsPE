@@ -37,6 +37,11 @@ class Chat extends Command {
 
 		$member->toggleFactionChat();
 
+		if($v && count($member->getFaction()->getOnlineMembers()) === 1) {
+			$member->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
+			return true;
+		}
+
 		$member->sendMessage(Localizer::translatable("faction-chat-".($v ? "disabled" : "enabled")));
 		return true;
 	}

@@ -109,4 +109,5 @@ home-success: "<green>Teleported to faction home"
 
 faction-chat-enabled: "<i>Faction chat <green>enabled"
 faction-chat-disabled: "<i>Faction chat <rose>disabled"
+faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with. Faction chat <rose>disabled"
 ...
