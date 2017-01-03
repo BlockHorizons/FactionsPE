@@ -36,7 +36,7 @@ class Unclaim extends Command {
         $this->addChild((new ClaimOne($plugin, "one", "Unclaim one plot", Permissions::UNCLAIM_ONE, ["1"]))->setClaim(false));
         // $this->addChild((new ClaimAuto($plugin))->setClaim(true));
         // $this->addChild((new ClaimFill($plugin))->setClaim(true));
-        // $this->addChild((new ClaimSquare($plugin))->setClaim(true));
+        $this->addChild((new ClaimSquare($plugin, "square", "Claim a square", Permissions::CLAIM_SQUARE))->setClaim(false));
         // $this->addChild((new ClaimCircle($plugin))->setclaim(true));
 
         $this->addParameter((new Parameter("one"))->setDefaultValue("one"));

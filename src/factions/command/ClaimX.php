@@ -65,9 +65,11 @@ abstract class ClaimX extends Command {
 	
 	public function execute(CommandSender $sender, $label, array $args) : BOOL {
 		if(!parent::execute($sender, $label, $args)) return false;
+		$this->sender = $sender;
         
         // Args
         $newFaction = $this->getArgument($this->getFactionArgIndex());
+
 		$plots = $this->getPlots($sender);
 		// Apply / Inform
 
@@ -78,6 +80,8 @@ abstract class ClaimX extends Command {
 				$plot->unclaim();
 			}
 		}
+
+		$this->sender = null;
 		return true;
 	}
 	

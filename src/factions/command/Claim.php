@@ -36,7 +36,7 @@ class Claim extends Command {
         $this->addChild((new ClaimOne($plugin, "one", "Claim one plot", Permissions::CLAIM_ONE, ["1"]))->setClaim(true));
         // $this->addChild((new ClaimAuto($plugin))->setClaim(true));
         // $this->addChild((new ClaimFill($plugin))->setClaim(true));
-        // $this->addChild((new ClaimSquare($plugin))->setClaim(true));
+        $this->addChild((new ClaimSquare($plugin, "square", "Claim a square", Permissions::CLAIM_SQUARE))->setClaim(true));
         // $this->addChild((new ClaimCircle($plugin))->setclaim(true));
 
         $this->addParameter((new Parameter("one"))->setDefaultValue("one"));

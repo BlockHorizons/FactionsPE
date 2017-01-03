@@ -108,4 +108,5 @@ gameplay:
   materials-doors: []
   materials-edit-tools: []
   materials-edit-tools-dupe-bug: []
+  set-radius-max: 5
 ...
