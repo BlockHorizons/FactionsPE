@@ -30,6 +30,7 @@ permissions:
       factions.access.player: {description: grant player access, with the proper fperm, default: true}
       factions.access.view: {description: view access, default: true}
       factions.override: {description: enable override mode, default: op}
+      factions.chat: {description: chat with your faction members, default: op}
       factions.claim: {description: claim faction territory, default: true}
       factions.claim.one: {description: claim a single chunk, default: true}
       factions.claim.auto: {description: claim as you walk around, default: true}

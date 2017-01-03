@@ -61,7 +61,7 @@ class ChatEngine extends Engine {
 			$event->setRecipients($p);
 			$format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
 		}
-		if($this->format) {
+		if($this->format || isset($format)) {
 			// Get type of format we need
 			if(!isset($format)) {
 				$format = Gameplay::get("chat.player", self::PLAYER_FORMAT);

@@ -50,7 +50,8 @@ class FactionCommand extends Command
             new Claim($plugin, "claim", "Claim this plot", Permissions::CLAIM),
             new Unclaim($plugin, "unclaim", "Unclaim this plot", Permissions::UNCLAIM),
             new Home($plugin, "home", "Teleport to faction home", Permissions::HOME),
-            new SetHome($plugin, "sethome", "Set Faction home to your location", Permissions::SETHOME)
+            new SetHome($plugin, "sethome", "Set Faction home to your location", Permissions::SETHOME),
+            new Chat($plugin, "chat", "Toggle faction chat mode", Permissions::CHAT)
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

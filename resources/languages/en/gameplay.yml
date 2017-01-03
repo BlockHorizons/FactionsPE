@@ -26,6 +26,7 @@ invite-add-inform-target: "You've been invited to <gold>:faction<white> by <gree
 invite-add-inform-target-suggestion: "Accept invitation by executing: <gold>:command"
 invitation-deleted: "Player <green>:0<white> is no longed invited to your faction"
 not-invited: "Player <green>:0<white> is not even invited"
+player-in-faction: "Player <green>:0<white> is already in a faction"
 
 faction-member-limit-exceeded: "<b>!<white> The faction :0 is at limit of :1 members, so :2 cannot currently join"
 faction-requires-invitations: "You can't join this faction because you're not invited!"
@@ -105,4 +106,7 @@ sethome-invalid-level: "<b>Level by name <h>:0<b> not found"
 sethome-not-here: "<b>You can't set home here"
 sethome-success: "<green>Faction home set to <aqua>:at"
 home-success: "<green>Teleported to faction home"
+
+faction-chat-enabled: "<i>Faction chat <green>enabled"
+faction-chat-disabled: "<i>Faction chat <rose>disabled"
 ...

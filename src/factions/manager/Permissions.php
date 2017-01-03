@@ -36,6 +36,7 @@ final class Permissions {
     const ACCESS_PLAYER = "factions.access.player";
     const ACCESS_FACTION = "factions.access.faction";
     const OVERRIDE = "factions.override";
+    const CHAT = "factions.chat";
     const CLAIM = "factions.claim";
     const CLAIM_ONE = "factions.claim.one";
     const CLAIM_AUTO = "factions.claim.auto";
