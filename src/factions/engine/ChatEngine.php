@@ -44,7 +44,7 @@ class ChatEngine extends Engine {
 	}
 
 	/**
-	 * @priority HIGH
+	 * @priority HIGHEST
 	 * @ignoreCancelled false
 	 * @param PlayerChatEvent $event
 	 */
@@ -58,7 +58,7 @@ class ChatEngine extends Engine {
 			foreach ($faction->getOnlineMembers() as $member) {
 				$p[] = $member->getPlayer();
 			}
-			$event->setRecipients($p);
+			$event->setRecipients($p, Members::get("CONSOLE"));
 			$format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
 		}
 		if($this->format || isset($format)) {

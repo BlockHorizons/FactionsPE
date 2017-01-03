@@ -25,15 +25,18 @@ use factions\manager\Members;
 
 use localizer\Localizer;
 
+use pocketmine\command\CommandSender;
+
 class Chat extends Command {
 
 	public function execute(CommandSender $sender, $label, array $args) {
 		if(!parent::execute($sender, $label, $args)) return false;
 
 		$member = Members::get($sender);
-		if(($v = $member->isFactionChatOn())) {
-			$member->toggleFactionChat();
-		}
+		$v = $member->isFactionChatOn();
+
+		$member->toggleFactionChat();
+
 		$member->sendMessage(Localizer::translatable("faction-chat-".($v ? "disabled" : "enabled")));
 		return true;
 	}

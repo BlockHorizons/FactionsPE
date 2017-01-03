@@ -48,6 +48,7 @@ gameplay:
     member-join: true
     member-kick: true
     override: true
+    faction-chat: true
   power:
     player:
       max: 100
@@ -78,7 +79,7 @@ gameplay:
     player: "{NAME}: {MESSAGE}"
     member: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}"
     member-title: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}"
-    faction-chat: "<gold>{BADGE}<gray>{NAME}<white>:<gray> {MESSAGE}"
+    faction-chat: "<gold>{BADGE}<white>{NAME}<white><gray>>><white> {MESSAGE}"
     badge:
       leader: "^"
       officer: "**"
