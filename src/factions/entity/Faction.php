@@ -456,8 +456,8 @@ class Faction extends FactionData implements RelationParticipator {
 		$r = [];
 		foreach ($this->getInvitedPlayers() as $name) {
 			$m = Members::get($name, false);
-			if(!$m || !$m->isOnline())
-				$r[] = $m;
+			if(!$m || !$m->isOnline()) continue;
+			$r[] = $m;
 		}
 		return $r;
 	}

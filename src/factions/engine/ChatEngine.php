@@ -26,6 +26,8 @@ use factions\manager\Members;
 use factions\utils\Gameplay;
 use factions\utils\Text;
 
+use localizer\Localizer;
+
 /**
  * Format the chat and route chat messages
  */
