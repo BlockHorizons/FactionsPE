@@ -7,7 +7,7 @@ type-null-error: "Argument :n passed to command must resolve into null"
 
 type-member-error: "No online member by name :value was found"
 type-offline-member-error: "No offline member by name :value was found"
-type-console-member-error: "Try again and make sure you type word 'Console' correctly ;)"
+type-console-member-error: "Try again and make sure you type word 'console' correctly ;)"
 type-any-member-error: "No member by name :value was found"
 type-faction-error: "No faction by name :value was found"
 ...

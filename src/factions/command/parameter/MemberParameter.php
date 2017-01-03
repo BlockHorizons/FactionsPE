@@ -67,17 +67,9 @@ class MemberParameter extends Parameter {
 		if($value === null) return false;
 		switch ($this->type) {
 			case self::ONLINE_MEMBER:
-				if($value instanceof Member && $value->isOnline()) {
-					return true;
-				} else {
-					return false;
-				}
+				return $value instanceof Member && $value->isOnline();
 			case self::OFFLINE_MEMBER:
-				if($value instanceof OfflineMember) {
-					return true;
-				} else {
-					return false;
-				}
+				return $value instanceof OfflineMember;
 			case self::CONSOLE_MEMBER:
 				return $value instanceof FConsole;
 			case self::ANY_MEMBER:
