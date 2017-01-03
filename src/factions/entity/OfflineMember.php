@@ -28,6 +28,7 @@ use factions\utils\Gameplay;
 use factions\FactionsPE;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
+use factions\permission\Permission;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator {
 

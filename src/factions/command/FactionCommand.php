@@ -48,7 +48,9 @@ class FactionCommand extends Command
             new Override($plugin, "override", "Turn on overriding mode", Permissions::OVERRIDE, ["admin"]),
             new Map($plugin, "map", "Show Factions map", Permissions::MAP),
             new Claim($plugin, "claim", "Claim this plot", Permissions::CLAIM),
-            new Unclaim($plugin, "unclaim", "Unclaim this plot", Permissions::UNCLAIM)
+            new Unclaim($plugin, "unclaim", "Unclaim this plot", Permissions::UNCLAIM),
+            new Home($plugin, "home", "Teleport to faction home", Permissions::HOME),
+            new SetHome($plugin, "sethome", "Set Faction home to your location", Permissions::SETHOME)
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

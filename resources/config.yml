@@ -63,7 +63,13 @@ gameplay:
     min-length: 3
   price:
     faction-creation: 5000
-  homes-must-be-in-claimed-territories: true
+  home:
+    teleport-command-enabled: true
+    must-be-in-claimed-territories: true
+    teleport-allowed-from-enemy-territory: false
+    home.teleport-allowed-from-different-world: true
+    homes.teleport-allowed-enemy-distance: 10
+    teleport-ignore-enemies-if-in-own-territory: false
   can-leave-with-negative-power: false
   can-join-with-negative-power: false
   chat:

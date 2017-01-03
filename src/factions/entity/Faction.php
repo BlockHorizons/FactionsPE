@@ -147,7 +147,7 @@ class Faction extends FactionData implements RelationParticipator {
 	public function isValidHome(Position $home) : bool {
 		if ($home === null) return false;
         if (!$home instanceof Position) return false;
-        if (!Gameplay::get("homes-must-be-in-claimed-territories", true)) return true;
+        if (!Gameplay::get("home.must-be-in-claimed-territories", true)) return true;
         if (Plots::getFactionAt($home) === $this) return true;
         return false;
 	}

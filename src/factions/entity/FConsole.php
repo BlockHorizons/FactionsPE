@@ -22,6 +22,7 @@ namespace factions\entity;
 use factions\FactionsPE;
 use factions\relation\RelationParticipator;
 use factions\relation\Relation;
+use factions\permission\Permission;
 use factions\entity\IMember;
 use factions\manager\Factions;
 
@@ -48,7 +49,7 @@ class FConsole implements IMember, RelationParticipator {
    * @return Faction
    */
   public function getFaction() : Faction {
-    return Factions::getById(FactionsPE::NONE);
+    return Factions::getById(Faction::NONE);
   }
 
   public function setFaction(Faction $faction) {
@@ -163,7 +164,7 @@ class FConsole implements IMember, RelationParticipator {
     return $this->getPowerBoost() !== 0;
   }
 
-  public function hasPermission(Perm $perm) : bool {
+  public function hasPermission(Permission $perm) : bool {
     return true;
   }
 
@@ -172,7 +173,7 @@ class FConsole implements IMember, RelationParticipator {
   }
 
   public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
-    return Rel::NEUTRAL;
+    return Relation::NEUTRAL;
   }
 
   public function getColorTo(RelationParticipator $observer) : string {

@@ -120,8 +120,9 @@ class FactionData extends Data {
 		$this->perms = $source["perms"] ?? [];
 		$this->flags = $source["flags"] ?? [];
 		$this->relationWishes = $source["relationWishes"] ?? [];
+
 		if(isset($source["home"])) {
-			$p = explode($source["home"]);
+			$p = explode(":", $source["home"]);
 			if(($level = FactionsPE::get()->getServer()->getLevelByName($p[3]))) {
 				$this->home = new Position((float) $p[0], (float) $p[1], (float) $p[2], $level);
 			} else {
@@ -134,7 +135,7 @@ class FactionData extends Data {
 	 * Puts all faction data, necessary to save, into array
 	 */
 	public function __toArray() : array {
-		return [
+		$ret = [
 			"name" => $this->name,
 			"id" => $this->id,
 			"flags" => $this->getFlags(),
@@ -145,8 +146,13 @@ class FactionData extends Data {
 			"createdAt" => $this->createdAt,
 			"motd" => $this->motd,
 			"description" => $this->description,
-			"invitedPlayers" => $this->invitedPlayers
+			"invitedPlayers" => $this->invitedPlayers,
 		];
+		
+		if(($home = $this->getHome())) {
+			$ret["home"] = $home->x.":".$home->y.":".$home->z.":".$home->level->getName();
+		}
+		return $ret;
 	}
 
 	public function save() {
