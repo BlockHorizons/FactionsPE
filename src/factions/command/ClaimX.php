@@ -63,8 +63,7 @@ abstract class ClaimX extends Command {
 	// CONSTRUCT
 	// -------------------------------------------- //
 	
-	public function execute(CommandSender $sender, $label, array $args) : BOOL {
-		if(!parent::execute($sender, $label, $args)) return false;
+	public function perform(CommandSender $sender, $label, array $args) : BOOL {
 		$this->sender = $sender;
         
         // Args

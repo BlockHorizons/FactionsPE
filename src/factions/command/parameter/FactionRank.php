@@ -17,31 +17,14 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace factions\command;
+namespace factions\command\parameter;
 
-use dominate\Command;
+use dominate\parameter\Parameter;
 
-use factions\manager\Members;
+class FactionsRank extends Parameter {
 
-use localizer\Localizer;
-
-use pocketmine\command\CommandSender;
-
-class Chat extends Command {
-
-	public function perform(CommandSender $sender, $label, array $args) {
-		$member = Members::get($sender);
-		$v = $member->isFactionChatOn();
-
-		$member->toggleFactionChat();
-
-		if($v && count($member->getFaction()->getOnlineMembers()) === 1) {
-			$member->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
-			return true;
-		}
-
-		$member->sendMessage(Localizer::translatable("faction-chat-".($v ? "disabled" : "enabled")));
-		return true;
+	public function __construct() {
+		
 	}
 
 }

@@ -536,7 +536,7 @@ class Faction extends FactionData implements RelationParticipator {
         $offlineexplosions = $this->getFlag(Flag::OFFLINE_EXPLOSIONS);
         if ($explosions && $offlineexplosions) return true;
         if (!$explosions && !$offlineexplosions) return false;
-        $online = $this->isFactionConsideredOnline();
+        $online = $this->isConsideredOnline();
         return ($online && $explosions) || (!$online && $offlineexplosions);
 	}
 

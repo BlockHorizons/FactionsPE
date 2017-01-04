@@ -39,9 +39,7 @@ class Open extends Command {
 		$this->addRequirement(new FactionRole(Relation::LEADER));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) {
-		if(!parent::execute($sender, $label, $args)) return false;
-
+	public function perform(CommandSender $sender, $label, array $args) {
 		$msender = Members::get($sender);
 		$faction = $msender->getFaction();
 		if($faction->getFlag(Flag::OPEN)) {

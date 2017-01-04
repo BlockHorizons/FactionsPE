@@ -31,10 +31,7 @@ class SetHome extends Command {
         $this->addParameter((new Parameter("z"))->setDefaultValue(null));
     }
 
-    public function execute(CommandSender $sender, $label, array $args) : bool
-    {
-        if (!parent::execute($sender, $label, $args)) return false;
-
+    public function perform(CommandSender $sender, $label, array $args) {
         $member = Members::get($sender);
         $position = $sender->getPosition();
         if (count($args) === 1) {

@@ -47,9 +47,7 @@ class Home extends Command {
     	$this->addRequirement(new FactionPermission(Permissions::getById(Permission::HOME)));
     }
 
-    public function execute(CommandSender $sender, $label, array $args) : bool {
-        if (!parent::execute($sender, $label, $args)) return false;
-
+    public function perform(CommandSender $sender, $label, array $args) : bool {
         $member = Members::get($sender);
         if (!Gameplay::get("home.teleport-command-enabled", true)) {
             $sender->sendMessage(Localizer::translatable("home-teleport-command-disabled"));

@@ -44,9 +44,7 @@ class InviteList extends Command {
         $this->addParameter((new FactionParameter("faction"))->setDefaultValue("me"));
     }
 
-    public function execute(CommandSender $sender, $label, array $args) {
-        if(!parent::execute($sender, $label, $args)) return true;
-
+    public function perform(CommandSender $sender, $label, array $args) {
         // Args
         $msender = Members::get($sender);
         $page = $this->getArgument(0);

@@ -42,9 +42,7 @@ class Join extends Command {
      * @return BOOL
      * @throws \Exception
      */
-    public function execute(CommandSender $sender, $label, array $args) {
-        if (!parent::execute($sender, $label, $args)) return false;
-
+    public function perform(CommandSender $sender, $label, array $args) {
         $msender = Members::get($sender);
         $mplayer = $this->getArgument(1);
         $samePlayer = ($msender === $mplayer);

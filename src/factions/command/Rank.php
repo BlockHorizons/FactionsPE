@@ -21,27 +21,20 @@ namespace factions\command;
 
 use dominate\Command;
 
-use factions\manager\Members;
+use factions\command\parameter\MemberParameter;
 
-use localizer\Localizer;
+class Rank extends Command {
 
-use pocketmine\command\CommandSender;
-
-class Chat extends Command {
+	public function setup() {
+		$this->addParameter(new MemberParameter("player"));
+		$this->addParameter((new FactionRank("action"))->setDefaultValue(null));
+		$this->addParameter((new FactionParameter("faction"))->setDefaultValue(null));
+	}
 
 	public function perform(CommandSender $sender, $label, array $args) {
-		$member = Members::get($sender);
-		$v = $member->isFactionChatOn();
+		$this->sender = $sender;
 
-		$member->toggleFactionChat();
-
-		if($v && count($member->getFaction()->getOnlineMembers()) === 1) {
-			$member->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
-			return true;
-		}
-
-		$member->sendMessage(Localizer::translatable("faction-chat-".($v ? "disabled" : "enabled")));
-		return true;
+		if()
 	}
 
 }

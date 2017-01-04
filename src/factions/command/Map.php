@@ -33,14 +33,11 @@ use factions\manager\Members;
 class Map extends Command {
 	
 	public function setup() {
-		# /faction map <auto-update>
 		$this->addParameter((new Parameter("auto-update", Parameter::TYPE_BOOLEAN))->setDefaultValue(null));
 		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) {
-		if(!parent::execute($sender, $label, $args)) return true;
-
+	public function perform(CommandSender $sender, $label, array $args) {
 		if (isset($args[0])) {
             $val = $args[0];
             $fsender = Members::get($sender);

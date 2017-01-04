@@ -45,9 +45,7 @@ class InviteAdd extends Command {
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
     }
 
-    public function execute(CommandSender $sender, $label, array $args) {
-        if(!parent::execute($sender, $label, $args)) return false;
-
+    public function perform(CommandSender $sender, $label, array $args) {
         $member = $this->getArgument(0);
         $msender = Members::get($sender);
         $faction = $msender->getFaction();

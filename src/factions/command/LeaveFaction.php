@@ -33,9 +33,7 @@ class LeaveFaction extends Command {
 		$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) : bool {
-		if(!parent::execute($sender, $label, $args)) return false;
-
+	public function perform(CommandSender $sender, $label, array $args) {
 		$member = Members::get($sender);
 		$faction = $member->getFaction();
 		if($faction->leave($member)) {

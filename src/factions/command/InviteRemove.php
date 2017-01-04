@@ -39,9 +39,7 @@ class InviteRemove extends Command {
         $this->addParameter(new MemberParameter("member", MemberParameter::ANY_MEMBER));
     }
 
-    public function execute(CommandSender $sender, $label, array $args) {
-        if(!parent::execute($sender, $label, $args)) return false;
-
+    public function perform(CommandSender $sender, $label, array $args) {
         $msender = Members::get($sender);
         $player = $this->getArgument(0);
         

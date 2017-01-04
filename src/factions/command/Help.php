@@ -36,9 +36,7 @@ class Help extends Command {
 		$this->addParameter((new Parameter("page|command"))->setDefaultValue(1));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) {
-		if(!parent::execute($sender, $label, $args)) return false;
-
+	public function perform(CommandSender $sender, $label, array $args) {
         if (count($args) === 0) {
             $command = "";
             $pageNumber = 1;

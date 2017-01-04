@@ -101,6 +101,7 @@ final class Permissions {
     const NAME = "factions.name";
     const TITLE = "factions.title";
     const TITLE_COLOR = "factions.title.color";
+    const TOP = "factions.top";
     const TERRITORYTITLES = "factions.territorytitles";
     const UNCLAIM = "factions.unclaim";
     const UNCLAIM_ONE = "factions.unclaim.one";

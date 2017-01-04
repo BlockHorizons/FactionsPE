@@ -42,9 +42,7 @@ class Kick extends Command {
 		$this->addRequirement(new FactionPermission(Permissions::getById(Permission::KICK)));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) {
-		if(!parent::execute($sender, $label, $args)) return false;
-
+	public function perform(CommandSender $sender, $label, array $args) {
 		$target = $this->getArgument(0);
 		$msender = Members::get($sender);
 		$overriding = $msender->isOverriding();

@@ -92,6 +92,7 @@ permissions:
       factions.name: {description: set faction name, default: true}
       factions.title: {description: set player title, default: op}
       factions.title.color: {description: set player title with color, default: true}
+      factions.top: {description: see most powerful factions, default: true}
       factions.territorytitles: {description: toggle territory titles, default: true}
       factions.unclaim: {description: unclaim faction territory, default: true}
       factions.unclaim.one: {description: unclaim a single chunk, default: true}

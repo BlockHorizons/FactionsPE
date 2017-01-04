@@ -45,7 +45,7 @@ class CreateFaction extends Command {
 		$this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) : bool {
+	public function perform(CommandSender $sender, $label, array $args) : bool {
 		if(!parent::execute($sender, $label, $args)) return false;
 
 		if(FactionsPE::get()->economyEnabled()) {

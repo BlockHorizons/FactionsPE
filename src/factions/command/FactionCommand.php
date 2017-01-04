@@ -51,7 +51,8 @@ class FactionCommand extends Command
             new Unclaim($plugin, "unclaim", "Unclaim this plot", Permissions::UNCLAIM),
             new Home($plugin, "home", "Teleport to faction home", Permissions::HOME),
             new SetHome($plugin, "sethome", "Set Faction home to your location", Permissions::SETHOME),
-            new Chat($plugin, "chat", "Toggle faction chat mode", Permissions::CHAT)
+            new Chat($plugin, "chat", "Toggle faction chat mode", Permissions::CHAT),
+            new Top($plugin, "top", "See top of most powerful factions", Permissions::TOP)
         ];
         foreach ($childs as $child) {
             $this->addChild($child);
@@ -64,11 +65,9 @@ class FactionCommand extends Command
      * @param CommandSender $sender
      * @param string $label
      * @param string[] $args
-     * @return bool|mixed
+     * @return bool
      */
-    public function execute(CommandSender $sender, $label, array $args) : bool
-    {
-        if (!parent::execute($sender, $label, $args)) return true;
+    public function perform(CommandSender $sender, $label, array $args) {
         if ($this->endPoint !== $this) return true;
         if (isset($args[0])) {
             if (!$this->getChild($args[0])) {
