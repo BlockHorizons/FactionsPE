@@ -34,13 +34,11 @@ use pocketmine\command\CommandSender;
 class Override extends Command {
 
 	public function setup() {
-		$this->addParameter((new Parameter("on|off", Parameter::TYPE_BOOLEAN))->setDefaultValue("toggle"));
+		$this->addParameter(new Parameter("on|off", Parameter::TYPE_BOOLEAN));
 	}
 
 	public function perform(CommandSender $sender, $label, array $args) {
 		$msender = Members::get($sender);
-		$this->parameters[0]->setDefaultValue($msender->isOverriding() ? "false" : "true");
-		if(!parent::execute($sender, $label, $args)) return false;
 
 		$msender->setOverriding($value = $this->parameters[0]->getValue());
 		$sender->sendMessage(Localizer::translatable("overriding-".($value ? "enabled" : "disabled")));
@@ -52,7 +50,6 @@ class Override extends Command {
 				]));
 		}
 
-		$this->parameters[0]->setDefaultValue("toggle");
 		return true;
 	}
 
