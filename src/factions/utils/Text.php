@@ -22,8 +22,7 @@ namespace factions\utils;
 use factions\FactionsPE;
 use pocketmine\utils\TextFormat;
 
-final class Text
-{
+final class Text {
 
     private function __construct() {}
 
@@ -31,13 +30,11 @@ final class Text
         return self::parseColorVars($text);
     }
 
-    public static function getRolePrefix($role) : STRING
-    {
+    public static function getRolePrefix($role) : string {
         return $role;
     }
 
-    public static function parseColorVars(&$string) : STRING
-    {
+    public static function parseColorVars($string) : string {
         $string = preg_replace_callback(
             "/(\\\&|\&)[0-9a-fk-or]/",
             function (array $matches) {
@@ -77,8 +74,7 @@ final class Text
         return $string;
     }
 
-    public static function str_replace_first(string $from, string $to, string &$subject)
-    {
+    public static function str_replace_first(string $from, string $to, string &$subject) {
         $from = '/'.preg_quote($from, '/').'/';
         $subject = preg_replace($from, $to, $subject, 1);
     }

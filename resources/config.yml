@@ -49,6 +49,7 @@ gameplay:
     member-kick: true
     override: true
     faction-chat: true
+    perm-change: true
   power:
     player:
       max: 100

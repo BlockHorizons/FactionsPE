@@ -547,11 +547,9 @@ class Faction extends FactionData implements RelationParticipator {
 	 */
 
 	public function setPermissions(array $perms) {
-		$permIds = [];
-        foreach ($perms as $key => $value) {
-            $permIds[$key] = $value;
-        }
-        $this->setPermissioIds($permIds);
+		foreach ($perms as $key => $relations) {
+			$this->permissions[$key] = $relations;
+		}
 	}
 
 	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted) {

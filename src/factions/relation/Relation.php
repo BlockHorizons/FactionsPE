@@ -59,6 +59,10 @@ final class Relation {
         return self::isLowerThan(self::fromString($rank), self::ALLY);
     }
 
+    public static function isValid(string $rel) : bool {
+    	return in_array(self::fromString($rel), self::getAll(), true);
+    }
+
     public static function fromString(string $rel) {
         switch (strtolower(trim($rel))) {
             case 'ally':

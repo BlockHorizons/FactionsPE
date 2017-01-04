@@ -153,7 +153,7 @@ class FConsole implements IMember, RelationParticipator {
   }
 
   public function isOverriding() : bool {
-    return $this->overriding;
+    return true;
   }
 
   public function hasFaction() : bool {

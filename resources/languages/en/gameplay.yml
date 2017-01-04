@@ -113,11 +113,22 @@ faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with
 
 top-header: "Faction Top :0/:1"
 top-line: ":0: :1 (:2)"
-top-empty: "<b>No factions have been created"
+top-empty: "<b>No factions have been created yet."
 
 player-power-boost: "<a>Power Boost: <v>:0 <i>(a manually granted :1)"
 player-power: "<a>Power: <v>:0 / :1"
 player-power-progress-bar: "<a>Power: <v>:0"
 bonus: "bonus"
 penalty: "penalty"
+
+perm-list-header: "Permissions page :0 of :1"
+perm-list-line: "<gold>:2<white>: <aqua>:1"
+
+perm-show-header: "Perm for :2 (page :0 of :1)"
+
+cant-modify-special-faction-perms: "<red>You can't modify permissions of special factions unless you're in admin mode."
+perm-not-editable: "<b>The perm <h>:0 <b>is not editable."
+perm-no-change: ":0 <i>already has :1 <i>set to :2 <i>for :3<i>."
+player-set-faction-perm: "<h>:0 <i>set a perm for <h>:1<i>."
+perm-for: "Perm for :0"
 ...
