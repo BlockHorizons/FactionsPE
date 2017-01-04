@@ -59,6 +59,14 @@ use localizer\Localizer;
 
 class MainEngine extends Engine {
 
+    public function onPlayerPrelogin(PlayerPreLoginEvent $event) {
+        Members::get($event->getPlayer(), true);
+    }
+
+    public function onPlayerQuit(PlayerQuitEvent $event) {
+        Members::detach(Members::get($event->getPlayer()));
+    }
+
     public static function showMotdOnJoin(PlayerJoinEvent $event) {
         if (!Gameplay::get("show-motd-on-join", true)) {
             $member = Members::get($event->getPlayer());

@@ -52,7 +52,8 @@ class FactionCommand extends Command
             new Home($plugin, "home", "Teleport to faction home", Permissions::HOME),
             new SetHome($plugin, "sethome", "Set Faction home to your location", Permissions::SETHOME),
             new Chat($plugin, "chat", "Toggle faction chat mode", Permissions::CHAT),
-            new Top($plugin, "top", "See top of most powerful factions", Permissions::TOP)
+            new Top($plugin, "top", "See top of most powerful factions", Permissions::TOP),
+            new Player($plugin, "player", "See more detailed info about someone", Permissions::PLAYER)
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

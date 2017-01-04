@@ -114,4 +114,10 @@ faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with
 top-header: "Faction Top :0/:1"
 top-line: ":0: :1 (:2)"
 top-empty: "<b>No factions have been created"
+
+player-power-boost: "<a>Power Boost: <v>:0 <i>(a manually granted :1)"
+player-power: "<a>Power: <v>:0 / :1"
+player-power-progress-bar: "<a>Power: <v>:0"
+bonus: "bonus"
+penalty: "penalty"
 ...
