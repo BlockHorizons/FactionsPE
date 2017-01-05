@@ -23,8 +23,8 @@ use dominate\Command;
 use dominate\parameter\Parameter;
 
 use factions\command\parameter\FactionParameter;
-use factions\command\parameter\FactionPerm;
-use factions\command\parameter\FactionRel;
+use factions\command\parameter\PermissionParameter;
+use factions\command\parameter\RelationParameter;
 use factions\entity\Faction;
 use factions\entity\Member;
 use factions\manager\Members;
@@ -43,8 +43,8 @@ use localizer\Localizer;
 class PermSet extends Command {
 
     public function setup() {
-        $this->addParameter(new FactionPerm("perm", FactionPerm::ONE));
-        $this->addParameter(new FactionRel("rel", FactionRel::ONE));
+        $this->addParameter(new PermissionParameter("perm", PermissionParameter::ONE));
+        $this->addParameter(new RelationParameter("rel", RelationParameter::ONE));
         $this->addParameter(new Parameter("yes/no", Parameter::TYPE_BOOLEAN));
         $this->addParameter((new FactionParameter("faction"))->setDefaultValue("me"));
     }
@@ -81,8 +81,9 @@ class PermSet extends Command {
         if($event->isCancelled()) return true;
 
         $newVal = $event->getNewValue();
+        
         // no change
-        if($faction->isPermitted($perm, $rel) === $newVal) {
+        if($faction->isPermitted($rel, $perm) === $newVal) {
             $sender->sendMessage(Localizer::translatable("perm-no-change", [$faction->getName(), $perm->getDescription(), Localizer::translatable($newVal ? "<g>YES" : "<b>NOO"), Relation::getColor($rel) . $rel]));
             return true;
         }

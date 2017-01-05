@@ -60,7 +60,7 @@ class CombatEngine extends Engine {
         $mattacker = $attacker instanceof Player ? Members::get($attacker) : null;
         $mdefender = Members::get($victim);
         $defendFaction = $mdefender->getFaction();
-        $attackFaction = $mattacker->getFaction();
+        $attackFaction = $mattacker->getFaction(); # ERROR
 
         if ($mattacker !== null && $mdefender->isOverriding()) return true;
         

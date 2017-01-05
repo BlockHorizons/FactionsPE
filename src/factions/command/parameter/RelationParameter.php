@@ -25,21 +25,23 @@ use factions\relation\Relation;
 
 use pocketmine\command\CommandSender;
 
-class FactionRel extends Parameter {
+class RelationParameter extends Parameter {
 
-    const ALL = 24;
-    const ONE = 25;
-    const ANY = 26;
-    const RANK = 27;
-    const RELATION = 28;
+    const ALL = 0;
+    const ONE = 1;
+    const ANY = 2;
+    const RANK = 3;
+    const RELATION = 4;
 
-	public static function onClassLoaded() {
-		Parameter::$ERROR_MESSAGES[self::ALL] = "parameter.type-rel-all-error";
-        Parameter::$ERROR_MESSAGES[self::RANK] = "parameter.type-rel-rank-error";
-        Parameter::$ERROR_MESSAGES[self::RELATION] = "parameter.type-rel-error";
-        Parameter::$ERROR_MESSAGES[self::ANY] = "parameter.type-rel-any-error";
-        Parameter::$ERROR_MESSAGES[self::ONE] = "parameter.type-rel-one-error";
-	}
+    public function setup() {
+        $this->ERROR_MESSAGES = [
+            self::ALL => "type-rel-all",
+            self::ANY => "type-rel-any",
+            self::ONE => "type-rel-one",
+            self::RANK => "type-rel-rank",
+            self::RELATION => "type-rel"
+        ];
+    }
 
     public function read(string $input, CommandSender $sender = null) {
         $silent = $sender === null;
@@ -47,11 +49,6 @@ class FactionRel extends Parameter {
             $rel = Relation::getAll();
         } else {
             $rel = Relation::fromString($input);
-        }
-        if(!$this->isValid($rel, $sender)) {
-        	if(!$silent) {
-        		$sender->sendMessage($this->createErrorMessage($sender, $input));
-        	}
         }
         return $rel;
     }

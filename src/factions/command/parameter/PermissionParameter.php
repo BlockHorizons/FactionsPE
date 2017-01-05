@@ -27,32 +27,28 @@ use factions\manager\Members;
 
 use pocketmine\command\CommandSender;
 
-class FactionPerm extends Parameter {
+class PermissionParameter extends Parameter {
 
 	const ALL = 20;
 	const ANY = 21;
 	const ONE = 22;
 
-	public static function onClassLoaded() {
-		Parameter::$ERROR_MESSAGES[self::ALL] = "parameter.type-perm-all-error";
-		Parameter::$ERROR_MESSAGES[self::ANY] = "parameter.type-perm-any-error";
-		Parameter::$ERROR_MESSAGES[self::ONE] = "parameter.type-perm-one-error";
-	}
+    public function setup() {
+        $this->ERROR_MESSAGES = [
+            self::ALL => "type-perm-all",
+            self::ANY => "type-perm-any",
+            self::ONE => "type-perm-one"
+        ];
+    }
 
     public function read(string $input, CommandSender $sender = null) {
     	if(strtolower($input) === "all") {
     		return Permissions::getAll();
     	}
-        $silent = $sender === null;
         $perm = Permissions::getById(strtolower($input));
         if($perm && !$perm->isVisible() && $sender) {
         	if(!Members::get($sender)->isOverriding()) {
         		$perm = null;
-        	}
-        }
-        if(!$this->isValid($perm, $sender)) {
-        	if(!$silent) {
-        		$sender->sendMessage($this->createErrorMessage($sender, $input));
         	}
         }
         return $perm;

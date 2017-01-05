@@ -31,16 +31,18 @@ use dominate\parameter\Parameter;
 
 class MemberParameter extends Parameter {
 
-	const ONLINE_MEMBER 	= 0x15;
-	const OFFLINE_MEMBER 	= 0x16;
-	const CONSOLE_MEMBER 	= 0x17;
-	const ANY_MEMBER		= 0x18;
+	const ONLINE_MEMBER 	= 0;
+	const OFFLINE_MEMBER 	= 1;
+	const CONSOLE_MEMBER 	= 2;
+	const ANY_MEMBER		= 3;
 
-	public static function onClassLoaded() {
-		Parameter::$ERROR_MESSAGES[self::ONLINE_MEMBER] 	= "parameter.type-member-error";
-		Parameter::$ERROR_MESSAGES[self::OFFLINE_MEMBER] 	= "parameter.type-member-error";
-		Parameter::$ERROR_MESSAGES[self::CONSOLE_MEMBER] 	= "parameter.type-console-member-error";
-		Parameter::$ERROR_MESSAGES[self::ANY_MEMBER]		= "parameter.type-any-member-error";
+	public function setup() {
+		$this->ERROR_MESSAGES = [
+			self::ONLINE_MEMBER 	=> "type-member",
+			self::OFFLINE_MEMBER 	=> "type-member",
+			self::CONSOLE_MEMBER 	=> "type-console-member",
+			self::ANY_MEMBER		=> "type-any-member",
+		];
 	}
 
 	/**
@@ -48,17 +50,10 @@ class MemberParameter extends Parameter {
 	 * @return mixed
 	 */
 	public function read(string $input, CommandSender $sender = null) {
-		$silent = $sender ? false : true;
 		if(($input === "me" || $input === "self") && $sender) {
 			$member = Members::get($sender, true);
 		} else {
 			$member = Members::get($input, false);
-		}
-		if(!$this->isValid($member, $sender)) {
-			if(!$silent) {
-				$sender->sendMessage($this->createErrorMessage($sender, $input));
-			}
-			return null;
 		}
 		return $member;
 	}

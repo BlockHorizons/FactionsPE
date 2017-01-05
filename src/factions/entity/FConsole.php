@@ -49,7 +49,7 @@ class FConsole implements IMember, RelationParticipator {
    * @return Faction
    */
   public function getFaction() : Faction {
-    return Factions::getById(Faction::NONE);
+    return Factions::getById($this->getFactionId());
   }
 
   public function setFaction(Faction $faction) {

@@ -54,7 +54,8 @@ class FactionCommand extends Command
             new Chat($plugin, "chat", "Toggle faction chat mode", Permissions::CHAT),
             new Top($plugin, "top", "See top of most powerful factions", Permissions::TOP),
             new Player($plugin, "player", "See more detailed info about someone", Permissions::PLAYER),
-            new Perm($plugin, "permission", "Manage faction permissions", Permissions::PERM)
+            new Perm($plugin, "permission", "Manage faction permissions", Permissions::PERM),
+            new Disband($plugin, "disband", "Disband a faction", Permissions::DISBAND, ["destroy"])
         ];
         foreach ($childs as $child) {
             $this->addChild($child);

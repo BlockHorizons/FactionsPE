@@ -21,20 +21,70 @@ namespace factions\command;
 
 use dominate\Command;
 
+use factions\relation\Relation;
 use factions\command\parameter\MemberParameter;
 
 class Rank extends Command {
 
+	const RANK_REQUIRED = Relation::OFFICER;
+
 	public function setup() {
 		$this->addParameter(new MemberParameter("player"));
-		$this->addParameter((new FactionRank("action"))->setDefaultValue(null));
-		$this->addParameter((new FactionParameter("faction"))->setDefaultValue(null));
+		$this->addParameter((new RankParameter("action"))->setDefaultValue(null)->setPermission(Permissions::RANK_ACTION));
+		$this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
 	}
 
 	public function perform(CommandSender $sender, $label, array $args) {
 		$this->sender = $sender;
 
-		if()
+		$member = $this->getArgument(0);
+		$msender = Members::get($sender);
+		$faction = $this->getArgument(2);
+
+		// Show him the rank if no action is required
+		if(!$this->getParameter("action")->isset()) {
+			if(!$sender->hasPermission(Permissions::RANK_SHOW)) {
+				return "no-perm-to-see-member-rank";
+			}
+			# Show rank
+			return true;
+		}		
+		$action = strtolower($this->getArgument(1));
+
+		if(Relation::isRankValid($action)) {
+			$targetRank = $action;
+		} else {
+			if(RelationParameter::isPromotion($action)) {
+				$targetRank = Relation::getNext($member->getRole());
+			} elseif(RelationParameter::isDemotion($action)) {
+				$targetRank = Relation::getPrevious($member->getRole());
+			}
+			if(!Relation::isRankValid($action)) {
+				return "cant-demote-premote-rank-border";
+			}
+		}
+
+
+		// Ensure allowed
+		if(!$msender->isOverriding()) {
+			if($faction->isNone()) {
+				return "wilderness-doesnt-use-ranks";
+			}
+			if($faction !== $member->getFaction()) {
+				return ["target-must-be-in-same-faction", [$member->getDisplayName()]];
+			}
+			if($msender === $member) {
+				return "cant-change-self-rank";
+			}
+			if($factionChange) {
+				return ["cant-change-faction", [$member->getDisplayName()]];
+			}
+			if(Relation::isLessThan($msender->getRole(), RankParameter::REQUIRED_RANK)) {
+				return ["not-enough-rank-power", [RankParameter::REQUIRED_RANK]];
+			}
+			
+		}
+
 	}
 
 }

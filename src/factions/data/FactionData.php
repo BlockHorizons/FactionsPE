@@ -92,6 +92,7 @@ class FactionData extends Data {
      * Factions usually do not have a powerboost. It defaults to 0.
      * The powerBoost is a custom increase/decrease to default and maximum power.
      * Null means the faction has powerBoost (0).
+     * @var int
      */
     protected $powerBoost = 0;
 
@@ -102,9 +103,18 @@ class FactionData extends Data {
     protected $relationWishes = [];
 
     /**
+     * This holds player name, if the player name is in this list then he is invited
+     * to this faction
      * @var string[]
      */
     protected $invitedPlayers = [];
+
+    /**
+     * If economy is enabled then members are able to deposit and withdraw from
+     * faction bank account
+     * @var int
+     */
+    protected $bank = 0;
 
 	public function __construct(array $source) {
 		// required fields
@@ -120,6 +130,7 @@ class FactionData extends Data {
 		$this->perms = $source["perms"] ?? [];
 		$this->flags = $source["flags"] ?? [];
 		$this->relationWishes = $source["relationWishes"] ?? [];
+		$this->bank = $source["bank"] ?? $this->bank;
 
 		if(isset($source["home"])) {
 			$p = explode(":", $source["home"]);
@@ -147,6 +158,7 @@ class FactionData extends Data {
 			"motd" => $this->motd,
 			"description" => $this->description,
 			"invitedPlayers" => $this->invitedPlayers,
+			"bank" => $this->bank
 		];
 		
 		if(($home = $this->getHome())) {
@@ -291,6 +303,10 @@ class FactionData extends Data {
 		return $this->members;
 	}
 
+	public function setRawMembers(array $members) {
+		$this->members = $members;
+	}
+
 	/*
 	 * ----------------------------------------------------------
 	 * FLAGS
@@ -329,6 +345,24 @@ class FactionData extends Data {
 
 	public function getInvitedPlayers() : array {
     	return $this->invitedPlayers;
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * BANK
+     * ----------------------------------------------------------
+     */
+
+    public function setBank(int $value) {
+    	$this->bank = $value;
+    }
+
+    public function getBank() : int {
+    	return $this->bank;
+    }
+
+    public function addToBank(int $value) {
+    	$this->bank += $value;
     }
 
 }

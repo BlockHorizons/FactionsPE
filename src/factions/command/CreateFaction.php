@@ -46,8 +46,6 @@ class CreateFaction extends Command {
 	}
 
 	public function perform(CommandSender $sender, $label, array $args) : bool {
-		if(!parent::execute($sender, $label, $args)) return false;
-
 		if(FactionsPE::get()->economyEnabled()) {
 			if($sender instanceof Player) {
 				if(($has = FactionsPE::get()->getEconomy()->balance($sender)) < ($need = Gameplay::get('price.faction-creation', 0)) ) {

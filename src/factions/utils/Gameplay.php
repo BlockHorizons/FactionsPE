@@ -20,8 +20,6 @@ namespace factions\utils;
 
 final class Gameplay {
 
-  const FACTION_MAX_PLAYERS = "faction-max-players";
-
   private function __construct() {}
 
   /**
@@ -47,7 +45,7 @@ final class Gameplay {
 
   public static function get(string $key, $default = null) {
     $data = self::$data;
-        if(strpos($key, ".")) {
+        if(strpos($key, ".") !== false) {
             $keys = explode(".", $key);
             $i = 0;
             while(isset($data[$keys[$i]])) {

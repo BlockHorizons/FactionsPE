@@ -53,6 +53,7 @@ class Faction extends FactionData implements RelationParticipator {
 
 	const DISBAND_REASON_UNKNOWN 		= 0;
 	const DISBAND_REASON_EMPTY_FACTION 	= 1;
+	const DISBAND_REASON_COMMAND 		= 2;
 
 	/**
 	 * Faction constructor
@@ -185,6 +186,28 @@ class Faction extends FactionData implements RelationParticipator {
 			if(in_array($member, $members)) return $role;
 		}
 		return Relation::RECRUIT;
+	}
+
+	public function setRole(IMember $member, string $rank) : bool {
+		if(!$this->isMember($member)) return false;
+
+		$name = strtolower(trim($member->getName()));
+		$members = $this->getRawMembers();
+		
+		// No change
+		$currentRank = $this->getRole($member);
+		if($rank === $currentRank) return false;
+
+		// Remove from old role
+		unset($members[$currentRank][array_search($name, $members[$currentRank])]);
+
+		// Move into new
+		$members[$rank][] = $name;
+
+		// Apply
+		$this->setRawMembers($members);
+
+		return $this->getRole($member) === $rank;
 	}
 
 	/**
@@ -322,7 +345,10 @@ class Faction extends FactionData implements RelationParticipator {
 		return count($this->getOnlineMembers()) == 0;
 	}
 
-
+	/**
+	 * Try to promote new leader or disband if failed
+	 * @param IMember $leader = null
+	 */
 	public function promoteNewLeader(IMember $leader = null) {
 		if ($this->isNone()) return;
         if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) return;
@@ -363,8 +389,10 @@ class Faction extends FactionData implements RelationParticipator {
 		if($this->getFlag(Flag::PERMANENT)) {
 			throw new \LogicException("can not disband permanent faction $this ({$this->getId()})");
 		}
-		foreach (Members::getAllOnline() as $player) {
-	        $player->sendMessage(Localizer::translatable("faction-disbanded", [$this->getName()]));
+	    foreach ($this->getOnlineMembers() as $member) {
+	    	$event = new MembershipChangeEvent($member, Factions::getById(Faction::NONE), MembershipChangeEvent::REASON_DISBAND);
+	    	FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+	    	// This event cannot be cancelled
 	    }
 	    if (Gameplay::get("log.faction-disband", true)) {
 	    	$args = [
@@ -376,8 +404,9 @@ class Faction extends FactionData implements RelationParticipator {
             	case self::DISBAND_REASON_EMPTY_FACTION:
             		$msg = Localizer::trans('log.faction-disband-reason-empty', $args);
             		break;
+            	default: break;
         	}
-        	FactionsPE::get()->getLogger()->info($msg);
+        	FactionsPE::get()->getLogger()->notice($msg);
         }
 	    Factions::detach($this);
 	    if($delete)
@@ -548,7 +577,7 @@ class Faction extends FactionData implements RelationParticipator {
 
 	public function setPermissions(array $perms) {
 		foreach ($perms as $key => $relations) {
-			$this->permissions[$key] = $relations;
+			$this->perms[$key] = $relations;
 		}
 	}
 
@@ -562,7 +591,6 @@ class Faction extends FactionData implements RelationParticipator {
         }
         $perms[$perm->getId()] = $relations;
         $this->setPermissions($perms);
-        $this->save();
 	}
 
 	/**
@@ -572,9 +600,8 @@ class Faction extends FactionData implements RelationParticipator {
 	 */
 	public function getPermitted($perm) : array {
 		$id = $perm instanceof Permission ? $perm->getId() : $perm;
-        if(isset($this->getPermissions()[$id])) $rels = $this->getPermissions()[$id];
-        return $rels ?? ($perm instanceof Permission ? $perm->getStandard() : []);
-	}
+        return $this->getPermissions()[$id] ?? [];
+    }
 
 	/**
 	 * @param string $rel relation id

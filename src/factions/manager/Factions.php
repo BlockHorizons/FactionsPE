@@ -29,6 +29,9 @@ use factions\relation\Relation;
 
 class Factions {
 
+  /** @var string[] */
+  private static $hashes = [];
+
   /**
    * @var Faction[]
    */
@@ -39,16 +42,16 @@ class Factions {
       new Faction(Faction::NONE, [
           "name" => Faction::NAME_NONE,
           "flags" => [
-              Flag::PVP,
-              Flag::ANIMALS,
-              Flag::ENDER_GRIEF,
-              Flag::EXPLOSIONS,
-              Flag::FIRE_SPREAD,
-              Flag::FRIENDLY_FIRE,
-              Flag::ZOMBIE_GRIEF,
-              Flag::PERMANENT,
-              Flag::POWER_LOSS,
-              Flag::INFINITY_POWER
+              Flag::PVP => true,
+              Flag::ANIMALS => true,
+              Flag::ENDER_GRIEF => true,
+              Flag::EXPLOSIONS => true,
+              Flag::FIRE_SPREAD => true,
+              Flag::FRIENDLY_FIRE => true,
+              Flag::ZOMBIE_GRIEF => true,
+              Flag::PERMANENT => true,
+              Flag::POWER_LOSS => true,
+              Flag::INFINITY_POWER => true
           ],
           "description" => "It's dangerous to go alone", # TODO: Translatable
           "perms" => [
@@ -63,9 +66,9 @@ class Factions {
         new Faction(Faction::SAFEZONE, [
             "name" => Faction::NAME_SAFEZONE,
             "flags" => [
-                Flag::PEACEFUL,
-                Flag::PERMANENT,
-                Flag::INFINITY_POWER
+                Flag::PEACEFUL => true,
+                Flag::PERMANENT => true,
+                Flag::INFINITY_POWER => true
             ],
             "description" => "Save from PVP and Monsters" # TODO: Translatable
         ]);
@@ -74,9 +77,9 @@ class Factions {
         new Faction(Faction::WARZONE, [
             "name" => Faction::NAME_WARZONE,
             "flags" => [
-                Flag::PVP,
-                Flag::PERMANENT,
-                Flag::INFINITY_POWER
+                Flag::PVP => true,
+                Flag::PERMANENT => true,
+                Flag::INFINITY_POWER => true
             ],
             "description" => "Be careful enemies can be nearby" # TODO: Translatable
         ]);
@@ -125,11 +128,31 @@ class Factions {
     public static function attach(Faction $faction) {
       if(self::contains($faction)) return;
       self::$factions[$faction->getId()] = $faction;
+      self::$hashes[$faction->getId()] = self::hash($faction);
+    }
+
+    public static function hash(Faction $faction) {
+      return md5(json_encode($faction->__toArray()));
+    }
+
+    /**
+     * This can save cpu resources if there's a lot of
+     * factions and many of them doesn't really need saving
+     */
+    public static function saveUnsavedFactions() {
+      foreach (self::getAll() as $id => $faction) {
+        $hash = self::$hashes[$id];
+        if(($newHash = self::hash($faction)) !== $hash) {
+          $faction->save();
+        }
+        self::$hashes[$id] = $newHash;
+      }
     }
 
     public static function detach(Faction $faction) {
       if(!self::contains($faction)) return;
       unset(self::$factions[$faction->getId()]);
+      unset(self::$hashes[$faction->getId()]);
       unset($faction);
     }
 

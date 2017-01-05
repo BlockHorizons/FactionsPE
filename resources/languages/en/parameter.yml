@@ -1,14 +1,28 @@
 ---
-type-string-error: "Argument :n passed to command must resolve into string"
-type-integer-error: "Argument :n passed to command must resolve into integer"
-type-float-error: "Argument :n passed to command must resolve into float"
-type-boolean-error: "Argument :n passed to command must resolve into boolean"
-type-null-error: "Argument :n passed to command must resolve into null"
+# Generic
+permission-denied: "<rose>You don't have permission to use this command with parameter <aqua>:param<rose> entered"
 
-type-member-error: "No online member by name :value was found"
-type-offline-member-error: "No offline member by name :value was found"
-type-console-member-error: "Try again and make sure you type word 'console' correctly ;)"
-type-any-member-error: "No member by name :value was found"
-type-faction-error: "No faction by name :value was found"
-type-perm-error: "No permission by id :value was found"
+# Primitives
+type-string: "Argument :n passed to command must resolve into string"
+type-integer: "Argument :n passed to command must resolve into integer"
+type-float: "Argument :n passed to command must resolve into float"
+type-boolean: "Argument :n passed to command must resolve into boolean"
+type-null: "Argument :n passed to command must resolve into null"
+
+# Faction parameter types
+type-member: "No online member by name :value was found"
+type-offline-member: "No offline member by name :value was found"
+type-console-member: "Try again and make sure you type word 'console' correctly ;)"
+type-any-member: "No member by name :value was found"
+type-faction: "No faction by name :value was found"
+
+type-perm-one: "No permission by id <aqua>:value<white> was found"
+type-perm-all: "Enter <aqua>'all'<white> to get all permissions"
+type-perm-any: "No permission by id <aqua>:value<white> was found. Perhaps you meant <aqua>'all'<white>?"
+
+type-rel-all: "Enter <aqua>'all'<white> to get all relations"
+type-rel-any: "No relation or rank by name <aqua>:value<white> was found. Perhaps you meant <aqua>'all'<white>?"
+type-rel-one: "No relation or rank by name <aqua>:value<white> was found"
+type-rel-rank: "No valid rank by name <aqua>:value<white> was found"
+type-rel: "No valid relation by name <aqua>:value<white> was found"
 ...

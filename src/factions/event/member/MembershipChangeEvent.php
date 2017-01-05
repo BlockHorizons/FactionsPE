@@ -36,6 +36,7 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable {
 	const REASON_JOIN 		= 0x2;
 	const REASON_CREATE 	= 0x3;
 	const REASON_KICK		= 0x4;
+	const REASON_DISBAND	= 0x5;
 
 	/** @var Faction */
 	protected $faction;
@@ -58,8 +59,8 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable {
 	}
 
 	public function setCancelled($force = true) {
-		if($this->reason === self::REASON_CREATE) {
-			throw new \LogicException("MembershipChangeEvent(reason={self::REASON_CREATE}|REASON_CREATE) can't be cancelled");
+		if($this->reason === self::REASON_CREATE || $this->reason === self::REASON_DISBAND) {
+			throw new \LogicException("MembershipChangeEvent(reason={self::$this->reason}) can't be cancelled");
 		} else {
 			parent::setCancelled($force);
 		}

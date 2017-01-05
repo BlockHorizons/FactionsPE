@@ -179,8 +179,20 @@ final class Relation {
     }
 
     public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that)  : string {
-        # TODO
-        return TextFormat::DARK_GREEN;
+        return self::getColor($me->getRelationTo($that));
+    }
+
+    /**
+     * Returns 1 if A is Higher than B
+     * Returns 0 If A is Equal to B
+     * Returns -1 If A is Lower than B
+     * Returns 2 on error
+     */
+    public static function compare($relA, $relB) : int {
+        if(self::isHigherThan($relA, $relB)) return 1;
+        if(self::isAtLeast($relA, $relB)) return 0;
+        if(self::isLowerThan($relA, $relB)) return -1;
+        return 2; # ERROR
     }
 
     public static function isAtLeast($relA, $relB) : bool {

@@ -17,14 +17,10 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace factions\command\parameter;
+namespace factions\command;
 
+use dominate\Command;
 use dominate\parameter\Parameter;
 
-class FactionsRank extends Parameter {
+use pocketmine\command\CommandSender;
 
-	public function __construct() {
-		
-	}
-
-}

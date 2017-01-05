@@ -131,4 +131,11 @@ perm-not-editable: "<b>The perm <h>:0 <b>is not editable."
 perm-no-change: ":0 <i>already has :1 <i>set to :2 <i>for :3<i>."
 player-set-faction-perm: "<h>:0 <i>set a perm for <h>:1<i>."
 perm-for: "Perm for :0"
+
+cant-disband-permanent: "<i>This faction is designated as permanent, so you cannot disband it."
+faction-disbanded-inform-member: "<h>:0<i> disbanded your faction."
+you-disbanded: "<i>You disbanded <h>:0<i>."
+
+no-perm-to-see-member-rank: "<rose>You don't have permission to see player ranks"
+no-perm-to-set-member-rank: "<rose>You don't have permission to set player ranks"
 ...

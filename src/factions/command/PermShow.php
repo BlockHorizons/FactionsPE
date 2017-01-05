@@ -23,7 +23,7 @@ use dominate\Command;
 use dominate\parameter\Parameter;
 
 use factions\command\parameter\FactionParameter;
-use factions\command\parameter\FactionPerm;
+use factions\command\parameter\PermissionParameter;
 use factions\permission\Permission;
 use factions\manager\Pemrissions;
 use factions\utils\Text;
@@ -37,7 +37,7 @@ class PermShow extends Command {
 
     public function setup() {
         $this->addParameter((new Parameter("page", Parameter::TYPE_INTEGER))->setDefaultValue(1));
-        $this->addParameter((new FactionPerm("perm", FactionPerm::ANY))->setDefaultValue("all"));
+        $this->addParameter((new PermissionParameter("perm", PermissionParameter::ANY))->setDefaultValue("all"));
         $this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
     }
 
