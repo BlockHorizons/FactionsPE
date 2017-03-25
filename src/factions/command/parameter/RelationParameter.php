@@ -20,12 +20,11 @@
 namespace factions\command\parameter;
 
 use dominate\parameter\Parameter;
-
 use factions\relation\Relation;
-
 use pocketmine\command\CommandSender;
 
-class RelationParameter extends Parameter {
+class RelationParameter extends Parameter
+{
 
     const ALL = 0;
     const ONE = 1;
@@ -33,7 +32,8 @@ class RelationParameter extends Parameter {
     const RANK = 3;
     const RELATION = 4;
 
-    public function setup() {
+    public function setup()
+    {
         $this->ERROR_MESSAGES = [
             self::ALL => "type-rel-all",
             self::ANY => "type-rel-any",
@@ -43,9 +43,10 @@ class RelationParameter extends Parameter {
         ];
     }
 
-    public function read(string $input, CommandSender $sender = null) {
+    public function read(string $input, CommandSender $sender = null)
+    {
         $silent = $sender === null;
-        if(strtolower($input) === "all") {
+        if (strtolower($input) === "all") {
             $rel = Relation::getAll();
         } else {
             $rel = Relation::fromString($input);
@@ -53,8 +54,9 @@ class RelationParameter extends Parameter {
         return $rel;
     }
 
-    public function isValid($value, CommandSender $sender = null) : bool {
-        if(!$value) return false;
+    public function isValid($value, CommandSender $sender = null): bool
+    {
+        if (!$value) return false;
         switch ($this->type) {
             case self::ALL:
                 return is_array($value);

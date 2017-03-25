@@ -19,35 +19,38 @@
 
 namespace factions\event\faction;
 
+use factions\entity\Faction;
+use factions\entity\IMember;
 use pocketmine\event\Cancellable;
 
-use factions\entity\IMember;
-use factions\entity\Faction;
+class FactionDisbandEvent extends FactionEvent implements Cancellable
+{
 
-class FactionDisbandEvent extends FactionEvent implements Cancellable {
+    public static $handlerList = null;
+    public static $eventPool = [];
+    public static $nextEvent = 0;
 
-	public static $handlerList = null;
-	public static $eventPool = [];
-	public static $nextEvent = 0;
+    /** @var IMember */
+    public $member;
 
-	/** @var IMember */
-	public $member;
+    /** @var int */
+    public $reason;
 
-	/** @var int */
-	public $reason;
+    public function __construct(IMember $member, Faction $faction, $reason = Faction::DISBAND_REASON_UNKNOWN)
+    {
+        parent::__construct($faction);
+        $this->member = $member;
+        $this->reason = $reason;
+    }
 
-	public function __construct(IMember $member, Faction $faction, $reason = Faction::DISBAND_REASON_UNKNOWN) {
-		parent::__construct($faction);
-		$this->member = $member;
-		$this->reason = $reason;
-	}
+    public function getMember()
+    {
+        return $this->member;
+    }
 
-	public function getMember() {
-		return $this->member;
-	}
-
-	public function getReason() {
-		return $this->reason;
-	}
+    public function getReason()
+    {
+        return $this->reason;
+    }
 
 }

@@ -16,220 +16,266 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
 namespace factions\entity;
 
-use factions\FactionsPE;
-use factions\relation\RelationParticipator;
-use factions\relation\Relation;
-use factions\permission\Permission;
-use factions\entity\IMember;
 use factions\manager\Factions;
-
+use factions\permission\Permission;
+use factions\relation\Relation;
+use factions\relation\RelationParticipator;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;
 
-class FConsole implements IMember, RelationParticipator {
+class FConsole implements IMember, RelationParticipator
+{
 
-  private $console;
+    private $console;
 
-  public function __construct() {
-    $this->console = new ConsoleCommandSender();
-  }
-  
-  public function getFactionId() : string {
-    return Faction::NONE;
-  }
+    public function __construct()
+    {
+        $this->console = new ConsoleCommandSender();
+    }
 
-  // --------------------------- //
-  //  FACTIONS
-  // --------------------------- //
+    public function hasHUD(): bool
+    {
+        return false;
+    }
 
-  /**
-   * @return Faction
-   */
-  public function getFaction() : Faction {
-    return Factions::getById($this->getFactionId());
-  }
+    /**
+     * @return Faction
+     */
+    public function getFaction(): Faction
+    {
+        return Factions::getById($this->getFactionId());
+    }
 
-  public function setFaction(Faction $faction) {
-    $this->setFactionId($faction->getId());
-  }
+    // --------------------------- //
+    //  FACTIONS
+    // --------------------------- //
 
-  public function setFactionId(string $id, bool $silent = falses) {
-    throw new \LogicException("invalid call on console object");
-  }
+    public function getFactionId(): string
+    {
+        return Faction::NONE;
+    }
 
-  // --------------------------- //
-  // STRING IDENTIFIERS
-  // --------------------------- //
+    public function setFaction(Faction $faction)
+    {
+        $this->setFactionId($faction->getId());
+    }
 
-  public function getName() : string {
-    return "Console";
-  }
+    public function setFactionId(string $id, bool $silent = falses)
+    {
+        throw new \LogicException("invalid call on console object");
+    }
 
-  public function hasTitle() : bool {
-    return false;
-  }
+    // --------------------------- //
+    // STRING IDENTIFIERS
+    // --------------------------- //
 
-  public function getTitle() : string {
-    return "";
-  }
+    public function getName(): string
+    {
+        return "Console";
+    }
 
-  public function getDisplayName() : string {
-    return "Console";
-  }
+    public function hasTitle(): bool
+    {
+        return false;
+    }
 
-  // --------------------------- //
-  //  POWER & ROLE
-  // --------------------------- //
-  
-  public function getRole() : string {
-    return Relation::LEADER;
-  }
+    public function getTitle(): string
+    {
+        return "";
+    }
 
-  public function getPower(bool $limit = true) : int {
-    return PHP_INT_MAX;
-  }
+    public function getDisplayName(): string
+    {
+        return "Console";
+    }
 
-  public function getDefaultPower() : int {
-    return $this->getPower();
-  }
+    // --------------------------- //
+    //  POWER & ROLE
+    // --------------------------- //
 
-  public function getPowerMax() : int {
-    return $this->getPower();
-  }
+    public function getRole(): string
+    {
+        return Relation::LEADER;
+    }
 
-  public function getPowerMin() : int {
-    return $this->getPower();
-  }
+    public function getDefaultPower(): int
+    {
+        return $this->getPower();
+    }
 
-  public function getPowerPerDeath() : int {
-    return 0;
-  }
+    public function getPower(bool $limit = true): int
+    {
+        return PHP_INT_MAX;
+    }
 
-  public function getPowerBoost() : int {
-    return PHP_INT_MAX;
-  }
+    public function getPowerMax(): int
+    {
+        return $this->getPower();
+    }
 
-  public function setRole(string $role) {
-    throw new \LogicException("invalid call on console object");
-  }
+    public function getPowerMin(): int
+    {
+        return $this->getPower();
+    }
 
-  public function setPower(int $power) {
-    throw new \LogicException("invalid call on console object");
-  }
+    public function getPowerPerDeath(): int
+    {
+        return 0;
+    }
 
-  public function setPowerBoost(int $boost) {
-    throw new \LogicException("invalid call on console object");
-  }
+    public function setRole(string $role)
+    {
+        throw new \LogicException("invalid call on console object");
+    }
 
-  // --------------------------- //
-  //  MISC
-  // --------------------------- //
+    public function setPower(int $power)
+    {
+        throw new \LogicException("invalid call on console object");
+    }
 
-  public function getFirstPlayed() : int {
-    return 0;
-  }
+    public function setPowerBoost(int $boost)
+    {
+        throw new \LogicException("invalid call on console object");
+    }
 
-  public function getLastPlayed() : int {
-    return time();
-  }
+    public function getFirstPlayed(): int
+    {
+        return 0;
+    }
 
-  public function isDefault() : bool {
-    return true;
-  }
+    // --------------------------- //
+    //  MISC
+    // --------------------------- //
 
-  public function isNone() : bool {
-    return true;
-  }
+    public function getLastPlayed(): int
+    {
+        return time();
+    }
 
-  public function isNormal() : bool {
-    return false;
-  }
+    public function isDefault(): bool
+    {
+        return true;
+    }
 
-  public function isOnline() : bool {
-    return true;
-  }
+    public function isNone(): bool
+    {
+        return true;
+    }
 
-  public function isOverriding() : bool {
-    return true;
-  }
+    public function isNormal(): bool
+    {
+        return false;
+    }
 
-  public function hasFaction() : bool {
-    return false;
-  }
+    public function isOnline(): bool
+    {
+        return true;
+    }
 
-  public function hasPowerBoost() : bool {
-    return $this->getPowerBoost() !== 0;
-  }
+    public function isOverriding(): bool
+    {
+        return true;
+    }
 
-  public function hasPermission(Permission $perm) : bool {
-    return true;
-  }
+    public function hasFaction(): bool
+    {
+        return false;
+    }
 
-  public function sendMessage($message) {
-    $this->console->sendMessage("[FConsole]: ".$message);
-  }
+    public function hasPowerBoost(): bool
+    {
+        return $this->getPowerBoost() !== 0;
+    }
 
-  public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false) : string {
-    return Relation::NEUTRAL;
-  }
+    public function getPowerBoost(): int
+    {
+        return PHP_INT_MAX;
+    }
 
-  public function getColorTo(RelationParticipator $observer) : string {
-    return TextFormat::WHITE;
-  }
+    public function hasPermission(Permission $perm): bool
+    {
+        return true;
+    }
 
-  public function updateLastActivity() {}
+    public function sendMessage($message)
+    {
+        $this->console->sendMessage("[FConsole]: " . $message);
+    }
 
-  public function getLastActivity() : int {
-    return time();
-  }
+    public function getColorTo(RelationParticipator $observer): string
+    {
+        return TextFormat::WHITE;
+    }
 
-  public function resetFactionData() {
-    throw new \LogicException("invalid call on console object");
-  }
+    public function updateLastActivity()
+    {
+    }
 
-  public function isMember() : bool {
-    return false;
-  }
+    public function getLastActivity(): int
+    {
+        return time();
+    }
 
-  public function isRecruit() : bool {
-    return false;
-  }
+    public function resetFactionData()
+    {
+        throw new \LogicException("invalid call on console object");
+    }
 
-  public function isOfficer() : bool {
-    return false;
-  }
+    public function isMember(): bool
+    {
+        return false;
+    }
 
-  public function isLeader() : bool {
-    return false;
-  }
+    public function isRecruit(): bool
+    {
+        return false;
+    }
 
-  public function isPermitted(Permission $perm) : bool {
-    return true;
-  }
-  
-  public function setOverriding(bool $value) {
-    $this->overriding = $value;
-  }
+    public function isOfficer(): bool
+    {
+        return false;
+    }
 
-  public function getNameTag() : string {
-    return "";
-  }
+    public function isLeader(): bool
+    {
+        return false;
+    }
 
-  public function save() {
+    public function isPermitted(Permission $perm): bool
+    {
+        return true;
+    }
 
-  }
+    public function setOverriding(bool $value)
+    {
+        $this->overriding = $value;
+    }
 
-  public function isFriend(RelationParticipator $observer) : bool {
-    return Relation::isFriend($this->getRelationTo($observer, true));
-  }
+    public function getNameTag(): string
+    {
+        return "";
+    }
 
-  public function isEnemy(RelationParticipator $observer) : bool {
-    return Relation::isEnemy($this->getRelationTo($observer, true));
-  }
+    public function save()
+    {
 
+    }
 
+    public function isFriend(RelationParticipator $observer): bool
+    {
+        return Relation::isFriend($this->getRelationTo($observer, true));
+    }
+
+    public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false): string
+    {
+        return Relation::NEUTRAL;
+    }
+
+    public function isEnemy(RelationParticipator $observer): bool
+    {
+        return Relation::isEnemy($this->getRelationTo($observer, true));
+    }
 
 }

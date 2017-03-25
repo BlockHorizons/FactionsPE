@@ -11,4 +11,9 @@ player-joined-faction-by-other: ":0 moved the player :1 into the faction :2."
 player-joined-faction: ":0 joined the faction :1."
 new-leader: "Faction :0 (:1) leader was removed. Replacement leader: :2"
 override: ":player set overriding mode to :overriding"
+
+money-withdraw: "Player <h>:player<white> withdrawed <h>:amount<white> from <h>:faction<white> faction"
+money-deposit: "Player <h>:player<white> deposited <h>:amount<white> into <h>:faction<white> faction"
+
+config-reloaded: "Config has been reloaded by <aqua>:0"
 ...

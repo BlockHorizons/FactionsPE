@@ -19,7 +19,8 @@
 
 namespace factions\utils;
 
-class ASCIICompass {
+class ASCIICompass
+{
 
     const N = 'N';
     const NE = '/';
@@ -29,13 +30,14 @@ class ASCIICompass {
     const SW = '/';
     const W = 'W';
     const NW = '\\';
-    
+
     /**
      * @param int $degrees
      * @param string $colorActive
      * @param string $colorDefault
      */
-    public static function getASCIICompass(int $degrees, string $colorActive, string $colorDefault) : array {
+    public static function getASCIICompass(int $degrees, string $colorActive, string $colorDefault): array
+    {
         $ret = [];
         $point = self::getCompassPointForDirection($degrees);
         $row = "";
@@ -60,7 +62,8 @@ class ASCIICompass {
      * @param int $degrees
      * @return string|null
      */
-    public static function getCompassPointForDirection(int $degrees) {
+    public static function getCompassPointForDirection(int $degrees)
+    {
         $degrees = ($degrees - 180) % 360;
         if ($degrees < 0)
             $degrees += 360;

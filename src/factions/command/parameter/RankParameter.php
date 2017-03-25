@@ -19,44 +19,53 @@
 
 namespace factions\command\parameter;
 
-class RankParameter extends RelationParameter {
+use factions\relation\Relation;
+use pocketmine\command\CommandSender;
 
-	const NAMES_PROMOTE = [
-		"promote",
-		"plus",
-		"+",
-		"up"
-	];
+class RankParameter extends RelationParameter
+{
 
-	const NAMES_DEMOTE = [
-		"demote",
-		"minus",
-		"-",
-		"down"
-	];
+    const NAMES_PROMOTE = [
+        "promote",
+        "plus",
+        "+",
+        "up"
+    ];
 
-	const REQUIRED_RANK = Relation::OFFICER;
-	
-	public function setup() {
-		$this->ERROR_MESSAGE = "type-rank";
-		$this->type = RelationParameter::RANK;
-	}
+    const NAMES_DEMOTE = [
+        "demote",
+        "minus",
+        "-",
+        "down"
+    ];
 
-	public function read(string $input, CommandSender $sender = null) {
-		return strtolower($input);
-	}
+    const REQUIRED_RANK = Relation::OFFICER;
 
-	public static function isPromotion($value) : bool {
-		return in_array($value, self::NAMES_PROMOTE, true);
-	}
+    public static function isPromotion($value): bool
+    {
+        return in_array($value, self::NAMES_PROMOTE, true);
+    }
 
-	public static function isDemotion($value) : bool {
-		return in_array($value, self::NAMES_DEMOTE, true);
-	}
+    public static function isDemotion($value): bool
+    {
+        return in_array($value, self::NAMES_DEMOTE, true);
+    }
 
-	public function isValid($value, CommandSender $sender = null) {
-		if(is_array($value, array_merge(self::NAMES_DEMOTE, self::NAMES_PROMOTE), true)) return $value;
-		return parent::isValid($value, $sender);
-	}
+    public function setup()
+    {
+        $this->ERROR_MESSAGE = "type-rank";
+        $this->type = RelationParameter::RANK;
+    }
+
+    public function read(string $input, CommandSender $sender = null)
+    {
+        return strtolower($input);
+    }
+
+    public function isValid($value, CommandSender $sender = null): bool
+    {
+        if (in_array($value, array_merge(self::NAMES_DEMOTE, self::NAMES_PROMOTE, Relation::getAll()), true)) return $value;
+        return parent::isValid($value, $sender);
+    }
 
 }

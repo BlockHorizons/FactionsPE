@@ -1,37 +1,38 @@
 <?php
 /*
- *   FactionsPE: PocketMine-MP Plugin
- *   Copyright (C) 2016  Chris Prime
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+*     FactionsPE: PocketMine-MP Plugin
+*     Copyright (C) 2016   Chris Prime
+*
+*     This program is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     This program is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the
+*     GNU General Public License for more details.
+*
+*     You should have received a copy of the GNU General Public License
+*     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 namespace factions\engine;
 
-use factions\flag\Flag;
-use factions\entity\Member;
-use factions\permission\Permission;
-use factions\manager\Plots;
-use factions\manager\Members;
-use factions\manager\Permissions;
+use factions\entity\Plot;
 use factions\event\LandChangeEvent;
 use factions\event\member\MemberPowerChangeEvent;
+use factions\event\member\MemberTraceEvent;
+use factions\FactionsPE;
+use factions\flag\Flag;
+use factions\manager\Members;
+use factions\manager\Permissions;
+use factions\manager\Plots;
+use factions\permission\Permission;
 use factions\relation\Relation;
 use factions\utils\Gameplay;
 use factions\utils\Text;
-use factions\FactionsPE;
-
+use localizer\Localizer;
 use pocketmine\block\Block;
 use pocketmine\block\Liquid;
 use pocketmine\entity\Creeper;
@@ -43,31 +44,96 @@ use pocketmine\event\Cancellable;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
-use pocketmine\event\player\PlayerBucketEmptyEvent;
-use pocketmine\event\player\PlayerBucketFillEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
-use localizer\Localizer;
+class MainEngine extends Engine
+{
 
-class MainEngine extends Engine {
+    const TOUCH_SENSITIVE = [
+        Block::CAKE_BLOCK,
+        Block::SNOW
+    ];
 
-    public function onPlayerPrelogin(PlayerPreLoginEvent $event) {
+    const CONTAINERS = [
+        Block::CHEST,
+        Block::TRAPPED_CHEST,
+        Block::DROPPER,
+        Block::BREWING_STAND_BLOCK,
+        Block::ENCHANTING_TABLE
+    ];
+
+    const DOORS = [
+        Block::DOOR_BLOCK,
+        Block::TRAPDOOR,
+        Block::FENCE_GATE,
+        Block::NETHER_BRICK_FENCE,
+        Block::IRON_TRAPDOOR,
+        Block::SPRUCE_FENCE_GATE,
+        Block::BIRCH_FENCE_GATE,
+        Block::JUNGLE_FENCE_GATE,
+        Block::DARK_OAK_FENCE_GATE,
+        Block::ACACIA_FENCE_GATE,
+        Block::SPRUCE_DOOR_BLOCK,
+        Block::BIRCH_DOOR_BLOCK,
+        Block::JUNGLE_DOOR_BLOCK,
+        Block::ACACIA_DOOR_BLOCK,
+        Block::DARK_OAK_DOOR_BLOCK
+    ];
+
+    public function onPlayerPrelogin(PlayerPreLoginEvent $event)
+    {
         Members::get($event->getPlayer(), true);
     }
 
-    public function onPlayerQuit(PlayerQuitEvent $event) {
+    public function onPlayerQuit(PlayerQuitEvent $event)
+    {
         Members::detach(Members::get($event->getPlayer()));
     }
 
-    public static function showMotdOnJoin(PlayerJoinEvent $event) {
+    public function onMove(PlayerMoveEvent $event)
+    {
+        $member = Members::get($event->getPlayer());
+        $cz = $member->getPlayer()->getZ() >> 4;
+        $cx = $member->getPlayer()->getX() >> 4;
+        if (
+            $cx !== $member->chunkPos[0] ||
+            $cz !== $member->chunkPos[1]
+        ) {
+            # Player moved from plot to plot
+            $member->chunkPos = [$cx, $cz];
+            # Call event
+            $event = new MemberTraceEvent($member, new PLot($event->getFrom()), new Plot($event->getTo()));
+            $this->getMain()->getServer()->getPluginManager()->callEvent($event);
+        }
+    }
+
+    public function onPlayerTrace(MemberTraceEvent $event)
+    {
+        $member = $event->getMember();
+        if (!$event->sameOwner() && Gameplay::get("send-plot-faction-description", true)) {
+            $faction = $event->getTo()->getOwnerFaction();
+            $event->getMember()->getPlayer()->sendTip(Localizer::translatable("plot-faction-tip", [
+                "color" => $event->getMember()->getColorTo($faction),
+                "faction" => $faction->getName(),
+                "description" => $faction->hasDescription() ? $faction->getDescription() : "~"
+            ]));
+        }
+        if ($member->isAutoClaiming()) {
+            $af = $member->getAutoClaimFaction();
+            $this->getMain()->getServer()->dispatchCommand("faction " . ($af->isNone() ? "unclaim" : "claim") . " one {$af->getName()}", $member->getPlayer());
+        }
+    }
+
+    public function showMotdOnJoin(PlayerJoinEvent $event)
+    {
         if (!Gameplay::get("show-motd-on-join", true)) {
             $member = Members::get($event->getPlayer());
             $faction = $fplayer->getFaction();
@@ -85,18 +151,19 @@ class MainEngine extends Engine {
      * @priority LOW
      * @ignoreCancelled true
      */
-    public function onChunksChange(LandChangeEvent $event) {
+    public function onChunksChange(LandChangeEvent $event)
+    {
         // For security reasons we block the chunk change on any error since an error might block security checks from happening.
         try {
             $this->onChunksChangeInner($event);
-        }
-        catch(\Exception $throwable) {
+        } catch (\Exception $throwable) {
             $event->setCancelled(true);
             // echo $throwable->getTraceAsString();
         }
     }
 
-    public function onChunksChangeInner($event) {
+    public function onChunksChangeInner($event)
+    {
         if (!$event instanceof LandChangeEvent) {
             throw new \InvalidArgumentException("Argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be instanceof " . LandChangeEvent::class . ", '" . Text::toString($event) . "' given");
         }
@@ -123,7 +190,7 @@ class MainEngine extends Engine {
                 // ... ensure we have permission to alter the territory of the new faction ...
                 if (!Permissions::getById(Permission::TERRITORY)->has($player, $newFaction)) {
                     // NOTE: No need to send a message. We send message from the permission check itself.
-                    $player->sendMessage(Localizer::translatable("no-perm-to-claim-for", [$newFaction->getName() ]));
+                    $player->sendMessage(Localizer::translatable("no-perm-to-claim-for", [$newFaction->getName()]));
                     $event->setCancelled(true);
                     return;
                 }
@@ -143,21 +210,22 @@ class MainEngine extends Engine {
                     }
                 }
                 // ... ensure the claim would not bypass the faction power ...
-                if ($claimedLandCount + 10 > $newFaction->getPower(true)) {
+                if (($claimedLandCount + 1) * Gameplay::get("power.per-claim", 5) > $newFaction->getPower(true)) {
                     $player->sendMessage(Localizer::translatable("not-enough-power-to-claim"));
                     $event->setCancelled(true);
                     return;
                 }
                 // ... ensure claims are properly connected ...
                 if (
-                // If claims must be connected ...
-                Gameplay::get("claims-must-be-connected", true)
-                // ... and this faction already has claimed something on this map (meaning it's not their first claim) ...
-                 && $newFaction->getPlotsCountInLevel($world) > 0
-                // ... and none of the chunks are connected to an already claimed chunk for the faction ...
-                 && Plots::isConnectedPlot($plot, $newFaction)
-                // ... and either claims must always be connected or there is at least one normal faction among the old factions ...
-                 && (!Gameplay::get("claims-can-be-unconnected-if-owned-by-other-faction", true) || $currentFactionIsNormal)) {
+                    // If claims must be connected ...
+                    Gameplay::get("claims-must-be-connected", true)
+                    // ... and this faction already has claimed something on this map (meaning it's not their first claim) ...
+                    && $newFaction->getPlotsCountInLevel($world) > 0
+                    // ... and none of the chunks are connected to an already claimed chunk for the faction ...
+                    && Plots::isConnectedPlot($plot, $newFaction)
+                    // ... and either claims must always be connected or there is at least one normal faction among the old factions ...
+                    && (!Gameplay::get("claims-can-be-unconnected-if-owned-by-other-faction", true) || $currentFactionIsNormal)
+                ) {
                     if (Gameplay::get("claims-can-be-unconnected-if-owned-by-other-faction", true)) {
                         $player->sendMessage(Localizer::translatable("plot-must-be-connected-to-owned-one"));
                     } else {
@@ -171,7 +239,7 @@ class MainEngine extends Engine {
             // ... that is an actual faction ...
             if (!$currentFaction->isNone()) {
                 // ... for which the mplayer lacks permission ...
-                if (Permissions::getById(Permission::TERRITORY)->has($player, $currentFaction)) {
+                if (!Permissions::getById(Permission::TERRITORY)->has($player, $currentFaction)) {
                     // ... consider all reasons to forbid "overclaiming/warclaiming" ...
                     // ... claiming from others may be forbidden ...
                     if (!Gameplay::get("claiming-from-others-allowed", true)) {
@@ -186,8 +254,8 @@ class MainEngine extends Engine {
                         return;
                     }
                     // ... the old faction might not be inflated enough ...
-                    if ($currentFaction->getPower() > $currentFaction->getLandCount() - 1) {
-                        $player->sendMessage(Localizer::translatable("cant-claim-owner-too-strong", [$currentFaction->getName() ]));
+                    if ($currentFaction->hasLandInflation()) {
+                        $player->sendMessage(Localizer::translatable("cant-claim-owner-too-strong", [$currentFaction->getName()]));
                         $event->setCancelled(true);
                         return;
                     }
@@ -198,7 +266,7 @@ class MainEngine extends Engine {
                         return;
                     }
                     // ... otherwise you may claim from this old faction even though you lack explicit permission from them.
-                    
+
                 }
             }
         }
@@ -207,12 +275,13 @@ class MainEngine extends Engine {
     // -------------------------------------------- //
     // POWER LOSS ON DEATH
     // -------------------------------------------- //
-    
+
     /**
      * @param PlayerDeathEvent $event
      * @priority NORMAL
      */
-    public function powerLossOnDeath(PlayerDeathEvent $event) {
+    public function powerLossOnDeath(PlayerDeathEvent $event)
+    {
         // If player dies...
         $player = $event->getEntity();
         if (!($player instanceof Player)) return;
@@ -236,7 +305,7 @@ class MainEngine extends Engine {
         $fplayer->setPower($newPower);
         // ... and inform the player.
         // TODO: A progress bar here would be epic :)
-        $player->sendMessage(Localizer::translatable("power-level-inform-on-death", [$fplayer->getPower(), $fplayer->getPowerMax() ]));
+        $player->sendMessage(Localizer::translatable("power-level-inform-on-death", [$fplayer->getPower(), $fplayer->getPowerMax()]));
     }
 
     /**
@@ -244,29 +313,29 @@ class MainEngine extends Engine {
      * @priority NORMAL
      * @ignoreCancelled true
      */
-    public function blockExplosion(EntityExplodeEvent $event) {
+    public function blockExplosion(EntityExplodeEvent $event)
+    {
         $faction2allowed = [];
         $entity = $event->getEntity();
         // If an explosion occurs at a location ...
         $pos = $entity->getPosition();
-        // Check the entity. Are explosions disabled there?
         $faction = Plots::getFactionAt($pos);
+        // Check the entity. Are explosions disabled there?
         $allowed = $faction->isExplosionsAllowed();
         if (!$allowed) {
             $event->setCancelled(true);
             return;
         }
-        $faction2allowed[$faction->getId() ] = $allowed;
-        // Individually check the flag state for each block
+        $faction2allowed[$faction->getId()] = $allowed;
         $blocks = $event->getBlockList();
         foreach ($blocks as $block) {
             $faction = Plots::getFactionAt($block);
-            $allowed = $faction2allowed[$faction->getId() ] ?? null;
+            $allowed = $faction2allowed[$faction->getId()] ?? null;
             if ($allowed === null) {
                 $allowed = $faction->isExplosionsAllowed();
-                $faction2allowed[$faction->getId() ] = $allowed;
+                $faction2allowed[$faction->getId()] = $allowed;
             }
-            if ($allowed === false) unset($blocks[array_search($block, $blocks, true) ]);
+            if ($allowed === false) unset($blocks[array_search($block, $blocks, true)]);
         }
         $event->setBlockList($blocks);
     }
@@ -276,14 +345,16 @@ class MainEngine extends Engine {
      * @priority NORMAL
      * @ignoreCancelled true
      */
-    public function blockFireSpreadEvent(BlockSpreadEvent $event) {
+    public function blockFireSpreadEvent(BlockSpreadEvent $event)
+    {
         // If a block is burning ...
         if ($event->getBlock()->getId() === Block::FIRE)
-        // ... consider blocking it.
-        $this->blockFireSpread($event->getBlock(), $event);
+            // ... consider blocking it.
+            $this->blockFireSpread($event->getBlock(), $event);
     }
 
-    public function blockFireSpread(Block $block, Cancellable $event) {
+    public function blockFireSpread(Block $block, Cancellable $event)
+    {
         // If the faction at the block has firespread disabled ...
         $faction = Plots::getFactionAt($block);
         if ($faction->getFlag(Flag::FIRE_SPREAD)) return;
@@ -294,30 +365,34 @@ class MainEngine extends Engine {
     // -------------------------------------------- //
     // FLAG: BUILD
     // -------------------------------------------- //
-    
+
     /**
      * @param BlockBreakEvent $event
      * @priority NORMAL
      * @ignoreCancelled true
      */
-    public function blockBreak(BlockBreakEvent $event) {
+    public function blockBreak(BlockBreakEvent $event)
+    {
         if (self::canPlayerBuildAt($event->getPlayer(), $event->getBlock())) return;
+        $event->getPlayer()->sendMessage(Localizer::translatable("faction-permission-error", [
+            "perm_desc" => Permissions::getById(Permission::BUILD)->getDescription(),
+            "faction" => ($f = Plots::getFactionAt($event->getBlock()))->getName(),
+            "rel-color" => $f->getColorTo(Members::get($event->getPlayer()))
+        ]));
         $event->setCancelled(true);
     }
 
-    public static function canPlayerBuildAt(Player $player, Position $pos) : bool {
+    public static function canPlayerBuildAt(Player $player, Position $pos): bool
+    {
         $member = Members::get($player);
-
         $name = $member->getName();
         if (in_array($name, Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
         if ($member->isOverriding()) return true;
         if (!Permissions::getById(Permission::BUILD)->has($member, Plots::getFactionAt($pos)) && Permissions::getById(Permission::PAINBUILD)->has($member, Plots::getFactionAt($pos))) {
             $hostFaction = Plots::getFactionAt($pos);
-            $player->sendMessage(Localizer::translatable("painbuild-warning", [$hostFaction->getName() ]));
-                
+            $player->sendMessage(Localizer::translatable("painbuild-warning", [$hostFaction->getName()]));
             $damage = Gameplay::get("action-denied-pain-amount", 1);
             $player->attack($damage, new EntityDamageEvent($player, EntityDamageEvent::CAUSE_CUSTOM, $damage));
-
             return true;
         }
         $factionHere = Plots::getFactionAt($pos);
@@ -329,7 +404,8 @@ class MainEngine extends Engine {
      * @ignoreCancelled true
      * @priority NORMAL
      */
-    public function signChange(SignChangeEvent $event) {
+    public function signChange(SignChangeEvent $event)
+    {
         if (self::canPlayerBuildAt($event->getPlayer(), $event->getBlock())) return;
         $event->setCancelled(true);
     }
@@ -339,17 +415,20 @@ class MainEngine extends Engine {
      * @ignoreCancelled true
      * @priority NORMAL
      */
-    public function blockPlace(BlockPlaceEvent $event) {
+    public function blockPlace(BlockPlaceEvent $event)
+    {
         if (self::canPlayerBuildAt($event->getPlayer(), $event->getPlayer())) return;
         $event->setCancelled(true);
     }
+
 
     /**
      * @param BlockSpreadEvent $event
      * @priority NORMAL
      * @ignoreCancelled true
      */
-    public function blockLiquidFlow(BlockSpreadEvent $event) {
+    public function blockLiquidFlow(BlockSpreadEvent $event)
+    {
         if (!Gameplay::get("protection-liquid-flow-enabled", true)) return;
         // Prepare fields
         $fromBlock = $event->getBlock();
@@ -375,12 +454,14 @@ class MainEngine extends Engine {
         $event->setCancelled(true);
     }
 
+
     /**
      * @param EntityDamageEvent $event
      * @priority NORMAL
      * @ignoreCancelled true
      */
-    public function onPlayerDamageEntity(EntityDamageEvent $event) {
+    public function onPlayerDamageEntity(EntityDamageEvent $event)
+    {
         if (!$event instanceof EntityDamageByEntityEvent) return;
         $entity = $event->getEntity();
         // If a player ...
@@ -397,20 +478,14 @@ class MainEngine extends Engine {
         }
     }
 
-    /**
-     * @param PlayerInteractEvent $event
-     * @priority NORMAL
-     * @ignoreCancelled true
-     */
-    public function onPlayerInteract(PlayerInteractEvent $event) {
+    public function onPlayerInteract(PlayerInteractEvent $event)
+    {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-
         if (!$this->canPlayerUseBlock($player, $block)) {
             $event->setCancelled(true);
             return;
         }
-
         if ($event->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK) return; // only interested on right-clicks for below
         if (!self::playerCanUseItemHere($player, $block, $event->getItem())) {
             $event->setCancelled(true);
@@ -418,29 +493,31 @@ class MainEngine extends Engine {
         }
     }
 
-    public static function playerCanUseItemHere(Player $player, Position $pos, Item $item) {
-        if (!in_array($item->getId(), Gameplay::get("materials-edit-tools", []), true) && !in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) return true;
-        $name = $player->getName();
-        if (in_array($name, Settings::get("players-who-bypass-all-protection", []), true)) return true;
-        $fplayer = Members::get($player);
-        if ($fplayer->isOverriding()) return true;
-        return Permissions::getById(Permission::BUILD)->has($fplayer, Plots::getFactionAt($pos));
-    }
-
-    public static function canPlayerUseBlock(Player $player, Block $block) {
+    public static function canPlayerUseBlock(Player $player, Block $block)
+    {
         $name = $player->getName();
         if (in_array($name, Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
         $me = Members::get($player);
         if ($me->isOverriding()) return true;
         $id = $block->getId();
         $factionHere = Plots::getFactionAt($block);
-        if (in_array($id, Gameplay::get("materials-edit-on-interact", []), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
-        if (in_array($id, Gameplay::get("materials-container", []), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
-        if (in_array($id, Gameplay::get("materials-doors", []), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
+        if (in_array($id, Gameplay::get("materials-edit-on-interact", self::TOUCH_SENSITIVE), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
+        if (in_array($id, Gameplay::get("materials-container", self::CONTAINERS), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
+        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if ($id === Block::STONE_BUTTON && !Permissions::getById(Permission::BUTTON)->has($me, $factionHere)) return false;
         if ($id === Block::LEVER && !Permissions::getById(Permission::LEVER)->has($me, $factionHere)) return false;
         if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         return true;
+    }
+
+    public static function playerCanUseItemHere(Player $player, Position $pos, Item $item)
+    {
+        if (!in_array($item->getId(), Gameplay::get("materials-edit-tools", []), true) && !in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) return true;
+        $name = $player->getName();
+        if (in_array($name, Settings::get("players-who-bypass-all-protection", []), true)) return true;
+        $fplayer = Members::get($player);
+        if ($fplayer->isOverriding()) return true;
+        return Permissions::getById(Permission::BUILD)->has($fplayer, Plots::getFactionAt($pos));
     }
 
 }

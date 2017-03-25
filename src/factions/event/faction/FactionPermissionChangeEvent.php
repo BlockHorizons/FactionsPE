@@ -22,18 +22,19 @@ namespace factions\event\faction;
 use factions\entity\Faction;
 use factions\entity\IMember;
 use factions\permission\Permission;
-
 use pocketmine\event\Cancellable;
 
-class FactionPermissionChangeEvent extends FactionEvent implements Cancellable {
-    
+class FactionPermissionChangeEvent extends FactionEvent implements Cancellable
+{
+
     public static $handlerList = null;
     public static $eventPool = [];
     public static $nextEvent = 0;
-    
+
     public $member, $perm, $rel, $value, $oldValue;
 
-    public function __construct(IMember $member, Faction $faction, Permission $perm, string $rel, bool $value) {
+    public function __construct(IMember $member, Faction $faction, Permission $perm, string $rel, bool $value)
+    {
         parent::__construct($faction);
 
         $this->member = $member;
@@ -46,40 +47,47 @@ class FactionPermissionChangeEvent extends FactionEvent implements Cancellable {
     /**
      * @return Faction
      */
-    public function getFaction() {
+    public function getFaction()
+    {
         return $this->faction;
     }
 
     /**
      * @return Permission
      */
-    public function getPermission() {
+    public function getPermission()
+    {
         return $this->perm;
     }
 
     /**
      * @return string
      */
-    public function getRelation() {
+    public function getRelation()
+    {
         return $this->rel;
     }
 
     /**
      * @return IMember
      */
-    public function getMember() {
+    public function getMember()
+    {
         return $this->member;
     }
 
-    public function getOldValue() {
+    public function getOldValue()
+    {
         return $this->oldValue;
     }
-    
-    public function getNewValue() {
+
+    public function getNewValue()
+    {
         return $this->value;
     }
-    
-    public function setValue(bool $value) {
+
+    public function setValue(bool $value)
+    {
         $this->value = $value;
     }
 

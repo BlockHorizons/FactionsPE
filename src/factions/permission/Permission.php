@@ -19,79 +19,78 @@
 
 namespace factions\permission;
 
-use factions\utils\Text;
-use factions\relation\Relation;
-use factions\FactionsPE;
+use factions\entity\Faction;
 use factions\entity\IMember;
 use factions\manager\Permissions;
-use factions\entity\Faction;
-
+use factions\relation\Relation;
+use factions\utils\Text;
 use localizer\Translatable;
 
-class Permission {
+class Permission
+{
 
-	const BUILD     = "build";
+    const BUILD = "build";
     const PAINBUILD = "painbuild";
-    const DOOR      = "door";
-    const BUTTON    = "button";
-    const LEVER     = "lever";
+    const DOOR = "door";
+    const BUTTON = "button";
+    const LEVER = "lever";
     const CONTAINER = "container";
-    const NAME      = "name";
-    const DESC      = "desc";
-    const MOTD      = "motd";
-    const INVITE    = "invite";
-    const KICK      = "kick";
-    const TITLE     = "title";
-    const HOME      = "home";
-    const SETHOME   = "sethome";
-    const DEPOSIT   = "deposit";
-    const WITHDRAW  = "withdraw";
+    const NAME = "name";
+    const DESC = "desc";
+    const MOTD = "motd";
+    const INVITE = "invite";
+    const KICK = "kick";
+    const TITLE = "title";
+    const HOME = "home";
+    const SETHOME = "sethome";
+    const DEPOSIT = "deposit";
+    const WITHDRAW = "withdraw";
     const TERRITORY = "territory";
-    const ACCESS    = "access";
+    const ACCESS = "access";
     const CLAIMNEAR = "claimnear";
-    const RELATION  = "relation";
-    const DISBAND   = "disband";
-    const FLAGS     = "flags";
-    const PERMS     = "perms";
-    const STATUS    = "status";
-    
-    const PRIORITY_BUILD        = 1000;
-    const PRIORITY_PAINBUILD    = 2000;
-    const PRIORITY_DOOR         = 3000;
-    const PRIORITY_BUTTON       = 4000;
-    const PRIORITY_LEVER        = 5000;
-    const PRIORITY_CONTAINER    = 6000;
-    const PRIORITY_NAME         = 7000;
-    const PRIORITY_DESC         = 8000;
-    const PRIORITY_MOTD         = 9000;
-    const PRIORITY_INVITE       = 10000;
-    const PRIORITY_KICK         = 11000;
-    const PRIORITY_TITLE        = 12000;
-    const PRIORITY_HOME         = 13000;
-    const PRIORITY_SETHOME      = 14000;
-    const PRIORITY_DEPOSIT      = 15000;
-    const PRIORITY_WITHDRAW     = 16000;
-    const PRIORITY_TERRITORY    = 17000;
-    const PRIORITY_ACCESS       = 18000;
-    const PRIORITY_CLAIMNEAR    = 19000;
-    const PRIORITY_RELATION     = 20000;
-    const PRIORITY_DISBAND      = 21000;
-    const PRIORITY_FLAGS        = 22000;
-    const PRIORITY_PERMS        = 23000;
-    const PRIORITY_STATUS       = 24000;
+    const RELATION = "relation";
+    const DISBAND = "disband";
+    const FLAGS = "flags";
+    const PERMS = "perms";
+    const STATUS = "status";
+
+    const PRIORITY_BUILD = 1000;
+    const PRIORITY_PAINBUILD = 2000;
+    const PRIORITY_DOOR = 3000;
+    const PRIORITY_BUTTON = 4000;
+    const PRIORITY_LEVER = 5000;
+    const PRIORITY_CONTAINER = 6000;
+    const PRIORITY_NAME = 7000;
+    const PRIORITY_DESC = 8000;
+    const PRIORITY_MOTD = 9000;
+    const PRIORITY_INVITE = 10000;
+    const PRIORITY_KICK = 11000;
+    const PRIORITY_TITLE = 12000;
+    const PRIORITY_HOME = 13000;
+    const PRIORITY_SETHOME = 14000;
+    const PRIORITY_DEPOSIT = 15000;
+    const PRIORITY_WITHDRAW = 16000;
+    const PRIORITY_TERRITORY = 17000;
+    const PRIORITY_ACCESS = 18000;
+    const PRIORITY_CLAIMNEAR = 19000;
+    const PRIORITY_RELATION = 20000;
+    const PRIORITY_DISBAND = 21000;
+    const PRIORITY_FLAGS = 22000;
+    const PRIORITY_PERMS = 23000;
+    const PRIORITY_STATUS = 24000;
 
     protected $priority = 0;
     protected $name;
 
     /** @var Translatable */
     protected $desc;
-    	
+
     /**
      * Relationations
      * @var string[]
      */
     private $standard = [];
-    
+
     /**
      * True if permission is related to territory
      */
@@ -107,7 +106,8 @@ class Permission {
      */
     private $visible = true;
 
-    public function __construct(int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible) {
+    public function __construct(int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible)
+    {
         $this->priority = $priority;
         $this->name = $name;
         $this->desc = $desc;
@@ -117,7 +117,8 @@ class Permission {
         $this->visible = $visible;
     }
 
-    public static function getStateHeaders() : string {
+    public static function getStateHeaders(): string
+    {
         $ret = "";
         foreach (Relation::getAll() as $relation) {
             $ret .= Relation::getColor($relation);
@@ -127,72 +128,81 @@ class Permission {
         return $ret;
     }
 
-    public function isRegistered() : bool {
+    public function isRegistered(): bool
+    {
         return Permissions::contains($this);
     }
 
-    public function getPriority() : int {
+    public function getPriority(): int
+    {
         return $this->priority;
     }
 
-    public function setPriority(int $priority) : Permission {
+    public function setPriority(int $priority): Permission
+    {
         $this->priority = $priority;
         return $this;
     }
 
-    public function getName() : string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function setName(string $name) : Permission {
+    public function setName(string $name): Permission
+    {
         $this->name = $name;
         return $this;
     }
 
-    public function getDescription() : Translatable {
-        return $this->desc;
-    }
-
-    public function setDescription(string $desc) : Permission {
+    public function setDescription(string $desc): Permission
+    {
         $this->desc = $desc;
         return $this;
     }
 
-    public function getStandard() : array {
+    public function getStandard(): array
+    {
         return $this->standard;
     }
 
     /**
      * @param array $standard relation ids
      */
-    public function setStandard(array $standard) : Permission {
+    public function setStandard(array $standard): Permission
+    {
         $this->standard = $standard;
         return $this;
     }
 
-    public function isTerritory() : bool {
+    public function isTerritory(): bool
+    {
         return $this->territory;
     }
 
-    public function setTerritory(bool $territory) : Permission {
+    public function setTerritory(bool $territory): Permission
+    {
         $this->territory = $territory;
         return $this;
     }
 
-    public function has(IMember $player, Faction $faction = null) : bool {
+    public function has(IMember $player, Faction $faction = null): bool
+    {
         $faction = !$faction ? $player->getFaction() : $faction;
-        if(!$faction) return false;
+        if (!$faction) return false;
         $Relation = $faction->getRelationTo($player);
-        $ret =  $player->isOverriding() ? true : $faction->isPermitted($Relation, $this);
+        $ret = $player->isOverriding() ? true : $faction->isPermitted($Relation, $this);
         return $ret;
     }
 
-    public function factionHas(Faction $factionA, Faction $factionB) {
+    public function factionHas(Faction $factionA, Faction $factionB)
+    {
         $Relation = $factionA->getRelationTo($factionB);
         return $factionB->isPermitted($this, $Relation);
     }
 
-    public function getStateInfo(array $Relations, bool $withDesc = false) : string {
+    public function getStateInfo(array $Relations, bool $withDesc = false): string
+    {
         $ret = "";
         foreach (Relation::getAll() as $Relation) {
             if (in_array($Relation, $Relations, true)) {
@@ -215,29 +225,40 @@ class Permission {
         return $ret;
     }
 
-    public function isVisible() : bool {
+    public function isVisible(): bool
+    {
         return $this->visible;
     }
 
-    public function setVisible(bool $visible) : Permission {
+    public function isEditable(): bool
+    {
+        return $this->editable;
+    }
+
+    public function getId(): string
+    {
+        return $this->name;
+    }
+
+    public function getDescription(): Translatable
+    {
+        return $this->desc;
+    }
+
+    public function setVisible(bool $visible): Permission
+    {
         $this->visible = $visible;
         return $this;
     }
 
-    public function isEditable() : bool {
-        return $this->editable;
-    }
-
-    public function setEditable(bool $editable) {
+    public function setEditable(bool $editable)
+    {
         $this->editable = $editable;
         return $this;
     }
 
-    public function getId() : string {
-        return $this->name;
-    }
-
-    public function __toArray() {
+    public function __toArray()
+    {
         return [
             "priority" => $this->priority,
             "desc" => $this->desc->getKey(),

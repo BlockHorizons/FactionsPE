@@ -4,24 +4,22 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
-
-use factions\command\requirement\FactionRequirement;
 use factions\command\requirement\FactionPermission;
-use factions\permission\Permission;
-use factions\manager\permissions;
-use factions\manager\Plots;
+use factions\command\requirement\FactionRequirement;
 use factions\manager\Members;
-
+use factions\manager\Plots;
+use factions\permission\Permission;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
-use localizer\Localizer;
+class SetHome extends Command
+{
 
-class SetHome extends Command {
-
-    public function setup() {
+    public function setup()
+    {
         $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
         $this->addRequirement(new FactionPermission(Permissions::getById(Permission::SETHOME)));
@@ -31,7 +29,8 @@ class SetHome extends Command {
         $this->addParameter((new Parameter("z"))->setDefaultValue(null));
     }
 
-    public function perform(CommandSender $sender, $label, array $args) {
+    public function perform(CommandSender $sender, $label, array $args)
+    {
         $member = Members::get($sender);
         $position = $sender->getPosition();
         if (count($args) === 1) {
@@ -58,17 +57,17 @@ class SetHome extends Command {
                 $position->level = $sender->getLevel();
             }
         }
-        
+
         $factionHere = Plots::getFactionAt($position);
 
-        if(!$member->getFaction()->isValidHome($position)) {
+        if (!$member->getFaction()->isValidHome($position)) {
             $member->sendMessage(Localizer::translatable('sethome-not-here', [$factionHere->getName()]));
             return true;
         }
 
         $member->getFaction()->setHome($position);
-        $member->sendMessage(Localizer::translatable('sethome-success', [ "at" =>
-            "(" . $position->x . ", " . $position->y . ", " . $position->z . ", " . $position->level->getName().")"]));
+        $member->sendMessage(Localizer::translatable('sethome-success', ["at" =>
+            "(" . $position->x . ", " . $position->y . ", " . $position->z . ", " . $position->level->getName() . ")"]));
         return true;
     }
 }

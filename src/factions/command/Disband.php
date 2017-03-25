@@ -20,66 +20,66 @@
 namespace factions\command;
 
 use dominate\Command;
-
 use factions\command\parameter\FactionParameter;
-use factions\command\requirement\FactionRequirement;
-use factions\command\requirement\FactionPermission;
-use factions\manager\Members;
+use factions\entity\Faction;
 use factions\event\faction\FactionDisbandEvent;
+use factions\flag\Flag;
+use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\permission\Permission;
-use factions\flag\Flag;
-use factions\entity\Faction;
-
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-class Disband extends Command {
+class Disband extends Command
+{
 
-	public function setup() {
-		// Parameters
-		$this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
-	}
+    public function setup()
+    {
+        // Parameters
+        $this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
+    }
 
-	public function perform(CommandSender $sender, $label, array $args) {
-		// Args
-		$faction = $this->getArgument(0);
-		$member = Members::get($sender);
-		
-		// MPerm
-		if (!($perm = Permissions::getById(Permission::DISBAND))->has($member, $faction)) {
-			return ["faction-permission-error", ["perm_desc" => $perm->getDescription()]];
-		}
+    public function perform(CommandSender $sender, $label, array $args)
+    {
+        // Args
+        $faction = $this->getArgument(0);
+        $member = Members::get($sender);
 
-		// Verify
-		if ($faction->getFlag(Flag::PERMANENT)) {
-			return "cant-disband-permanent";
-		}
+        // MPerm
+        if (!($perm = Permissions::getById(Permission::DISBAND))->has($member, $faction)) {
+            return ["faction-permission-error", ["perm_desc" => $perm->getDescription()]];
+        }
 
-		// Event
-		$event = new FactionDisbandEvent($member, $faction);
-		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-		if ($event->isCancelled()) return;
+        // Verify
+        if ($faction->getFlag(Flag::PERMANENT)) {
+            return "cant-disband-permanent";
+        }
 
-		// Merged Apply and Inform
-		$faction->disband(Faction::DISBAND_REASON_COMMAND);
+        // Event
+        $event = new FactionDisbandEvent($member, $faction);
+        $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
+        if ($event->isCancelled()) return;
 
-		// Inform
-		foreach ($faction->getOnlineMembers() as $member) {
-			$member->sendMessage(Localizer::translatable("faction-disbanded-inform-member", [$member->getName()]));
-		}
-		
-		if ($member->getFaction() != $faction) {
-			return ["you-disbanded", [$faction->getName()]];
-		}
-		
-		// Log
-		if (Gameplay::get("log.faction-disband", true)) {
-			FactionsPE::get()->getLogger()->notice(Localizer::translatable("log.faction-disband-by-command", $faction->getName(), $faction->getId(), $sender->getDisplayName()));
-		}		
-		
-		// Apply
-		$faction->detach();
-		return true;
-	}
-	
+        // Merged Apply and Inform
+        $faction->disband(Faction::DISBAND_REASON_COMMAND);
+
+        // Inform
+        foreach ($faction->getOnlineMembers() as $member) {
+            $member->sendMessage(Localizer::translatable("faction-disbanded-inform-member", [$member->getName()]));
+        }
+
+        if ($member->getFaction() != $faction) {
+            return ["you-disbanded", [$faction->getName()]];
+        }
+
+        // Log
+        if (Gameplay::get("log.faction-disband", true)) {
+            FactionsPE::get()->getLogger()->notice(Localizer::translatable("log.faction-disband-by-command", $faction->getName(), $faction->getId(), $sender->getDisplayName()));
+        }
+
+        // Apply
+        $faction->detach();
+        return true;
+    }
+
 }

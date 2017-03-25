@@ -19,20 +19,23 @@
 
 namespace factions\event\faction;
 
-use pocketmine\event\Event;
 use factions\entity\Faction;
+use pocketmine\event\Event;
 
-class FactionEvent extends Event {
+class FactionEvent extends Event
+{
 
-	/** @var Faction */
-	protected $faction;
+    /** @var Faction */
+    protected $faction;
 
-	public function __construct(Faction $faction) {
-		$this->faction = $faction;
-	}
+    public function __construct(Faction $faction)
+    {
+        $this->faction = $faction;
+    }
 
-	public function getFaction() {
-		return $this->faction;
-	}
+    public function getFaction()
+    {
+        return $this->faction;
+    }
 
 }

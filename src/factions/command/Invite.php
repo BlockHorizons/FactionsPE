@@ -22,25 +22,26 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
-
 use factions\command\requirement\FactionPermission;
-use factions\permission\Permission;
-use factions\manager\Permissions;
 use factions\FactionsPE;
+use factions\manager\Permissions;
+use factions\permission\Permission;
 
 
-class Invite extends Command {
+class Invite extends Command
+{
 
-    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases) {
+    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases)
+    {
         parent::__construct($plugin, $name, $description, $permission, $aliases);
 
         $this->addChild(new InviteAdd($plugin, "add", "Invite new member to your faction", Permissions::INVITE_ADD, ["invite"]));
         $this->addChild(new InviteList($plugin, "list", "List all active invitations for faction", Permissions::INVITE_LIST, ["ls"]));
         $this->addChild(new InviteRemove($plugin, "remove", "Delete an invitation", Permissions::INVITE_REMOVE, ["delete"]));
-        
+
         $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
         $this->addRequirement(new FactionPermission(Permissions::getById(Permission::INVITE)));
-        
+
         $this->addParameter(new Parameter("add|remove|list"));
     }
 

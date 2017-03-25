@@ -19,16 +19,27 @@
 
 namespace factions\relation;
 
-use pocketmine\utils\TextFormat;
-
-use factions\utils\Gameplay;
-use factions\utils\Text;
 use factions\entity\Faction;
 use factions\entity\IMember;
 use factions\flag\Flag;
+use factions\utils\Gameplay;
+use factions\utils\Text;
+use pocketmine\utils\TextFormat;
 
-final class Relation {
+final class Relation
+{
 
+    const NONE = "none";
+    const LEADER = "leader";
+
+    // ID's has to be human readable for configurations
+    const OFFICER = "officer";
+    const MEMBER = "member";
+    const RECRUIT = "recruit";
+    const ALLY = "ally";
+    const TRUCE = "truce";
+    const NEUTRAL = "neutral";
+    const ENEMY = "enemy";
     private static $relLevels = array(
         self::NONE => 0,
         self::RECRUIT => 1000,
@@ -42,28 +53,17 @@ final class Relation {
         self::ENEMY => 8000
     );
 
-    private function __construct(){}
-
-    // ID's has to be human readable for configurations
-    const NONE = "none";
-    const LEADER = "leader";
-    const OFFICER = "officer";
-    const MEMBER = "member";
-    const RECRUIT = "recruit";
-    const ALLY = "ally";
-    const TRUCE = "truce";
-    const NEUTRAL = "neutral";
-    const ENEMY = "enemy";
-
-    public static function isRankValid($rank) : bool {
-        return self::isLowerThan(self::fromString($rank), self::ALLY);
+    private function __construct()
+    {
     }
 
-    public static function isValid(string $rel) : bool {
-    	return in_array(self::fromString($rel), self::getAll(), true);
+    public static function isValid(string $rel): bool
+    {
+        return in_array(self::fromString($rel), self::getAll(), true);
     }
 
-    public static function fromString(string $rel) {
+    public static function fromString(string $rel)
+    {
         switch (strtolower(trim($rel))) {
             case 'ally':
             case 'allies':
@@ -101,45 +101,30 @@ final class Relation {
         return null;
     }
 
-
-    public static function isFriend(string $relation) : bool {
-        return $relation === self::ALLY || self::isRankValid($relation);
-    }
-
-    public static function isEnemy(string $relation) : bool {
-        return $relation === self::ENEMY;
-    }
-
-
-    public static function getColor($rel) : string {
-        $rel = self::fromString($rel);
-        switch ($rel) {
-            case self::ALLY:
-                return Text::parseColorVars(Gameplay::get('color.ally', TextFormat::WHITE));
-            case self::NEUTRAL:
-                return Text::parseColorVars(Gameplay::get('color.neutral', TextFormat::WHITE));
-            case self::TRUCE:
-                return Text::parseColorVars(Gameplay::get('color.truce', TextFormat::WHITE));
-            case self::ENEMY:
-                return Text::parseColorVars(Gameplay::get('color.enemy', TextFormat::WHITE));
-            case self::RECRUIT:
-                return Text::parseColorVars(Gameplay::get('color.recruit', TextFormat::WHITE));
-            case self::MEMBER:
-                return Text::parseColorVars(Gameplay::get('color.member', TextFormat::WHITE));
-            case self::OFFICER:
-                return Text::parseColorVars(Gameplay::get('color.officer', TextFormat::WHITE));
-            case self::LEADER:
-                return Text::parseColorVars(Gameplay::get('color.leader', TextFormat::WHITE));
-            default:
-                return TextFormat::WHITE;
-        }
-    }
-
-    public static function getAll() : array {
+    public static function getAll(): array
+    {
         return [self::RECRUIT, self::MEMBER, self::OFFICER, self::LEADER, self::ALLY, self::TRUCE, self::NEUTRAL, self::ENEMY];
     }
 
-    public static function getRelationOfThatToMe(RelationParticipator $me, RelationParticipator $that, bool $ignorePeaceful = false) : string {
+    public static function isFriend(string $relation): bool
+    {
+        return $relation === self::ALLY || self::isRankValid($relation);
+    }
+
+    public static function isRankValid($rank): bool
+    {
+        #return self::isLowerThan(self::fromString($rank), self::ALLY);
+        if (!$rank) return false;
+        return in_array(self::fromString($rank), [self::LEADER, self::OFFICER, self::MEMBER, self::RECRUIT], true);
+    }
+
+    public static function isEnemy(string $relation): bool
+    {
+        return $relation === self::ENEMY;
+    }
+
+    public static function getRelationOfThatToMe(RelationParticipator $me, RelationParticipator $that, bool $ignorePeaceful = false): string
+    {
         $ret = self::NEUTRAL;
         $myFaction = self::getFaction($me);
         if ($myFaction === null) return self::NEUTRAL; // ERROR
@@ -164,11 +149,12 @@ final class Relation {
         return $ret;
     }
 
-    public static function getFaction(RelationParticipator $object) {
+    public static function getFaction(RelationParticipator $object)
+    {
         if ($object instanceof Faction) {
             return $object;
         } elseif ($object instanceof IMember) {
-            if($object->hasFaction()) {
+            if ($object->hasFaction()) {
                 return $object->getFaction();
             } else {
                 return null;
@@ -178,8 +164,41 @@ final class Relation {
         return null;
     }
 
-    public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that)  : string {
+    public static function isLowerThan($relA, $relB): bool
+    {
+        $lA = self::$relLevels[$relA] ?? 0;
+        $lB = self::$relLevels[$relB] ?? 0;
+        return $lA < $lB;
+    }
+
+    public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that): string
+    {
         return self::getColor($me->getRelationTo($that));
+    }
+
+    public static function getColor($rel): string
+    {
+        $rel = self::fromString($rel);
+        switch ($rel) {
+            case self::ALLY:
+                return Text::parseColorVars(Gameplay::get('color.ally', TextFormat::WHITE));
+            case self::NEUTRAL:
+                return Text::parseColorVars(Gameplay::get('color.neutral', TextFormat::WHITE));
+            case self::TRUCE:
+                return Text::parseColorVars(Gameplay::get('color.truce', TextFormat::WHITE));
+            case self::ENEMY:
+                return Text::parseColorVars(Gameplay::get('color.enemy', TextFormat::WHITE));
+            case self::RECRUIT:
+                return Text::parseColorVars(Gameplay::get('color.recruit', TextFormat::WHITE));
+            case self::MEMBER:
+                return Text::parseColorVars(Gameplay::get('color.member', TextFormat::WHITE));
+            case self::OFFICER:
+                return Text::parseColorVars(Gameplay::get('color.officer', TextFormat::WHITE));
+            case self::LEADER:
+                return Text::parseColorVars(Gameplay::get('color.leader', TextFormat::WHITE));
+            default:
+                return TextFormat::WHITE;
+        }
     }
 
     /**
@@ -188,29 +207,54 @@ final class Relation {
      * Returns -1 If A is Lower than B
      * Returns 2 on error
      */
-    public static function compare($relA, $relB) : int {
-        if(self::isHigherThan($relA, $relB)) return 1;
-        if(self::isAtLeast($relA, $relB)) return 0;
-        if(self::isLowerThan($relA, $relB)) return -1;
+    public static function compare($relA, $relB): int
+    {
+        if (self::isHigherThan($relA, $relB)) return 1;
+        if (self::isAtLeast($relA, $relB)) return 0;
+        if (self::isLowerThan($relA, $relB)) return -1;
         return 2; # ERROR
     }
 
-    public static function isAtLeast($relA, $relB) : bool {
+    public static function isHigherThan($relA, $relB): bool
+    {
+        $lA = self::$relLevels[$relA] ?? 0;
+        $lB = self::$relLevels[$relB] ?? 0;
+        return $lA > $lB;
+    }
+
+    public static function isAtLeast($relA, $relB): bool
+    {
         $lA = self::$relLevels[$relA] ?? 0;
         $lB = self::$relLevels[$relB] ?? 0;
         return $lA >= $lB;
     }
 
-    public static function isLowerThan($relA, $relB) : bool {
-        $lA = self::$relLevels[$relA] ?? 0;
-        $lB = self::$relLevels[$relB] ?? 0;
-        return $lA < $lB;
+    public static function getNext($rel)
+    {
+        switch ($rel) {
+            case self::RECRUIT:
+                return self::MEMBER;
+            case self::MEMBER:
+                return self::OFFICER;
+            case self::OFFICER:
+                return self::LEADER;
+            default:
+                return null;
+        }
     }
 
-    public static function isHigherThan($relA, $relB) : bool {
-        $lA = self::$relLevels[$relA] ?? 0;
-        $lB = self::$relLevels[$relB] ?? 0;
-        return $lA > $lB;
+    public static function getPrevious($rel)
+    {
+        switch ($rel) {
+            case self::LEADER:
+                return self::OFFICER;
+            case self::OFFICER:
+                return self::MEMBER;
+            case self::MEMBER:
+                return self::RECRUIT;
+            default:
+                return null;
+        }
     }
 
 }

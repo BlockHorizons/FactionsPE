@@ -19,22 +19,23 @@
 
 namespace factions\data;
 
+use factions\entity\Faction;
+use factions\entity\Member;
 use factions\FactionsPE;
 use factions\relation\Relation;
-use factions\manager\Members;
-use factions\entity\Faction;
 use pocketmine\Player;
 
-class MemberData extends Data {
+class MemberData extends Data
+{
 
-	/** @var int */
-	protected $lastActivity;
+    /** @var int */
+    protected $lastActivity;
 
-	/** @var string */
-	protected $factionId = Faction::NONE;
+    /** @var string */
+    protected $factionId = Faction::NONE;
 
-	/** @var string */
-	protected $name;
+    /** @var string */
+    protected $name;
 
     /**
      * When the player first time played in faction
@@ -45,12 +46,14 @@ class MemberData extends Data {
     /** @var int */
     protected $lastPlayed;
 
+    // Add $onlineTime # TODO
+
     /** @var int */
     protected $power = 0;
     protected $powerBoost = 0;
 
     /** @var int */
-    protected $role = Relation::RECRUIT;
+    protected $role = Relation::NONE;
 
     /** @var string */
     protected $title;
@@ -63,41 +66,59 @@ class MemberData extends Data {
     /** @var boolean */
     protected $overriding = false;
 
-    public function __construct(array $source) {
-    	$this->firstPlayed = $source["firstPlayed"] ?? time();
-    	$this->lastPlayed = $source["lastPlayed"] ?? time();
-    	$this->power = $source["power"] ?? $this->getDefaultPower(); # What if not extended by IMember ?
-    	$this->title = $source["title"] ?? null;
-    	if(isset($source["player"])){
-	    	if($source["player"] instanceof Player) {
-	    		$this->player = $source["player"];
-	    	} else {
-	    		$this->player = FactionsPE::get()->getServer()->getPlayer($source["player"]);
-	    	}
-    	}
-    	if($this->player) {
-    		$this->name = $this->player->getName();
-    	} else {
-    		$this->name = $source["name"];
-    	}
+    public function __construct(array $source)
+    {
+        $this->firstPlayed = $source["firstPlayed"] ?? time();
+        $this->lastPlayed = $source["lastPlayed"] ?? time();
+        $this->power = $source["power"] ?? $this->getDefaultPower(); # What if not extended by IMember ?
+        $this->title = $source["title"] ?? null;
+        if (isset($source["player"])) {
+            if ($source["player"] instanceof Player) {
+                $this->player = $source["player"];
+            } else {
+                $this->player = FactionsPE::get()->getServer()->getPlayer($source["player"]);
+            }
+        }
+        if ($this->player) {
+            $this->name = $this->player->getName();
+        } else {
+            $this->name = $source["name"];
+        }
     }
 
-    public function getPlayer() {
+    public function getPlayer()
+    {
         return $this->player;
     }
 
-    public function __toArray() {
-    	return [
-    		"firstPlayed" => $this->firstPlayed,
-    		"lastPlayed" => $this->lastPlayed,
-    		"power" => $this->power,
-    		"title" => $this->title,
-    		"name" => $this->name
-    	];
+    public function __toArray()
+    {
+        return [
+            "firstPlayed" => $this->firstPlayed,
+            "lastPlayed" => $this->lastPlayed,
+            "power" => $this->power,
+            "title" => $this->title,
+            "name" => $this->name
+        ];
     }
 
-    public function save() {
-    	FactionsPE::get()->getDataProvider()->saveMember($this);
+    /**
+     * To save space on drive, we check if it's actually needed to save the player
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        /** @var $this Member */
+        if ($this->hasFaction()) return false;
+        if ($this->hasTitle()) return false;
+        if ($this->getPower() !== $this->getDefaultPower()) return false;
+        if ($this->getPowerBoost() !== 0) return false;
+        return true;
+    }
+
+    public function hasTitle(): bool
+    {
+        return !empty($this->getTitle());
     }
 
     /*
@@ -106,8 +127,9 @@ class MemberData extends Data {
      * ----------------------------------------------------------
      */
 
-    public function getName() : string {
-    	return $this->player ? $this->player->getName() : $this->name;
+    public function getTitle(): string
+    {
+        return $this->title ?? "";
     }
 
     /*
@@ -116,16 +138,19 @@ class MemberData extends Data {
      * ----------------------------------------------------------
      */
 
-    public function getTitle() : string {
-    	return $this->title ?? "";
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
     }
 
-    public function setTitle(string $title) {
-    	$this->title = $title;
+    public function save()
+    {
+        FactionsPE::get()->getDataProvider()->saveMember($this);
     }
 
-    public function hasTitle() : bool {
-    	return !empty($this->getTitle());
+    public function getName(): string
+    {
+        return $this->player ? $this->player->getName() : $this->name;
     }
 
     /*
@@ -134,16 +159,19 @@ class MemberData extends Data {
      * ----------------------------------------------------------
      */
 
-    public function getLastPlayed() : int {
-    	return $this->lastPlayed;
+    public function getLastPlayed(): int
+    {
+        return $this->lastPlayed;
     }
 
-    public function getFirstPlayed() : int {
-    	return $this->firstPlayed;
+    public function setLastPlayed(int $time)
+    {
+        $this->lastPlayed = $time;
     }
 
-    public function setLastPlayed(int $time) {
-    	$this->lastPlayed = $time;
+    public function getFirstPlayed(): int
+    {
+        return $this->firstPlayed;
     }
 
     /*
@@ -152,12 +180,14 @@ class MemberData extends Data {
      * ----------------------------------------------------------
      */
 
-    public function getLastActivity() : int {
-    	return $this->lastActivity;
+    public function getLastActivity(): int
+    {
+        return $this->lastActivity;
     }
 
-    public function setLastActivity($lastActivity) {
-		$this->lastActivity = $lastActivity;
-	}
+    public function setLastActivity($lastActivity)
+    {
+        $this->lastActivity = $lastActivity;
+    }
 
 }

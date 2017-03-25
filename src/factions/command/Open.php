@@ -19,36 +19,35 @@
 
 namespace factions\command;
 
+use dominate\Command;
+use factions\command\requirement\FactionRequirement;
+use factions\command\requirement\FactionRole;
+use factions\flag\Flag;
+use factions\manager\Members;
+use factions\relation\Relation;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-use dominate\Command;
+class Open extends Command
+{
 
-use localizer\Localizer;
+    public function setup()
+    {
+        $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
+        $this->addRequirement(new FactionRole(Relation::LEADER));
+    }
 
-use factions\command\requirement\FactionRole;
-use factions\command\requirement\FactionRequirement;
-use factions\flag\Flag;
-use factions\relation\Relation;
-use factions\manager\Flags;
-use factions\manager\Members;
-
-class Open extends Command {
-
-	public function setup() {
-		$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
-		$this->addRequirement(new FactionRole(Relation::LEADER));
-	}
-
-	public function perform(CommandSender $sender, $label, array $args) {
-		$msender = Members::get($sender);
-		$faction = $msender->getFaction();
-		if($faction->getFlag(Flag::OPEN)) {
-			$sender->sendMessage(Localizer::translatable("faction-already-opened"));
-			return true;
-		}
-		$faction->setFlag(Flag::OPEN, true);
-		$sender->sendMessage(Localizer::translatable("faction-opened"));
-		return true;
-	}
+    public function perform(CommandSender $sender, $label, array $args)
+    {
+        $msender = Members::get($sender);
+        $faction = $msender->getFaction();
+        if ($faction->getFlag(Flag::OPEN)) {
+            $sender->sendMessage(Localizer::translatable("faction-already-opened"));
+            return true;
+        }
+        $faction->setFlag(Flag::OPEN, true);
+        $sender->sendMessage(Localizer::translatable("faction-opened"));
+        return true;
+    }
 
 }

@@ -19,88 +19,89 @@
 
 namespace factions\engine;
 
-use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\Player;
-
 use factions\manager\Members;
 use factions\utils\Gameplay;
 use factions\utils\Text;
-
 use localizer\Localizer;
+use pocketmine\event\player\PlayerChatEvent;
 
 /**
  * Format the chat and route chat messages
  */
-class ChatEngine extends Engine {
+class ChatEngine extends Engine
+{
 
-	const PLAYER_FORMAT = "{NAME}: {MESSAGE}";
-	const MEMBER_FORMAT = "<gray>[<gold>{ROLE-SIGN}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}";
-	const MEMBER_TITLE_FORMAT = "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}";
-	const FACTION_CHAT_FORMAT = "<gold>{BADGE}<gray>{NAME}<white>:<gray> {MESSAGE}";
+    const PLAYER_FORMAT = "{NAME}: {MESSAGE}";
+    const MEMBER_FORMAT = "<gray>[<gold>{ROLE-SIGN}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}";
+    const MEMBER_TITLE_FORMAT = "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}";
+    const FACTION_CHAT_FORMAT = "<gold>{BADGE}<gray>{NAME}<white>:<gray> {MESSAGE}";
 
-	/** @var bool */
-	protected $format;
+    /** @var bool */
+    protected $format;
 
-	public function setup() {
-		$this->format = (bool) $this->getMain()->getConfig()->get("chat-formatter", true);
-	}
+    public function setup()
+    {
+        $this->format = (bool)$this->getMain()->getConfig()->get("chat-formatter", true);
+    }
 
-	/**
-	 * @priority HIGHEST
-	 * @ignoreCancelled false
-	 * @param PlayerChatEvent $event
-	 */
-	public function onChat(PlayerChatEvent $event) {
-		$player = $event->getPlayer();
-		$member = Members::get($player);
-		$faction = $member->getFaction();
-		// Time to handle "faction chat"
-		if($member->isFactionChatOn() && $member->hasFaction()) {
-			$p = [];
-			foreach ($faction->getOnlineMembers() as $member) {
-				$p[] = $member->getPlayer();
-			}
-			$event->setRecipients($p, Members::get("CONSOLE"));
-			if(count($p) === 1) {
+    /**
+     * @priority HIGHEST
+     * @ignoreCancelled false
+     * @param PlayerChatEvent $event
+     */
+    public function onChat(PlayerChatEvent $event)
+    {
+        $player = $event->getPlayer();
+        $member = Members::get($player);
+        $faction = $member->getFaction();
+        // Time to handle "faction chat"
+        if ($member->isFactionChatOn() && $member->hasFaction()) {
+            $p = [];
+            foreach ($faction->getOnlineMembers() as $member) {
+                $p[] = $member->getPlayer();
+            }
+            $event->setRecipients($p, Members::get("CONSOLE"));
+            if (count($p) === 1) {
 
-				$member->toggleFactionChat();
-				$player->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
+                $member->toggleFactionChat();
+                $player->sendMessage(Localizer::translatable("faction-chat-disabled-due-empty"));
 
-				$event->setCancelled(true);
-				return;
-			}
-			$format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
-		}
-		if($this->format || isset($format)) {
-			// Get type of format we need
-			if(!isset($format)) {
-				$format = Gameplay::get("chat.player", self::PLAYER_FORMAT);
-				if($member->hasFaction()) {
-					if($member->hasTitle()) {
-						$format = Gameplay::get("chat.member-title", self::MEMBER_TITLE_FORMAT);
-					} else {
-						$format = Gameplay::get("chat.member", self::MEMBER_FORMAT);
-					}
-				}
-			}
-			// Translate color codes
-			$format = Text::parse($format);
-			// Replace variables
-			$format = str_replace(["{PLAYER}", "{NAME}", "{FACTION}", "{ROLE}", "{BADGE}", "{MESSAGE}", "{TITLE}"], [
-				$player->getName(),
-				$player->getDisplayName(),
-				$faction->isNormal() ? $faction->getName() : "nil",
-				$r = $member->getRole(),
-				self::getBadge($r),
-				$event->getMessage(),
-				$member->getTitle()
-				], $format);
-			$event->setFormat($format);
-		}
-	}
+                $event->setCancelled(true);
+                return;
+            }
+            $format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
+        }
+        if ($this->format || isset($format)) {
+            // Get type of format we need
+            if (!isset($format)) {
+                $format = Gameplay::get("chat.player", self::PLAYER_FORMAT);
+                if ($member->hasFaction()) {
+                    if ($member->hasTitle()) {
+                        $format = Gameplay::get("chat.member-title", self::MEMBER_TITLE_FORMAT);
+                    } else {
+                        $format = Gameplay::get("chat.member", self::MEMBER_FORMAT);
+                    }
+                }
+            }
+            // Translate color codes
+            $format = Text::parse($format);
+            // Replace variables
+            $format = str_replace(["{PLAYER}", "{NAME}", "{FACTION}", "{ROLE}", "{BADGE}", "{MESSAGE}", "{TITLE}"], [
+                $player->getName(),
+                $player->getDisplayName(),
+                $faction->isNormal() ? $faction->getName() : "nil",
+                $r = $member->getRole(),
+                self::getBadge($r),
+                $event->getMessage(),
+                $member->getTitle()
+            ], $format);
+            $event->setFormat($format);
+        }
+    }
 
-	public static function getBadge(string $role) : string {
-		return Gameplay::get("chat.badge.".strtolower(trim($role)), "");
-	}
+    public static function getBadge(string $role): string
+    {
+        return Gameplay::get("chat.badge." . strtolower(trim($role)), "");
+    }
 
 }

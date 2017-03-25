@@ -26,8 +26,9 @@ use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
-class Plot extends Position {
-    
+class Plot extends Position
+{
+
     /**
      * Plot constructor.
      * @param Position|int $x
@@ -36,7 +37,7 @@ class Plot extends Position {
      */
     public function __construct($x, $z = 0, Level $level = null)
     {
-        if($x instanceof Position) {
+        if ($x instanceof Position) {
             $this->x = $x->x >> 4;
             $this->z = $x->z >> 4;
             $this->level = $x->level;
@@ -46,67 +47,78 @@ class Plot extends Position {
             $this->level = $level;
         }
     }
-    
-    
-    public function unclaim() {
-        Plots::unclaim($this, false);
+
+    public static function fromHash(string $hash): Plot
+    {
+        list($x, $z, $level) = explode(":", $hash);
+        $level = FactionsPE::get()->getServer()->getLevelByName($level);
+        $plot = new Plot($x, $z, $level);
+        return $plot;
     }
 
-    public function claim(Faction $faction, IMember $player = null) {
+    public function unclaim(IMember $member = null, bool $silent = null)
+    {
+        Plots::unclaim($this, $member, $silent ?? $member ? false : true);
+    }
+
+    public function claim(Faction $faction, IMember $player = null)
+    {
         if ($player === null) {
             $player = $faction->getLeader();
         }
         return Plots::claim($faction, $this, $player, false);
     }
 
-    public function isClaimed() {
+    public function isClaimed()
+    {
         return $this->getOwnerFaction()->isNone() === false;
     }
 
-    public function getOwnerFaction() : Faction {
+    public function getOwnerFaction(): Faction
+    {
         return Plots::getFactionAt($this);
     }
 
-    public function getOwnerId() : string {
-    	return $this->getOwnerFaction()->getId();
+    public function getOwnerId(): string
+    {
+        return $this->getOwnerFaction()->getId();
     }
 
-    public function getPosition() : Position {
+    public function getPosition(): Position
+    {
         return new Position($this->x << 4, 0, $this->z << 4, $this->level);
     }
 
-    public function hash() : string {
+    public function hash(): string
+    {
         return Plots::hash($this);
     }
 
-    public function addX($x) : Plot {
+    public function addX($x): Plot
+    {
         $x = ($x instanceof Vector3) ? $x->x : $x;
         $this->x += $x;
         return $this;
     }
 
-    public function addZ($z) : Plot {
+    public function addZ($z): Plot
+    {
         $z = ($z instanceof Vector3) ? $z->z : $z;
         $this->z += $z;
         return $this;
     }
 
-    public function subtractX($x) : Plot {
+    public function subtractX($x): Plot
+    {
         $this->subtract($x);
         return $this;
     }
-    
-    public function subtractZ($z) : Plot {
+
+    public function subtractZ($z): Plot
+    {
         $z = ($z instanceof Vector3) ? $z->z : $z;
         $this->subtract(0, 0, $z);
         return $this;
-    }
-    
-    public static function fromHash(string $hash) : Plot {
-        list($x, $z, $level) = explode(":", $hash);
-        $level = FactionsPE::get()->getServer()->getLevelByName($level);
-        $plot = new Plot($x, $z, $level);
-        return $plot;
     }
 
 }

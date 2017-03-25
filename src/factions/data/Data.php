@@ -19,37 +19,39 @@
 
 namespace factions\data;
 
-abstract class Data {
+abstract class Data
+{
 
-	/**
-	 * Unix timestamp of last save
-	 * @var integer
-	 */
-	public $lastSaved;
+    /**
+     * Unix timestamp of last save
+     * @var integer
+     */
+    public $lastSaved;
 
-	/*
-	 * ----------------------------------------------------------
-	 * ABSTRACT
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * ABSTRACT
+     * ----------------------------------------------------------
+     */
 
-	/**
-	 * Called whenever the content of class has changed
-	 */
-	public function changed() {
-		$this->save();
-		$this->lastSaved = time();
-	}
+    /**
+     * Called whenever the content of class has changed
+     */
+    public function changed()
+    {
+        $this->save();
+        $this->lastSaved = time();
+    }
 
-	/**
-	 * Must save this class
-	 */
-	public abstract function save();
+    /**
+     * Must save this class
+     */
+    public abstract function save();
 
-	/**
-	 * This class must return array of data ready to be saved.
-	 * @return array
-	 */
-	public abstract function __toArray();
+    /**
+     * This class must return array of data ready to be saved.
+     * @return array
+     */
+    public abstract function __toArray();
 
 }

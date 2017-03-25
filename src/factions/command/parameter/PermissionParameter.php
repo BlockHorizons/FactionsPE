@@ -20,20 +20,20 @@
 namespace factions\command\parameter;
 
 use dominate\parameter\Parameter;
-
-use factions\permission\Permission;
-use factions\manager\Permissions;
 use factions\manager\Members;
-
+use factions\manager\Permissions;
+use factions\permission\Permission;
 use pocketmine\command\CommandSender;
 
-class PermissionParameter extends Parameter {
+class PermissionParameter extends Parameter
+{
 
-	const ALL = 20;
-	const ANY = 21;
-	const ONE = 22;
+    const ALL = 20;
+    const ANY = 21;
+    const ONE = 22;
 
-    public function setup() {
+    public function setup()
+    {
         $this->ERROR_MESSAGES = [
             self::ALL => "type-perm-all",
             self::ANY => "type-perm-any",
@@ -41,29 +41,31 @@ class PermissionParameter extends Parameter {
         ];
     }
 
-    public function read(string $input, CommandSender $sender = null) {
-    	if(strtolower($input) === "all") {
-    		return Permissions::getAll();
-    	}
+    public function read(string $input, CommandSender $sender = null)
+    {
+        if (strtolower($input) === "all") {
+            return Permissions::getAll();
+        }
         $perm = Permissions::getById(strtolower($input));
-        if($perm && !$perm->isVisible() && $sender) {
-        	if(!Members::get($sender)->isOverriding()) {
-        		$perm = null;
-        	}
+        if ($perm && !$perm->isVisible() && $sender) {
+            if (!Members::get($sender)->isOverriding()) {
+                $perm = null;
+            }
         }
         return $perm;
     }
 
-    public function isValid($value, CommandSender $sender = null) : bool {
-        switch($this->type) {
-        	case self::ALL:
-        		return is_array($value);
-        	case self::ANY:
-        		return $value !== null;
-        	case self::ONE:
-        		return $value instanceof Permission;
-        	default:
-        		return false;
+    public function isValid($value, CommandSender $sender = null): bool
+    {
+        switch ($this->type) {
+            case self::ALL:
+                return is_array($value);
+            case self::ANY:
+                return $value !== null;
+            case self::ONE:
+                return $value instanceof Permission;
+            default:
+                return false;
         }
     }
 

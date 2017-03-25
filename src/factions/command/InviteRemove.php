@@ -21,30 +21,28 @@ namespace factions\command;
 
 use dominate\Command;
 use factions\command\parameter\MemberParameter;
-use factions\entity\Member;
-use factions\manager\Members;
 use factions\FactionsPE;
-use factions\utils\Text;
-
-use pocketmine\command\CommandSender;
-use pocketmine\Player;
-
+use factions\manager\Members;
 use localizer\Localizer;
+use pocketmine\command\CommandSender;
 
-class InviteRemove extends Command {
+class InviteRemove extends Command
+{
 
-    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases = []) {
+    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases = [])
+    {
         parent::__construct($plugin, $name, $description, $permission, $aliases);
 
         $this->addParameter(new MemberParameter("member", MemberParameter::ANY_MEMBER));
     }
 
-    public function perform(CommandSender $sender, $label, array $args) {
+    public function perform(CommandSender $sender, $label, array $args)
+    {
         $msender = Members::get($sender);
         $player = $this->getArgument(0);
-        
+
         $faction = $msender->getFaction();
-        if($faction->isInvited($player)) {
+        if ($faction->isInvited($player)) {
             $faction->setInvited($player, false);
             $sender->sendMessage(Localizer::translatable("invitation-deleted", [$player->getDisplayName(), $faction->getName()]));
         } else {

@@ -1,0 +1,29 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: chris
+ * Date: 17.24.3
+ * Time: 19:01
+ */
+
+namespace factions\task;
+
+use pocketmine\scheduler\Task;
+
+class MySQLPinger extends Task
+{
+
+    /** @var  \mysqli */
+    private $connection;
+
+    public function __construct(\mysqli $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    public function onRun($currentTick)
+    {
+        $this->connection->ping();
+    }
+
+}

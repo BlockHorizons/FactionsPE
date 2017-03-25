@@ -21,7 +21,8 @@ namespace factions\flag;
 
 use localizer\Translatable;
 
-class Flag {
+class Flag
+{
 
     const OPEN = "open";
     const PERMANENT = "permanent";
@@ -55,17 +56,15 @@ class Flag {
 
     /** @var string */
     protected $id, $name;
-
+    /** @var Translatable */
+    protected $desc, $descYes, $descNo;
+    /** @var bool */
+    protected $standard = true, $editable = false, $visible = true;
     /** @var int */
     private $priority;
 
-    /** @var Translatable */
-    protected $desc, $descYes, $descNo;
-
-    /** @var bool */
-    protected $standard = true, $editable = false, $visible = true;
-
-    public function __construct(string $id, int $priority, string $name, Translatable $desc, Translatable $descYes, Translatable $descNo, bool $standard, bool $editable, bool $visible) {
+    public function __construct(string $id, int $priority, string $name, Translatable $desc, Translatable $descYes, Translatable $descNo, bool $standard, bool $editable, bool $visible)
+    {
         $this->id = $id;
         $this->priority = $priority;
         $this->name = $name;
@@ -77,7 +76,8 @@ class Flag {
         $this->standard = $standard;
     }
 
-    public function getPriority() : int {
+    public function getPriority(): int
+    {
         return $this->priority;
     }
 
@@ -85,12 +85,14 @@ class Flag {
      * @param int $priority
      * @return Flag
      */
-    public function setPriority(int $priority) : Flag {
+    public function setPriority(int $priority): Flag
+    {
         $this->priority = $priority;
         return $this;
     }
 
-    public function getName() : string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
@@ -98,65 +100,79 @@ class Flag {
      * @param string $name
      * @return Flag
      */
-    public function setName(string $name) : Flag {
+    public function setName(string $name): Flag
+    {
         $this->name = $name;
         return $this;
     }
 
-    public function getDesc() : Translatable {
+    public function getDesc(): Translatable
+    {
         return $this->desc;
     }
 
-    public function setDesc(Translatable $desc) : Flag {
+    public function setDesc(Translatable $desc): Flag
+    {
         $this->desc = $desc;
         return $this;
     }
 
-    public function getDescYes() : Translatable {
+    public function getDescYes(): Translatable
+    {
         return $this->descYes;
     }
 
-    public function setDescYes(Translatable $descYes) : Flag {
+    public function setDescYes(Translatable $descYes): Flag
+    {
         $this->descYes = $descYes;
         return $this;
     }
 
-    public function getDescNo() : Translatable {
+    public function getDescNo(): Translatable
+    {
         return $this->descNo;
     }
 
-    public function setDescNo(Translatable $descNo) : Flag {
+    public function setDescNo(Translatable $descNo): Flag
+    {
         $this->descNo = $descNo;
         return $this;
     }
 
-    public function isEditable() : bool {
+    public function isEditable(): bool
+    {
         return $this->editable;
     }
 
-    public function setEditable(bool $editable) : Flag {
+    public function setEditable(bool $editable): Flag
+    {
         $this->editable = $editable;
         return $this;
     }
 
-    public function isVisible() : bool {
+    public function isVisible(): bool
+    {
         return $this->visible;
     }
 
-    public function setVisible(bool $visible) : Flag {
+    public function setVisible(bool $visible): Flag
+    {
         $this->visible = $visible;
         return $this;
     }
 
-    public function getId() : string {
+    public function getId(): string
+    {
         return $this->id;
     }
 
-    public function isStandard() : bool {
+    public function isStandard(): bool
+    {
         return $this->standard;
     }
 
-    public function setStandard(boolean $standard) : Flag {
+    public function setStandard(boolean $standard): Flag
+    {
         $this->standard = $standard;
         return $this;
     }
@@ -165,7 +181,8 @@ class Flag {
      * This is for saving flags
      * NOTE: this array won't contain id of the flag
      */
-    public function __toArray() {
+    public function __toArray()
+    {
         return [
             "name" => $this->name,
             "priority" => $this->priority,

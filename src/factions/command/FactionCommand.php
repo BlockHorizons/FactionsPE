@@ -1,4 +1,5 @@
 <?php
+
 /*
  *   FactionsPE: PocketMine-MP Plugin
  *   Copyright (C) 2016  Chris Prime
@@ -19,20 +20,17 @@
 
 namespace factions\command;
 
-use factions\FactionsPE;
-use factions\manager\Permissions;
-
 use dominate\Command;
 use dominate\parameter\Parameter;
-use dominate\requirement\SimpleRequirement;
-use factions\command\requirement\FactionRequirement;
-
+use factions\FactionsPE;
+use factions\manager\Permissions;
 use pocketmine\command\CommandSender;
 
 class FactionCommand extends Command
 {
 
-    public function __construct(FactionsPE $plugin) {
+    public function __construct(FactionsPE $plugin)
+    {
         parent::__construct($plugin, 'faction', 'Main Faction command', Permissions::MAIN, ['fac', 'f']);
 
         // Registering subcommands
@@ -55,8 +53,19 @@ class FactionCommand extends Command
             new Top($plugin, "top", "See top of most powerful factions", Permissions::TOP),
             new Player($plugin, "player", "See more detailed info about someone", Permissions::PLAYER),
             new Perm($plugin, "permission", "Manage faction permissions", Permissions::PERM),
-            new Disband($plugin, "disband", "Disband a faction", Permissions::DISBAND, ["destroy"])
+            new Disband($plugin, "disband", "Disband a faction", Permissions::DISBAND, ["destroy"]),
+            new Status($plugin, "status", "Check members in the faction", Permissions::STATUS),
+            new ListCmd($plugin, "list", "See list of all created factions", Permissions::LIST),
+            new Reload($plugin, "reload", "Reload config file", Permissions::RELOAD),
+            new Rank($plugin, "rank", "Manage member ranks", Permissions::RANK),
+            new Relation($plugin, "relation", "Manage relations", Permissions::RELATION),
+            new HudSwitch($plugin, "hud", "Toggle HUD", Permissions::HUD)
         ];
+
+        if ($plugin->economyEnabled()) {
+            $childs[] = new Money($plugin, "money", "Manage faction bank account", Permissions::MONEY, ["bank", "cash"]);
+        }
+
         foreach ($childs as $child) {
             $this->addChild($child);
         }
@@ -64,14 +73,18 @@ class FactionCommand extends Command
         $this->addParameter(new Parameter("command"));
     }
 
+
     /**
      * @param CommandSender $sender
      * @param string $label
      * @param string[] $args
      * @return bool
      */
-    public function perform(CommandSender $sender, $label, array $args) {
+
+    public function perform(CommandSender $sender, $label, array $args)
+    {
         if ($this->endPoint !== $this) return true;
+
         if (isset($args[0])) {
             if (!$this->getChild($args[0])) {
                 $sender->sendMessage(Localizer::translatable("command.generic-usage", [$args[0]]));
@@ -79,4 +92,5 @@ class FactionCommand extends Command
         }
         return true;
     }
+
 }

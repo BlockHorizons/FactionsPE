@@ -21,124 +21,125 @@ namespace factions\entity;
 
 use factions\permission\Permission;
 
-interface IMember {
+interface IMember
+{
 
-	/*
-	 * ----------------------------------------------------------
-	 * LAST-ACTIVITY
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * LAST-ACTIVITY
+     * ----------------------------------------------------------
+     */
 
-	public function updateLastActivity();
+    public function updateLastActivity();
 
-	public function getLastActivity() : int;
+    public function getLastActivity(): int;
 
-	/*
-	 * ----------------------------------------------------------
-	 * FACTION
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * FACTION
+     * ----------------------------------------------------------
+     */
 
-	public function getFactionId() : string;
+    public function getFactionId(): string;
 
-	/**
-	 * $silent is for internal use ONLY!
-	 * @param string $fid faction id
-	 * @param bool $silent = false
-	 */
-	public function setFactionId(string $fid, bool $silent = false);
+    /**
+     * $silent is for internal use ONLY!
+     * @param string $fid faction id
+     * @param bool $silent = false
+     */
+    public function setFactionId(string $fid, bool $silent = false);
 
-	public function getFaction() : Faction;
-	
-	public function setFaction(Faction $faction);
-	
-	public function hasFaction() : bool;
-	
-	public function isDefault() : bool;
+    public function getFaction(): Faction;
 
-	public function isNone() : bool;
+    public function setFaction(Faction $faction);
 
-	public function resetFactionData();
-	
-	/*
-	 * ----------------------------------------------------------
-	 * ROLE
-	 * ----------------------------------------------------------
-	 */
+    public function hasFaction(): bool;
 
-	public function setRole(string $role);
+    public function isDefault(): bool;
 
-	public function isRecruit() : bool;
+    public function isNone(): bool;
 
-	public function isMember() : bool;
+    public function resetFactionData();
 
-	public function isOfficer() : bool;
+    /*
+     * ----------------------------------------------------------
+     * ROLE
+     * ----------------------------------------------------------
+     */
 
-	public function isLeader() : bool;
+    public function setRole(string $role);
 
-	public function getRole() : string;
+    public function isRecruit(): bool;
+
+    public function isMember(): bool;
+
+    public function isOfficer(): bool;
+
+    public function isLeader(): bool;
+
+    public function getRole(): string;
 
 
-	/*
-	 * ----------------------------------------------------------
-	 * POWER
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * POWER
+     * ----------------------------------------------------------
+     */
 
-	public function getPower(bool $limit = true) : int;
+    public function getPower(bool $limit = true): int;
 
-	public function getDefaultPower() : int;
+    public function getDefaultPower(): int;
 
-	public function getPowerMax() : int;
+    public function getPowerMax(): int;
 
-	public function getPowerMin() : int;
+    public function getPowerMin(): int;
 
-	public function getPowerPerDeath() : int;
+    public function getPowerPerDeath(): int;
 
-	public function hasPowerBoost() : bool;
+    public function hasPowerBoost(): bool;
 
-	public function setPowerBoost(int $boost);
+    public function setPowerBoost(int $boost);
 
-	public function setPower(int $power);
+    public function setPower(int $power);
 
-	public function getPowerBoost() : int;
+    public function getPowerBoost(): int;
 
-	/*
-	 * ----------------------------------------------------------
-	 * PERMISSION
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * PERMISSION
+     * ----------------------------------------------------------
+     */
 
-	public function isPermitted(Permission $permission) : bool;
+    public function isPermitted(Permission $permission): bool;
 
-	public function isOverriding() : bool;
+    public function isOverriding(): bool;
 
-	public function setOverriding(bool $value);
+    public function setOverriding(bool $value);
 
-	/*
-	 * ----------------------------------------------------------
-	 * PLAYER
-	 * ----------------------------------------------------------
-	 */
+    /*
+     * ----------------------------------------------------------
+     * PLAYER
+     * ----------------------------------------------------------
+     */
 
-	public function getFirstPlayed() : int;
+    public function getFirstPlayed(): int;
 
-	public function getLastPlayed() : int;
-    
-	public function getName() : string;
+    public function getLastPlayed(): int;
 
-	public function getNameTag() : string;
+    public function getName(): string;
 
-	public function isOnline() : bool;
+    public function getNameTag(): string;
 
-	public function isNormal() : bool;
+    public function isOnline(): bool;
 
-	public function sendMessage($message);
+    public function isNormal(): bool;
 
-	public function getTitle() : string;
+    public function sendMessage($message);
 
-	public function getDisplayName() : string;
+    public function getTitle(): string;
 
-	public function save();
+    public function getDisplayName(): string;
+
+    public function save();
 
 }

@@ -19,46 +19,35 @@
 
 namespace factions\manager;
 
-use factions\flag\Flag;
 use factions\FactionsPE;
-
+use factions\flag\Flag;
 use localizer\Localizer;
 use localizer\Translatable;
 
-class Flags {
+class Flags
+{
 
     /** @var Flag[] */
     private static $flags = [];
 
-    public static function getById(string $id) {
-        foreach (self::$flags as $flag) {
-            if($flag->getId() === strtolower(trim($id))) return $flag;
-        }
-    }
-
-    public static function attach(Flag $flag) {
-        if(!self::contains($flag))
-            self::$flags[$flag->getId()] = $flag;
-    }
-
-    public static function detach(Flag $flag) {
-        if(self::contains($flag))
+    public static function detach(Flag $flag)
+    {
+        if (self::contains($flag))
             unset(self::$flags[$flag->getId()]);
     }
 
-    public static function contains(Flag $flag) : bool {
-        return isset(self::$flags[$flag->getId()]);
-    }
-
-    public static function getAll() : array {
-        return self::$flags;
-    }
-
-    public static function saveAll() {
+    public static function saveAll()
+    {
         FactionsPE::get()->getDataProvider()->saveFlags(self::getAll());
     }
 
-    public static function init() {
+    public static function getAll(): array
+    {
+        return self::$flags;
+    }
+
+    public static function init()
+    {
         // id, priority, name, desc, descYes, descNo, standard, editable, visible
         $flags = [
             Flag::OPEN => [
@@ -105,7 +94,7 @@ class Flags {
             ]
         ];
         foreach ($flags as $id => $flag) {
-            if(self::getById($id) instanceof Flag) {
+            if (self::getById($id) instanceof Flag) {
                 continue;
             }
             $desc = Localizer::translatable("flag.$id-desc");
@@ -115,18 +104,38 @@ class Flags {
         }
     }
 
-    public static function create(string $id, int $priority, string $name, Translatable $desc, Translatable $descYes, Translatable $descNo, bool $standard, bool $editable, bool $visible) {
-        if(self::getById($id) instanceof Flag) {
+    public static function getById(string $id)
+    {
+        foreach (self::$flags as $flag) {
+            if ($flag->getId() === strtolower(trim($id))) return $flag;
+        }
+    }
+
+    public static function create(string $id, int $priority, string $name, Translatable $desc, Translatable $descYes, Translatable $descNo, bool $standard, bool $editable, bool $visible)
+    {
+        if (self::getById($id) instanceof Flag) {
             throw new \Exception("Flag with id=$id has been already registered");
         }
         self::attach(new Flag($id, $priority, $name, $desc, $descYes, $descNo, $standard, $editable, $visible));
         return self::getById($id);
     }
 
+    public static function attach(Flag $flag)
+    {
+        if (!self::contains($flag))
+            self::$flags[$flag->getId()] = $flag;
+    }
+
+    public static function contains(Flag $flag): bool
+    {
+        return isset(self::$flags[$flag->getId()]);
+    }
+
     /**
      * Detaches all flags
      */
-    public static function flush() {
+    public static function flush()
+    {
         self::$flags = [];
     }
 

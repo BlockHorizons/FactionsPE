@@ -22,24 +22,25 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
-
 use factions\command\requirement\FactionRequirement;
 use factions\manager\Permissions;
 
-class Claim extends Command {
+class Claim extends Command
+{
 
-    public function setup() {
+    public function setup()
+    {
         $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
 
         $plugin = $this->getPlugin();
         $this->addChild((new ClaimOne($plugin, "one", "Claim one plot", Permissions::CLAIM_ONE, ["1"]))->setClaim(true));
-        // $this->addChild((new ClaimAuto($plugin))->setClaim(true));
+        $this->addChild((new ClaimAuto($plugin, "auto", "Set auto claiming", Permissions::CLAIM_AUTO))->setClaim(true));
         // $this->addChild((new ClaimFill($plugin))->setClaim(true));
         $this->addChild((new ClaimSquare($plugin, "square", "Claim a square", Permissions::CLAIM_SQUARE))->setClaim(true));
         // $this->addChild((new ClaimCircle($plugin))->setclaim(true));
 
-        $this->addParameter((new Parameter("one"))->setDefaultValue("one"));
+        $this->addParameter((new Parameter("square|circle|auto|one"))->setDefaultValue("one"));
     }
 
 }

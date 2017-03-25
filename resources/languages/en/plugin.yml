@@ -32,3 +32,7 @@ economy-plugin-not-found: "Economy plugin by name <gold>:name<white> was not fou
 economy-plugin-not-supported: "Plugin <gold>:name<white> is not supported economy provider"
 economy-plugin-selected: "Economy provider: <gold>:name"
 economy-not-ready: "Economy plugin <gold>:name<white> is not ready for use!"
+
+power-update-enabled: "Power regeneration enabled"
+
+hud-enabled: "Built-In <gold>HUD<white> enabled"

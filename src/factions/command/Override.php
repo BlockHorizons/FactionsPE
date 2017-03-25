@@ -21,36 +21,36 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
-
-use localizer\Localizer;
-
-use factions\manager\Members;
-use factions\utils\Text;
-use factions\utils\Gameplay;
 use factions\FactionsPE;
-
+use factions\manager\Members;
+use factions\utils\Gameplay;
+use factions\utils\Text;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-class Override extends Command {
+class Override extends Command
+{
 
-	public function setup() {
-		$this->addParameter(new Parameter("on|off", Parameter::TYPE_BOOLEAN));
-	}
+    public function setup()
+    {
+        $this->addParameter((new Parameter("on|off", Parameter::TYPE_BOOLEAN))->setDefaultValue(null));
+    }
 
-	public function perform(CommandSender $sender, $label, array $args) {
-		$msender = Members::get($sender);
+    public function perform(CommandSender $sender, $label, array $args)
+    {
+        $msender = Members::get($sender);
 
-		$msender->setOverriding($value = $this->parameters[0]->getValue());
-		$sender->sendMessage(Localizer::translatable("overriding-".($value ? "enabled" : "disabled")));
+        $msender->setOverriding((bool)$value = $this->getArgument(0) ?? !$msender->isOverriding());
+        $sender->sendMessage(Localizer::translatable("overriding-" . ($value ? "enabled" : "disabled")));
 
-		if(Gameplay::get("log.override", true)) {
-			FactionsPE::get()->getLogger()->notice(Localizer::trans("log.override", [
-				"player" => $msender->getName(),
-				"overriding" => Text::toString($value, true)
-				]));
-		}
+        if (Gameplay::get("log.override", true)) {
+            FactionsPE::get()->getLogger()->notice(Localizer::trans("log.override", [
+                "player" => $msender->getName(),
+                "overriding" => Text::toString($value, true)
+            ]));
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

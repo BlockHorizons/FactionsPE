@@ -22,91 +22,90 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
-
-use localizer\Localizer;
-
 use factions\command\requirement\FactionRequirement;
-use factions\event\member\MembershipChangeEvent;
-use factions\event\faction\FactionCreateEvent;
-use factions\manager\Permissions;
-use factions\utils\Gameplay;
 use factions\entity\Faction;
-use factions\manager\Members;
+use factions\event\faction\FactionCreateEvent;
+use factions\event\member\MembershipChangeEvent;
 use factions\FactionsPE;
-
+use factions\manager\Members;
+use factions\utils\Gameplay;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 
-class CreateFaction extends Command {
+class CreateFaction extends Command
+{
 
-	public function setup() {
-		$this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
-		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
-		$this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
-	}
+    public function setup()
+    {
+        $this->addParameter(new Parameter("name", Parameter::TYPE_STRING));
+        $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
+        $this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
+    }
 
-	public function perform(CommandSender $sender, $label, array $args) : bool {
-		if(FactionsPE::get()->economyEnabled()) {
-			if($sender instanceof Player) {
-				if(($has = FactionsPE::get()->getEconomy()->balance($sender)) < ($need = Gameplay::get('price.faction-creation', 0)) ) {
-					$sender->sendMessage(Localizer::translatable('faction-create-insufficient-fund', [
-						"has" => $has,
-						"need" => $need
-						]));
-					return true;	
-				}
-			}
-		}
+    public function perform(CommandSender $sender, $label, array $args): bool
+    {
+        if (FactionsPE::get()->economyEnabled()) {
+            if ($sender instanceof Player) {
+                if (($has = FactionsPE::get()->getEconomy()->balance($sender)) < ($need = Gameplay::get('price.faction-creation', 0))) {
+                    $sender->sendMessage(Localizer::translatable('faction-create-insufficient-fund', [
+                        "has" => $has,
+                        "need" => $need
+                    ]));
+                    return true;
+                }
+            }
+        }
 
-		$name = $this->getArgument(0);
+        $name = $this->getArgument(0);
 
-		$errors = Faction::validateName($name);
-		if(($c = count($errors)) > 0) {
-			$sender->sendMessage(Localizer::translatable('invalid-faction-name', [
-				"name" => $name,
-				"count" => $c
-				]));
-			foreach ($errors as $n => $error) {
-				$sender->sendMessage(Localizer::translatable('invalid-faction-name-error', [
-					"error" => $error,
-					"n" => $n + 1
-					]));
-			}
-			return true;
-		}
+        $errors = Faction::validateName($name);
+        if (($c = count($errors)) > 0) {
+            $sender->sendMessage(Localizer::translatable('invalid-faction-name', [
+                "name" => $name,
+                "count" => $c
+            ]));
+            foreach ($errors as $n => $error) {
+                $sender->sendMessage(Localizer::translatable('invalid-faction-name-error', [
+                    "error" => $error,
+                    "n" => $n + 1
+                ]));
+            }
+            return true;
+        }
 
-		$fid = Faction::createId();
-		$creator = Members::get($sender);
+        $fid = Faction::createId();
+        $creator = Members::get($sender);
 
-		$event = new FactionCreateEvent($creator, $fid, $name);
-		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-		if($event->isCancelled()) return;
+        $event = new FactionCreateEvent($creator, $fid, $name);
+        $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
+        if ($event->isCancelled()) return;
 
-		$faction = new Faction($fid, [
-			"name" => $name,
-			"creator" => $creator
-			]);
-		$creator->updateFaction();
+        $faction = new Faction($fid, [
+            "name" => $name,
+            "creator" => $creator
+        ]);
+        $creator->updateFaction();
 
-		$event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);
-		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-		// Ignore cancellation
+        $event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);
+        $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
+        // Ignore cancellation
 
-		if(FactionsPE::get()->economyEnabled()) {
-			if($sender instanceof Player) {
-				FactionsPE::get()->getEconomy()->takeMoney($sender, $need);
-			}
-		}
+        if (FactionsPE::get()->economyEnabled()) {
+            if ($sender instanceof Player) {
+                FactionsPE::get()->getEconomy()->takeMoney($sender, $need);
+            }
+        }
 
-		$sender->sendMessage(Localizer::translatable('faction-created', compact("name")));
-		if(Gameplay::get('log.faction-creation', true)) {
-			FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-created-faction', [
-				$creator->getName(),
-				$faction->getName()
-				]));
-		}
+        $sender->sendMessage(Localizer::translatable('faction-created', compact("name")));
+        if (Gameplay::get('log.faction-creation', true)) {
+            FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-created-faction', [
+                $creator->getName(),
+                $faction->getName()
+            ]));
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

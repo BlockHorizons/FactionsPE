@@ -19,14 +19,14 @@
 
 namespace factions\manager;
 
-use factions\permission\Permission;
 use factions\FactionsPE;
+use factions\permission\Permission;
 use factions\relation\Relation;
-
-use localizer\Translatable;
 use localizer\Localizer;
+use localizer\Translatable;
 
-final class Permissions {
+final class Permissions
+{
 
     #
     # PocketMine permission nodes
@@ -55,6 +55,7 @@ final class Permissions {
     const FLAG_SET = "factions.flag.set";
     const FLAG_SHOW = "factions.flag.show";
     const HELP = "factions.help";
+    const HUD = "factions.hud"; # alphabet order -.-
     const HOME = "factions.home";
     const INFO = "factions.info";
     const INVITE = "factions.invite";
@@ -93,6 +94,7 @@ final class Permissions {
     const RELATION_SET = "factions.relation.set";
     const RELATION_LIST = "factions.relation.list";
     const RELATION_WISHES = "factions.relation.wishes";
+    const RELOAD = "factions.reload";
     const SEECHUNK = "factions.seechunk";
     const SEECHUNKOLD = "factions.seechunkold";
     const SETHOME = "factions.sethome";
@@ -123,42 +125,21 @@ final class Permissions {
     /** @var Permission[] */
     private static $permissions = [];
 
-    /**
-     * @return Permission|null
-     */
-    public static function getById(string $id) {
-        foreach (self::$permissions as $p) {
-            if ($p->getId() === strtolower($id)) {
-                return $p;
-            }
-        }
-        return null;
+    public static function detach(Permission $perm)
+    {
+        if (self::contains($perm)) unset(self::$permissions[$perm->getId()]);
     }
 
-    public static function attach(Permission $perm) {
-        if(!self::contains($perm)) self::$permissions[$perm->getId()] = $perm;
-    }
-
-    public static function detach(Permission $perm) {
-        if(self::contains($perm)) unset(self::$permissions[$perm->getId()]);
-    }
-
-    public static function contains(Permission $perm) : bool {
+    public static function contains(Permission $perm): bool
+    {
         return isset(self::$permissions[$perm->getId()]);
-    }
-
-    public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible) : Permission {
-        $ret = self::getById($id);
-        if($ret) return $ret;
-        $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
-        self::attach($ret);
-        return $ret;
     }
 
     /**
      * Creates a Permissions
      */
-    public static function init() {
+    public static function init()
+    {
         $perms = [
             Permission::BUILD => [
                 Permission::PRIORITY_BUILD, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], true, true, true
@@ -234,15 +215,44 @@ final class Permissions {
             ]
         ];
         foreach ($perms as $perm => $data) {
-            self::create($data[0], $perm, $perm, Localizer::translatable("permission.".$perm), $data[1], $data[2], $data[3], $data[4]);
-        }   
+            self::create($data[0], $perm, $perm, Localizer::translatable("permission." . $perm), $data[1], $data[2], $data[3], $data[4]);
+        }
     }
 
-    public static function saveAll() {
+    public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible): Permission
+    {
+        $ret = self::getById($id);
+        if ($ret) return $ret;
+        $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
+        self::attach($ret);
+        return $ret;
+    }
+
+    /**
+     * @return Permission|null
+     */
+    public static function getById(string $id)
+    {
+        foreach (self::$permissions as $p) {
+            if ($p->getId() === strtolower($id)) {
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    public static function attach(Permission $perm)
+    {
+        if (!self::contains($perm)) self::$permissions[$perm->getId()] = $perm;
+    }
+
+    public static function saveAll()
+    {
         FactionsPE::get()->getDataProvider()->savePermissions(self::getAll());
     }
 
-    public static function getAll() : array {
+    public static function getAll(): array
+    {
         return self::$permissions;
     }
 

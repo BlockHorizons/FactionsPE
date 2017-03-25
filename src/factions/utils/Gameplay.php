@@ -18,45 +18,52 @@
  */
 namespace factions\utils;
 
-final class Gameplay {
+final class Gameplay
+{
 
-  private function __construct() {}
+    /**
+     * @var mixed[]
+     */
+    private static $data = [];
 
-  /**
-   * @var mixed[]
-   */
-  private static $data = [];
+    private function __construct()
+    {
+    }
 
-  // ---------------------------------------------------------------------------
-  // FUNCTIONS
-  // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
+    // FUNCTIONS
+    // ---------------------------------------------------------------------------
 
-  public static function setData(array $data) {
-    self::$data = $data;
-  }
+    public static function getData(): array
+    {
+        return self::$data;
+    }
 
-  public static function getData() : array {
-    return self::$data;
-  }
+    public static function setData(array $data)
+    {
+        self::$data = $data;
+    }
 
-  public static function set(string $key, $value) {
-    self::$data[$key] = $value;
-  }
+    public static function set(string $key, $value)
+    {
+        self::$data[$key] = $value;
+    }
 
-  public static function get(string $key, $default = null) {
-    $data = self::$data;
-        if(strpos($key, ".") !== false) {
+    public static function get(string $key, $default = null)
+    {
+        $data = self::$data;
+        if (strpos($key, ".") !== false) {
             $keys = explode(".", $key);
             $i = 0;
-            while(isset($data[$keys[$i]])) {
+            while (isset($data[$keys[$i]])) {
                 $data = $data[$keys[$i]];
-                if(!is_array($data)) return $data;
+                if (!is_array($data)) return $data;
                 $i++;
-                if(!isset($keys[$i])) return $data;
+                if (!isset($keys[$i])) return $data;
             }
         }
-        if(isset($data[$key])) return $data[$key];
+        if (isset($data[$key])) return $data[$key];
         return $default;
-  }
+    }
 
 }

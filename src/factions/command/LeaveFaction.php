@@ -20,29 +20,30 @@
 namespace factions\command;
 
 use dominate\Command;
-use localizer\Localizer;
-
-use factions\manager\Members;
 use factions\command\requirement\FactionRequirement;
-
+use factions\manager\Members;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-class LeaveFaction extends Command {
+class LeaveFaction extends Command
+{
 
-	public function setup() {
-		$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
-	}
+    public function setup()
+    {
+        $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
+    }
 
-	public function perform(CommandSender $sender, $label, array $args) {
-		$member = Members::get($sender);
-		$faction = $member->getFaction();
-		if($faction->leave($member)) {
-			$sender->sendMessage(Localizer::translatable('you-left-faction', [
-				"faction" => $faction->getName(),
-				]));
-		}		
+    public function perform(CommandSender $sender, $label, array $args)
+    {
+        $member = Members::get($sender);
+        $faction = $member->getFaction();
+        if ($faction->leave($member)) {
+            $sender->sendMessage(Localizer::translatable('you-left-faction', [
+                "faction" => $faction->getName(),
+            ]));
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

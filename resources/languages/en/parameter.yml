@@ -25,4 +25,6 @@ type-rel-any: "No relation or rank by name <aqua>:value<white> was found. Perhap
 type-rel-one: "No relation or rank by name <aqua>:value<white> was found"
 type-rel-rank: "No valid rank by name <aqua>:value<white> was found"
 type-rel: "No valid relation by name <aqua>:value<white> was found"
+
+type-rank: "Not a valid rank or an action (promote/demote)"
 ...

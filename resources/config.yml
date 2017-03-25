@@ -25,9 +25,9 @@ economy-support: false
 economy-plugin: "EconomyAPI"
 
 # Data provider settings
-# Supported types as of now: yaml, json
+# Supported types as of now: yaml, json, mysql
 data-provider:
-  type: "YAML"
+  type: "mysql"
   mysql:
     host: 127.0.0.1
     user: guest
@@ -37,6 +37,13 @@ data-provider:
 # Chat
 # Set this to false if you want to use PureChat
 chat-formatter: true
+
+mysql:
+ host: 127.0.0.1
+ user: root
+ database: fpe
+ password: ChrisIsCool
+ port: 3306
 
 # gameplay settings
 gameplay:
@@ -55,7 +62,11 @@ gameplay:
       max: 100
       min: -100
       per-death: 5
+      per-claim: 5
+      per-update: 1
       default: 10
+    update-every: 10
+    update-enabled: true
   faction:
     destroy-empty-factions: true
     member-limit: 10
@@ -82,10 +93,15 @@ gameplay:
     member-title: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}"
     faction-chat: "<gold>{BADGE}<white>{NAME}<white><gray>>><white> {MESSAGE}"
     badge:
-      leader: "^"
-      officer: "**"
-      member: "*"
-      recruit: "-"   
+      leader: "**"
+      officer: "*"
+      member: "+"
+      recruit: "-"
+  color:
+    enemy: "<red>"
+    ally: "<green>"
+    truce: "<gold>"
+    neutral: "<white>"
   worlds-pvp-rules-enabled: []
   worlds-claiming-enabled: [world]
   worlds-power-loss-enabled: [world]
@@ -94,7 +110,7 @@ gameplay:
   enable-pvp-against-factionless-in-attackers-land: true
   enable-pvp-between-factionless-players: true
   enable-pvp-for-factionless-players: true
-  set-radius-max: 50
+  set-radius-max: 5
   handle-exploit-tnt-water-log: true
   show-motd-on-join: true
   claims-require-min-faction-members: 1
@@ -109,5 +125,5 @@ gameplay:
   materials-doors: []
   materials-edit-tools: []
   materials-edit-tools-dupe-bug: []
-  set-radius-max: 5
+  send-plot-faction-description: true
 ...

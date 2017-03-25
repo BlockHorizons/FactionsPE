@@ -19,14 +19,15 @@
 
 namespace factions\command;
 
+use factions\entity\Plot;
 use pocketmine\level\Position;
 
-use factions\entity\Plot;
+class ClaimOne extends ClaimX
+{
 
-class ClaimOne extends ClaimX {
-
-    public function getPlots(Position $pos) : array {
+    public function getPlots(Position $pos): array
+    {
         return [new Plot($pos)];
     }
-    
+
 }

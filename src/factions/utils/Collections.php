@@ -19,16 +19,15 @@
 
 namespace factions\utils;
 
-use pocketmine\utils\TextFormat;
-use pocketmine\Player;
-
-use factions\manager\Members;
-use factions\manager\Plots;
 use factions\entity\Plot;
+use factions\manager\Members;
+use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
-class Collections {
-	
-	// ASCII Map
+class Collections
+{
+
+    // ASCII Map
     CONST MAP_WIDTH = 48;
     CONST MAP_HEIGHT = 8;
     CONST MAP_HEIGHT_FULL = 17;
@@ -37,13 +36,16 @@ class Collections {
     CONST MAP_KEY_SEPARATOR = TextFormat::AQUA . "+";
     CONST MAP_KEY_OVERFLOW = TextFormat::WHITE . "-" . TextFormat::WHITE; # ::MAGIC?
     CONST MAP_OVERFLOW_MESSAGE = self::MAP_KEY_OVERFLOW . ": Too Many Factions (>" . 107 . ") on this Map.";
+    CONST MAP_KEY_HOME = "H";
 
-    public static function getMap(Player $observer, int $width, int $height, int $inDegrees) {
+    public static function getMap(Player $observer, int $width, int $height, int $inDegrees)
+    {
         $centerPs = new Plot($observer);
+        $m = Members::get($observer);
         $map = [];
         $centerFaction = $centerPs->getOwnerFaction();
         $head = TextFormat::GREEN . " (" . $centerPs->getX() . "," . $centerPs->getZ() . ") " . $centerFaction->getName() . " " . TextFormat::WHITE;
-        $head = TextFormat::GOLD . str_repeat("_", (($width - strlen($head)) / 2)) . ".[" . $head . TextFormat::GOLD . "]." . str_repeat("_", (($width - strlen($head)) / 2));
+        $head = Text::titleize($head, self::MAP_WIDTH + 12);
         $map[] = $head;
         $halfWidth = $width / 2;
         $halfHeight = $height / 2;
@@ -72,16 +74,26 @@ class Collections {
                 # TODO: Rewrite this
                 $herePs = new Plot($topLeftPs->x + $dx, $topLeftPs->z + $dz, $topLeftPs->level);
                 $hereFaction = $herePs->getOwnerFaction();
+                $home = $hereFaction->getHome();
                 $contains = in_array($hereFaction, $fList, true);
-                
-                if ($hereFaction->isNone()) {
-                    $row .= self::MAP_KEY_WILDERNESS;
-                } elseif (!$contains && $overflown) {
-                    $row .= self::MAP_KEY_OVERFLOW;
+
+                if ($home && $m->getFaction() === $hereFaction || $m->isOverriding()) {
+                    if ($home->x >> 4 === $herePs->x && $home->z >> 4 === $herePs->z) {
+                        $row .= $hereFaction->getColorTo($m) . self::MAP_KEY_HOME;
+                    } else {
+                        goto draw_char;
+                    }
                 } else {
-                    if (!$contains) $fList[$chars{$chrIdx++}] = $hereFaction;
-                    $fchar = array_search($hereFaction, $fList);
-                    $row .= $hereFaction->getColorTo(Members::get($observer)) . $fchar;
+                    draw_char:
+                    if ($hereFaction->isNone()) {
+                        $row .= self::MAP_KEY_WILDERNESS;
+                    } elseif (!$contains && $overflown) {
+                        $row .= self::MAP_KEY_OVERFLOW;
+                    } else {
+                        if (!$contains) $fList[$chars{$chrIdx++}] = $hereFaction;
+                        $fchar = array_search($hereFaction, $fList);
+                        $row .= $hereFaction->getColorTo($m) . $fchar;
+                    }
                 }
             }
             $line = $row; // ... ---------------
@@ -102,7 +114,8 @@ class Collections {
     }
 
 
-    public static function table(array $strings, int $cols) : array {
+    public static function table(array $strings, int $cols): array
+    {
         $ret = [];
         $row = "";
         $count = 0;

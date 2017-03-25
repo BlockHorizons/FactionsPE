@@ -19,24 +19,23 @@
 
 namespace factions\manager;
 
-use pocketmine\level\Position;
-use pocketmine\level\Level;
-use pocketmine\Player;
-
-use factions\entity\Plot;
 use factions\entity\Faction;
 use factions\entity\IMember;
-use factions\FactionsPE;
+use factions\entity\Plot;
 use factions\event\LandChangeEvent;
-
+use factions\FactionsPE;
 use localizer\Localizer;
+use pocketmine\level\Level;
+use pocketmine\level\Position;
 
-class Plots {
+class Plots
+{
 
     /** @var string[] hash => faction */
     private static $plots = [];
 
-    public static function setPlots(array $plots) {
+    public static function setPlots(array $plots)
+    {
         self::$plots = $plots;
     }
 
@@ -46,8 +45,9 @@ class Plots {
      * @param Plot|Position $plot
      * @return Faction owner of plot
      */
-    public static function getFactionAt(Position $plot) : Faction {
-        if(!$plot instanceof Plot) $plot = new Plot($plot);
+    public static function getFactionAt(Position $plot): Faction
+    {
+        if (!$plot instanceof Plot) $plot = new Plot($plot);
         $faction = Factions::getById(self::getOwnerId($plot));
         if ($faction === null) {
             # Error, this can only happen if faction is deleted
@@ -61,7 +61,8 @@ class Plots {
      * @param Plot $plot
      * @return string
      */
-    public static function getOwnerId(Plot $plot) : string {
+    public static function getOwnerId(Plot $plot): string
+    {
         return self::$plots[self::hash($plot)] ?? Faction::NONE;
     }
 
@@ -71,7 +72,8 @@ class Plots {
      * @param Plot $pos
      * @return string
      */
-    public static function hash(Plot $pos) : string {
+    public static function hash(Plot $pos): string
+    {
         return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
     }
 
@@ -81,7 +83,8 @@ class Plots {
      * @param Faction $faction
      * @return int
      */
-    public static function getCount(Faction $faction) : int {
+    public static function getCount(Faction $faction): int
+    {
         return count(self::getFactionPlots($faction));
     }
 
@@ -90,10 +93,11 @@ class Plots {
      * @param Faction $faction
      * @return Plot[]
      */
-    public static function getFactionPlots(Faction $f) : array {
+    public static function getFactionPlots(Faction $f): array
+    {
         $r = [];
         foreach (self::$plots as $plot => $faction) {
-            if($faction === $f->getId()) $r[] = self::fromHash($plot);
+            if ($faction === $f->getId()) $r[] = self::fromHash($plot);
         }
         return $r;
     }
@@ -104,7 +108,8 @@ class Plots {
      * @param string (x:z:level)
      * @return Plot|null
      */
-    public static function fromHash($hash) {
+    public static function fromHash($hash)
+    {
         $d = explode(":", $hash);
         if (count($d) < 3) return null;
         if (!($level = FactionsPE::get()->getServer()->getLevelByName($d[2])) instanceof Level) {
@@ -121,8 +126,9 @@ class Plots {
      * @param IMember $player
      * @param Plot[] $plots
      */
-    public static function tryClaim(Faction $newFaction, IMember $player, array $plots) {
-        if($newFaction->isNone()) {
+    public static function tryClaim(Faction $newFaction, IMember $player, array $plots)
+    {
+        if ($newFaction->isNone()) {
             foreach ($plots as $plot) {
                 $plot->unclaim($newFaction, $player);
             }
@@ -141,18 +147,19 @@ class Plots {
      * @param bool $silent = false
      * @return bool
      */
-    public static function claim(Faction $faction, Plot $plot, IMember $player = null, $silent = false) : bool {
-        if(!$player) $player = $faction->getLeader();
+    public static function claim(Faction $faction, Plot $plot, IMember $player = null, $silent = false): bool
+    {
+        if (!$player) $player = $faction->getLeader();
         $oldFaction = $plot->getOwnerFaction();
-        if($oldFaction !== $faction) {
-            if(!$silent) {
+        if ($oldFaction !== $faction) {
+            if (!$silent) {
                 FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::CLAIM));
-                if($e->isCancelled()) return false;
+                if ($e->isCancelled()) return false;
             }
         } else {
-            if(!$silent && $player) $player->sendMessage(Localizer::translatable('plot-already-claimed', [
+            if (!$silent && $player) $player->sendMessage(Localizer::translatable('plot-already-claimed', [
                 "x" => $plot->x,
-                "z" => $plot->z, 
+                "z" => $plot->z,
                 "faction" => $oldFaction->getName()
             ]));
             return false;
@@ -160,26 +167,37 @@ class Plots {
         self::$plots[$plot->hash()] = $faction->getId();
         if (!$silent && $player) $player->sendMessage(Localizer::translatable('plot-claimed', [
             "x" => $plot->x,
-            "z" => $plot->z, 
-            "faction" => $faction->getName()
+            "z" => $plot->z,
+            "faction" => $faction->getName(),
+            "old-faction" => $oldFaction->getName()
         ]));
         return true;
     }
 
-     /**
+    /**
      * Remove owner Faction from plot in given position
      * @param Plot $plot
      * @param bool $silent = false, set to true if you don't want to call any event
      * @return bool
      */
-    public static function unclaim(Plot $plot, $silent = false) : bool {
-        if (($id = self::getOwnerId($plot)) !== Faction::NONE) {
+    public static function unclaim(Plot $plot, IMember $player = null, $silent = false): bool
+    {
+        if (($id = $plot->getOwnerId()) !== Faction::NONE) {
             if (($faction = Factions::getById($id)) instanceof Faction) {
                 if (!$silent) {
-                    $player = $faction->getLeader();
-                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::UNCLAIM));
+                    $leader = $faction->getLeader();
+                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $leader, $plot, LandChangeEvent::UNCLAIM));
                     if ($e->isCancelled()) return false;
                     unset(self::$plots[$plot->hash()]);
+                    if ($player) {
+                        $player->sendMessage(Localizer::translatable("plot-unclaimed", [
+                            "x" => $plot->x,
+                            "z" => $plot->z,
+                            "member" => $player->getDisplayName(),
+                            "faction" => $faction->getName(),
+                            "rel-color" => $player->getColorTo($faction)
+                        ]));
+                    }
                 }
             } else {
                 return false;
@@ -196,7 +214,8 @@ class Plots {
      * @param Level $world
      * @return Plot[]
      */
-    public static function getFactionPlotsInLevel(Faction $faction, Level $world) : array {
+    public static function getFactionPlotsInLevel(Faction $faction, Level $world): array
+    {
         $plots = self::getFactionPlots($faction);
         $r = [];
         foreach ($plots as $plot) {
@@ -204,29 +223,34 @@ class Plots {
         }
         return $r;
     }
+
     /**
      * Returns true if plot is next to one of $faction plot
      * @param Plot $plot
      * @param Faction $faction
      * @return BOOL
      */
-    public static function isConnectedPlot(Plot $plot, Faction $faction) : bool {
+    public static function isConnectedPlot(Plot $plot, Faction $faction): bool
+    {
         $nearby = null;
-        $nearby = new Plot($plot->x + 1, $plot->z, $plot);
+        $level = $plot->getLevel();
+        $nearby = new Plot($plot->x + 1, $plot->z, $level);
         if ($faction === $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x - 1, $plot->z, $plot);
+        $nearby = new Plot($plot->x - 1, $plot->z, $level);
         if ($faction === $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z + 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z + 1, $level);
         if ($faction === $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z - 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z - 1, $level);
         if ($faction === $nearby->getOwnerFaction()) return true;
         return false;
     }
+
     /**
      * @param Plot $plot
      * @return bool
      */
-    public static function isBorderPlot(Plot $plot) : bool {
+    public static function isBorderPlot(Plot $plot): bool
+    {
         $faction = $plot->getOwnerFaction();
         $nearby = new Plot($plot->x + 1, $plot->z, $plot);
         if ($faction !== $nearby->getOwnerFaction()) return true;
@@ -239,11 +263,13 @@ class Plots {
         return false;
     }
 
-    public static function saveAll() {
+    public static function saveAll()
+    {
         FactionsPE::get()->getDataProvider()->savePlots(self::$plots);
     }
 
-    public static function getAll() : array {
+    public static function getAll(): array
+    {
         return self::$plots;
     }
 

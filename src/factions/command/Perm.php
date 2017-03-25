@@ -21,24 +21,23 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
-use dominate\requirement\SimpleRequirement;
-
 use factions\command\subcommand\childs\PermListChild;
 use factions\command\subcommand\childs\PermSetChild;
 use factions\command\subcommand\childs\PermShowChild;
 use factions\manager\Permissions;
-use factions\FactionsPE;
 
-class Perm extends Command {
-	
-	public function setup() {
-		$this->addParameter(new Parameter("list|show|set", Parameter::TYPE_STRING));
-		
-		$plugin = $this->getPlugin();
-		$this->addChild(new PermList($plugin, "list", "List available faction permissions",
+class Perm extends Command
+{
+
+    public function setup()
+    {
+        $this->addParameter(new Parameter("list|show|set", Parameter::TYPE_STRING));
+
+        $plugin = $this->getPlugin();
+        $this->addChild(new PermList($plugin, "list", "List available faction permissions",
             Permissions::PERM_LIST));
-		$this->addChild(new PermShow($plugin, "show", "See permitted relations for permission", Permissions::PERM_SHOW, ["sw"]));
-		$this->addChild(new PermSet($plugin, "set", "Set faction permission", Permissions::PERM_SET));
-	}
+        $this->addChild(new PermShow($plugin, "show", "See permitted relations for permission", Permissions::PERM_SHOW, ["sw"]));
+        $this->addChild(new PermSet($plugin, "set", "Set faction permission", Permissions::PERM_SET));
+    }
 
 }

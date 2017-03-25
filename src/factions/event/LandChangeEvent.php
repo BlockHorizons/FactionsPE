@@ -20,22 +20,22 @@
 namespace factions\event;
 
 use factions\entity\Faction;
-use factions\entity\Plot;
 use factions\entity\IMember;
-
+use factions\entity\Plot;
 use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
 
 /**
  * When plot changes an owner
  */
-class LandChangeEvent extends Event implements Cancellable {
+class LandChangeEvent extends Event implements Cancellable
+{
 
     const CLAIM = 1;
     const UNCLAIM = 2;
-    
-	public static $handlerList = null;
-    	
+
+    public static $handlerList = null;
+
     /** @var Faction */
     private $faction;
     /** @var IFaction|null */
@@ -53,7 +53,8 @@ class LandChangeEvent extends Event implements Cancellable {
      * @param Plot $plot
      * @param int $changeType
      */
-    public function __construct(Faction $faction, IMember $player = null, Plot $plot, int $changeType){
+    public function __construct(Faction $faction, IMember $player = null, Plot $plot, int $changeType)
+    {
         $this->faction = $faction;
         $this->changeType = $changeType;
         $this->player = $player;
@@ -63,35 +64,43 @@ class LandChangeEvent extends Event implements Cancellable {
     /**
      * @return Faction
      */
-    public function getFaction() : Faction {
+    public function getFaction(): Faction
+    {
         return $this->faction;
     }
 
-    public function getOldFaction() : Faction {
-    	return $this->plot->getOwner();
+    public function getOldFactionId(): string
+    {
+        return $this->getOldFaction()->getId();
     }
 
-    public function getOldFactionId() : string {
-    	return $this->getOldFaction()->getId();
+    public function getOldFaction(): Faction
+    {
+        return $this->plot->getOwner();
     }
 
-    public function getFactionId() : string {
+    public function getFactionId(): string
+    {
         return $this->faction->getId();
     }
 
-    public function getPlayer() {
+    public function getPlayer()
+    {
         return $this->player;
     }
 
-    public function getChangeType() : int {
-    	return $this->changeType;
+    public function getChangeType(): int
+    {
+        return $this->changeType;
     }
-    
-    public function getPlot() : Plot {
+
+    public function getPlot(): Plot
+    {
         return $this->plot;
     }
 
-    public function setPlot(Plot $plot) {
+    public function setPlot(Plot $plot)
+    {
         $this->plot = $plot;
     }
 

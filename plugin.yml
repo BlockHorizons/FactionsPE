@@ -14,9 +14,9 @@
 ##
 name: FactionsPE
 author: Chris Prime
-api: [ 2.0.0, 2.1.0 ]
+api: [2.0.0, 2.1.0, 3.0.0]
 main: factions\FactionsPE
-version: 0.7.5
+version: 0.9.7.3
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd]
 
 permissions:
@@ -30,7 +30,7 @@ permissions:
       factions.access.player: {description: grant player access, with the proper fperm, default: true}
       factions.access.view: {description: view access, default: true}
       factions.override: {description: enable override mode, default: op}
-      factions.chat: {description: chat with your faction members, default: op}
+      factions.chat: {description: chat with your faction members, default: true}
       factions.claim: {description: claim faction territory, default: true}
       factions.claim.one: {description: claim a single chunk, default: true}
       factions.claim.auto: {description: claim as you walk around, default: true}
@@ -49,6 +49,7 @@ permissions:
       factions.flag.set: {description: set flags, default: true}
       factions.flag.show: {description: show flags, default: true}
       factions.home: {description: teleport to faction home, default: true}
+      factions.hud: {description: toggle hud, default: true}
       factions.invite: {description: manage invites, default: true}
       factions.invite.list: {description: list invited players, default: true}
       factions.invite.list.other: {description: list invited players of another factions, default: op}

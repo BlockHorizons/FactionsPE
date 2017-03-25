@@ -20,34 +20,38 @@
 namespace factions\event\member;
 
 use factions\entity\IMember;
-
-use pocketmine\level\Position;
 use pocketmine\event\Cancellable;
+use pocketmine\level\Position;
 
-class MemberHomeTeleportEvent extends MemberEvent implements Cancellable {
+class MemberHomeTeleportEvent extends MemberEvent implements Cancellable
+{
 
-	public static $handlerList = null;
-	public static $eventPool = [];
-	public static $nextEvent = 0;
+    public static $handlerList = null;
+    public static $eventPool = [];
+    public static $nextEvent = 0;
 
-	/** @var Position */
-	public $home;
+    /** @var Position */
+    public $home;
 
-	public function __construct(IMember $member, Position $home) {
-		parent::__construct($member);
-		$this->home = $home;
-	}
+    public function __construct(IMember $member, Position $home)
+    {
+        parent::__construct($member);
+        $this->home = $home;
+    }
 
-	public function getDestination() {
-		return $this->home;
-	}
+    public function getDestination()
+    {
+        return $this->home;
+    }
 
-	public function setDestination(Position $home) {
-		$this->home = $home;
-	}
+    public function setDestination(Position $home)
+    {
+        $this->home = $home;
+    }
 
-	public function getMember() {
-		return $this->member;
-	}
+    public function getMember()
+    {
+        return $this->member;
+    }
 
 }

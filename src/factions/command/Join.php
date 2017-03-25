@@ -3,37 +3,31 @@ namespace factions\command;
 
 
 use dominate\Command;
-use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
-
-use factions\entity\Faction;
-use factions\flag\Flag;
-use factions\entity\Member;
-use factions\manager\Members;
-use factions\event\member\MembershipChangeEvent;
-use factions\utils\Gameplay;
-use factions\utils\Text;
-use factions\FactionsPE;
-use factions\relation\Relation;
-use factions\command\parameter\MemberParameter;
 use factions\command\parameter\FactionParameter;
+use factions\command\parameter\MemberParameter;
 use factions\command\requirement\FactionRequirement;
-
-use pocketmine\command\CommandSender;
-use pocketmine\Player;
-
+use factions\event\member\MembershipChangeEvent;
+use factions\FactionsPE;
+use factions\flag\Flag;
+use factions\manager\Members;
+use factions\relation\Relation;
+use factions\utils\Gameplay;
 use localizer\Localizer;
+use pocketmine\command\CommandSender;
 
-class Join extends Command {
+class Join extends Command
+{
 
-    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases = []) {
+    public function __construct(FactionsPE $plugin, string $name, string $description, string $permission, array $aliases = [])
+    {
         parent::__construct($plugin, $name, $description, $permission, $aliases);
 
-            $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
-            $this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
-            
-            $this->addParameter(new FactionParameter("faction"));
-            $this->addParameter((new MemberParameter("player", MemberParameter::ONLINE_MEMBER))->setDefaultValue("self"));
+        $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
+        $this->addRequirement(new FactionRequirement(FactionRequirement::OUT_FACTION));
+
+        $this->addParameter(new FactionParameter("faction"));
+        $this->addParameter((new MemberParameter("player", MemberParameter::ONLINE_MEMBER))->setDefaultValue("self")->setPermission("factions.join.other")); # todo: correct perm node -> const
     }
 
     /**
@@ -42,13 +36,14 @@ class Join extends Command {
      * @return BOOL
      * @throws \Exception
      */
-    public function perform(CommandSender $sender, $label, array $args) {
+    public function perform(CommandSender $sender, $label, array $args)
+    {
         $msender = Members::get($sender);
         $mplayer = $this->getArgument(1);
         $samePlayer = ($msender === $mplayer);
         $faction = $this->getArgument(0);
 
-        if(($ml = Gameplay::get("faction.member-limit", 10)) > 0 && count($faction->getMembers()) >= $ml){
+        if (($ml = Gameplay::get("faction.member-limit", 10)) > 0 && count($faction->getMembers()) >= $ml) {
             $sender->sendMessage(Localizer::translatable("faction-member-limit-exceeded", [$faction->getName(), $ml, $mplayer->getDisplayName()]));
             return true;
         }
@@ -56,7 +51,7 @@ class Join extends Command {
         if (!Gameplay::get("can-join-with-negative-power", false) && $mplayer->getPower() < 0) {
             $sender->sendMessage(Localizer::translatable("faction-join-with-negative-power", [
                 "who" => $samePlayer ? "You" : $mplayer->getDisplayName()
-                ]));
+            ]));
             return true;
         }
 
@@ -70,7 +65,7 @@ class Join extends Command {
 
         $event = new MembershipChangeEvent($mplayer, $faction, MembershipChangeEvent::REASON_JOIN);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-        if($event->isCancelled()) return true;
+        if ($event->isCancelled()) return true;
         if (!$samePlayer) {
             $mplayer->sendMessage(Localizer::translatable("faction-joined-by-other", [$msender->getDisplayName(), $faction->getName()]));
         } else {
@@ -78,7 +73,7 @@ class Join extends Command {
         }
 
         $faction->sendMessage(Localizer::translatable("new-member-join-inform-faction", [$mplayer->getDisplayName()]));
-        if(!$samePlayer) {
+        if (!$samePlayer) {
             $msender->sendMessage(Localizer::translatable("new-member-join-inform-other", [$mplayer->getDisplayName(), $faction->getName()]));
         }
 

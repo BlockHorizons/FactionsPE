@@ -1,5 +1,4 @@
 ---
-
 home-out-of-bounds: "Your faction home has been un-set since it is no longer in your territory."
 
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."
@@ -74,9 +73,9 @@ cant-hurt-while-factionless: "<i>You can't hurt other players until you join a f
 invalid-radius: "<rose>If you specify radius, it must be at least 1."
 radius-exceeds-allowed: "<b>The maximum radius allowed is <h>:0<b>."
 
-plot-claimed: "Plot at <green>:x<white>, <green>:z<white> is now owned by <green>:faction"
-plot-unclaimed: "Plot at <green>:x<white>, <green>:z<white> now belongs to wilderness"
-plot-already-claimed: "Plot at <green>:x<white>, <green>:z<white> already belongs to your faction <green>:faction"
+plot-claimed: "Plot (<green>:x<white>, <green>:z<white>) taken from :old-faction and now belongs to <green>:faction"
+plot-unclaimed: "Plot (<green>:x<white>, <green>:z<white>) belonging to :rel-color:faction<white> was unclaimed by <h>:member"
+plot-already-claimed: "Plot (<green>:x<white>, <green>:z<white>) already belongs to <green>:faction<white> faction"
 
 # MainEngine
 claiming-disabled-in-world: "<b>Land claiming is disabled in <h>:0<b>."
@@ -111,7 +110,7 @@ faction-chat-enabled: "<i>Faction chat <green>enabled"
 faction-chat-disabled: "<i>Faction chat <rose>disabled"
 faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with. Faction chat <rose>disabled"
 
-top-header: "Faction Top :0/:1"
+top-header: "Faction Top :0/:1 sorted by <h>:sort-by"
 top-line: ":0: :1 (:2)"
 top-empty: "<b>No factions have been created yet."
 
@@ -138,4 +137,43 @@ you-disbanded: "<i>You disbanded <h>:0<i>."
 
 no-perm-to-see-member-rank: "<rose>You don't have permission to see player ranks"
 no-perm-to-set-member-rank: "<rose>You don't have permission to set player ranks"
+
+power-regen-hud: "<green>+:diff power"
+
+enter-faction-for-status: "<i>Please enter target faction"
+faction-empty-cant-status: "<b>The faction <aqua>:faction<b> is empty, no information can be listed"
+
+faction-balance: "<green>Faction balance<gray>: <gold>:balance"
+withdraw-negative: "<rose>Can't withdraw a negative value, do you want to deposit? Try: <h>/f deposit"
+deposit-negative: "<rose>Can't deposit a negative value, do you want to withdraw? Try: <h>/f withdraw"
+faction-not-enough-money: "<rose>Faction doesn't have enough money"
+member-not-enough-money: "<rose>You don't have that much money"
+faction-withdraw: "<i>You have withdrawed <green>$:amount<i> from faction account"
+faction-deposit: "<i>You have deposited <green>$:amount<i> into faction account"
+
+list-header: "Faction list :0/:1"
+list-wilderness: "<i>Factionless<i> :0 online"
+list-info: ":0<i> :1/:2 online, :3/:4/:5"
+
+plot-faction-tip: ":color:faction <gray>-<white> :description"
+
+config-reloaded: "Config has been reloaded"
+
+member-rank: "<green>:member<i> rank is <green>:rank"
+no-perm-to-show-member-rank: "<rose>You don't have permission to see this member rank"
+cant-demote-promote-border-rank: "<rose>You can't promote/demote this member with his current rank"
+wilderness-doesnt-use-ranks: "<rose>Wilderness doesn't use ranks"
+target-must-be-in-same-faction: "<h>:member<i> must be in same faction as you are"
+cant-change-self-rank: "<rose>You can't change your own rank"
+cant-change-faction: "<rose>You can't change faction for member <h>:member"
+not-enough-rank-power: "<rose>You can't manage ranks with your current rank"
+rank-changed-inform-sender: "<i>Rank for <h>:member<i> changed to <h>:new-rank"
+rank-changed-inform-faction: "<h>:sender<i> set <h>:member<i> rank to <h>:new-rank"
+cant-set-rank-equal-to-own: "<b>You can't set ranks equal to your own."
+cant-manage-higher-ranks: "<b>You can't manage people of higher rank."
+cant-set-rank-higher-than-own: "<b>You can't set ranks higher than your own."
+cant-manage-each-other-ranks: "<b>members with rank <h>:rank <b>can't manage eachother ranks."
+cant-change-no-sense: ":member <b>is already :rank."
+
+faction-status-header: ":faction players (:page/:max)"
 ...

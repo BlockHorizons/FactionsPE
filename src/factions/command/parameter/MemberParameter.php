@@ -19,59 +19,61 @@
 
 namespace factions\command\parameter;
 
-use pocketmine\command\CommandSender;
-
+use dominate\parameter\Parameter;
 use factions\entity\FConsole;
 use factions\entity\IMember;
-use factions\entity\OfflineMember;
 use factions\entity\Member;
+use factions\entity\OfflineMember;
 use factions\manager\Members;
+use pocketmine\command\CommandSender;
 
-use dominate\parameter\Parameter;
+class MemberParameter extends Parameter
+{
 
-class MemberParameter extends Parameter {
+    const ONLINE_MEMBER = 0;
+    const OFFLINE_MEMBER = 1;
+    const CONSOLE_MEMBER = 2;
+    const ANY_MEMBER = 3;
 
-	const ONLINE_MEMBER 	= 0;
-	const OFFLINE_MEMBER 	= 1;
-	const CONSOLE_MEMBER 	= 2;
-	const ANY_MEMBER		= 3;
+    public function setup()
+    {
+        $this->ERROR_MESSAGES = [
+            self::ONLINE_MEMBER => "type-member",
+            self::OFFLINE_MEMBER => "type-member",
+            self::CONSOLE_MEMBER => "type-console-member",
+            self::ANY_MEMBER => "type-any-member",
+        ];
+    }
 
-	public function setup() {
-		$this->ERROR_MESSAGES = [
-			self::ONLINE_MEMBER 	=> "type-member",
-			self::OFFLINE_MEMBER 	=> "type-member",
-			self::CONSOLE_MEMBER 	=> "type-console-member",
-			self::ANY_MEMBER		=> "type-any-member",
-		];
-	}
+    /**
+     * @param string $input
+     * @return mixed
+     */
+    public function read(string $input, CommandSender $sender = null)
+    {
+        if (($input === "me" || $input === "self") && $sender) {
+            $member = Members::get($sender, true);
+        } else {
+            $member = Members::get($input, false);
+        }
+        return $member;
+    }
 
-	/**
-	 * @param string $input
-	 * @return mixed
-	 */
-	public function read(string $input, CommandSender $sender = null) {
-		if(($input === "me" || $input === "self") && $sender) {
-			$member = Members::get($sender, true);
-		} else {
-			$member = Members::get($input, false);
-		}
-		return $member;
-	}
-
-	public function isValid($value, CommandSender $sender = null) : bool {
-		if($value === null) return false;
-		switch ($this->type) {
-			case self::ONLINE_MEMBER:
-				return $value instanceof Member && $value->isOnline();
-			case self::OFFLINE_MEMBER:
-				return $value instanceof OfflineMember;
-			case self::CONSOLE_MEMBER:
-				return $value instanceof FConsole;
-			case self::ANY_MEMBER:
-				return $value instanceof IMember;
-			default:
-				return false;
-		}
-	}
+    public function isValid($value, CommandSender $sender = null): bool
+    {
+        if ($value === null) return false;
+        switch ($this->type) {
+            case self::ONLINE_MEMBER:
+                return $value instanceof Member && $value->isOnline();
+            case self::OFFLINE_MEMBER:
+                return $value instanceof OfflineMember;
+            case self::CONSOLE_MEMBER:
+                return $value instanceof FConsole;
+            case self::ANY_MEMBER:
+                return $value instanceof IMember;
+            default:
+                return false;
+        }
+    }
 
 }

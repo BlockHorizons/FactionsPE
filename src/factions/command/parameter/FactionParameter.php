@@ -19,35 +19,37 @@
 
 namespace factions\command\parameter;
 
-use pocketmine\command\CommandSender;
-
+use dominate\parameter\Parameter;
 use factions\entity\Faction;
 use factions\manager\Factions;
 use factions\manager\Members;
+use pocketmine\command\CommandSender;
 
-use dominate\parameter\Parameter;
+class FactionParameter extends Parameter
+{
 
-class FactionParameter extends Parameter {
-	
-	public function setup() {
-		$this->ERROR_MESSAGES = "type-faction";
-	}
+    public function setup()
+    {
+        $this->ERROR_MESSAGES = "type-faction";
+    }
 
-	/**
-	 * @param string $input
-	 * @return Faction|null
-	 */
-	public function read(string $input, CommandSender $sender = null) {
-		if(($input === "me" || $input === "self") && $sender) {
-			$faction = Members::get($sender, true)->getFaction();
-		} else {
-			$faction = Factions::getByName($input, false);
-		}
-		return $faction;
-	}
+    /**
+     * @param string $input
+     * @return Faction|null
+     */
+    public function read(string $input, CommandSender $sender = null)
+    {
+        if (($input === "me" || $input === "self") && $sender) {
+            $faction = Members::get($sender, true)->getFaction();
+        } else {
+            $faction = Factions::getByName($input, false);
+        }
+        return $faction;
+    }
 
-	public function isValid($value, CommandSender $sender = null) : bool {
-		return $value instanceof Faction;
-	}
+    public function isValid($value, CommandSender $sender = null): bool
+    {
+        return $value instanceof Faction;
+    }
 
 }

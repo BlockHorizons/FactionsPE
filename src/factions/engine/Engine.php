@@ -19,38 +19,42 @@
 
 namespace factions\engine;
 
+use factions\FactionsPE;
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginLogger;
-
-use factions\FactionsPE;
 
 /**
  * Engines are listeners which control behaviour of the plugin by communicating
  * with back-end
  */
-abstract class Engine implements Listener {
+abstract class Engine implements Listener
+{
 
-	protected $main;
+    protected $main;
 
-	public function __construct(FactionsPE $main) {
-		$this->main = $main;
+    public function __construct(FactionsPE $main)
+    {
+        $this->main = $main;
 
-		$this->setup();
-	}
+        $this->setup();
+    }
 
-	/**
-	 * Do whatever you need
-	 */
-	public function setup() {
-		# Do nothing
-	}
+    /**
+     * Do whatever you need
+     */
+    public function setup()
+    {
+        # Do nothing
+    }
 
-	public function getMain() : FactionsPE {
-		return $this->main;
-	}
+    public function getLogger(): PluginLogger
+    {
+        return $this->getMain()->getLogger();
+    }
 
-	public function getLogger() : PluginLogger {
-		return $this->getMain()->getLogger();
-	}
+    public function getMain(): FactionsPE
+    {
+        return $this->main;
+    }
 
 }

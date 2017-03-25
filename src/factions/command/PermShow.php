@@ -21,34 +21,34 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
-
 use factions\command\parameter\FactionParameter;
 use factions\command\parameter\PermissionParameter;
-use factions\permission\Permission;
 use factions\manager\Pemrissions;
-use factions\utils\Text;
+use factions\permission\Permission;
 use factions\utils\Pager;
-
+use factions\utils\Text;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-use localizer\Localizer;
+class PermShow extends Command
+{
 
-class PermShow extends Command {
-
-    public function setup() {
+    public function setup()
+    {
         $this->addParameter((new Parameter("page", Parameter::TYPE_INTEGER))->setDefaultValue(1));
         $this->addParameter((new PermissionParameter("perm", PermissionParameter::ANY))->setDefaultValue("all"));
         $this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
     }
 
-    public function perform(CommandSender $sender, $label, array $args) {
+    public function perform(CommandSender $sender, $label, array $args)
+    {
         $perms = $this->getArgument(1);
-        if(!is_array($perms)) $perms = [$perms];
+        if (!is_array($perms)) $perms = [$perms];
 
         $faction = $this->getArgument(2);
         $page = $this->getArgument(0);
 
-        $pager = new Pager("perm-show-header", $page, 5, $perms, $sender, function(Permission $perm, int $i, CommandSender $sender) use ($faction){
+        $pager = new Pager("perm-show-header", $page, 5, $perms, $sender, function (Permission $perm, int $i, CommandSender $sender) use ($faction) {
             return Text::parse($perm->getStateInfo($faction->getPermitted($perm), true));
         });
         $pager->stringify();
@@ -57,7 +57,7 @@ class PermShow extends Command {
 
         $sender->sendMessage(Permission::getStateHeaders());
         foreach ($pager->getOutput() as $line) $sender->sendMessage($line);
-        
+
         return true;
     }
 }
