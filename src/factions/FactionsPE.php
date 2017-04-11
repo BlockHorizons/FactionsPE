@@ -141,13 +141,19 @@ class FactionsPE extends PluginBase
         $this->getDataProvider()->loadFactions();
 
         // Delete inactive ones
-        $week = 3600 * 24 * 7;
-        foreach (Factions::getAll() as $faction) {
-            if ($faction->isSpecial()) continue;
-            $lp = $faction->getLastOnline();
-            if (time() - $lp > $week) {
-                $this->getLogger()->info($faction->getName() . " was disbanded. Last online: " . Text::ago($lp));
-                $faction->disband(Faction::DISBAND_REASON_PURGE, true);
+        // This should be configurable
+        if($this->getConfig()->get("purge-inactive-factions", true)) {
+            $delta = $this->getConfig()->get("purge-after", 3600 * 24 * 7); // week
+            foreach (Factions::getAll() as $faction) {
+                if ($faction->isSpecial() or $faction->isPermanent()) continue;
+                $lp = $faction->getLastOnline();
+                if (time() - $lp > $delta) {
+                    $this->getLogger()->notice(Localizer::trans("log.purging-faction", [
+                        "faction" => $faction->getName(),
+                        "last-online" => Text::ago($lp)
+                        ]));
+                    $faction->disband(Faction::DISBAND_REASON_PURGE, true);
+                }
             }
         }
 

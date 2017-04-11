@@ -49,7 +49,6 @@ abstract class Data
         $this->save();
         $this->lastSaved = microtime(true);
         $this->hash = md5(json_decode($this->__toArray()));
-        echo "Saved!";
         var_dump($this->__debugInfo());
     }
 
@@ -81,7 +80,6 @@ abstract class Data
     // This class data will be saved
     public function __call($name, $arguments)
     {
-        echo $name.PHP_EOL;
         if(Text::strpos($name, ["set", "toggle", "reset"])) {
             if($this->isDataChanged()) {
                 $this->changed();

@@ -40,6 +40,13 @@ data-provider:
 # Set this to false if you want to use PureChat or anything else
 chat-formatter: true
 
+# Should inactive factions be disbanded?
+purge-inactive-factions: true
+# Purge faction if (last online - now) >= purge-after
+# Time in seconds
+# default: week (604800)
+purge-after: 604800
+
 mysql:
  host: 127.0.0.1
  user: root

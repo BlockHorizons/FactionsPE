@@ -135,9 +135,13 @@ class Faction extends FactionData implements RelationParticipator
         return in_array($this->getId(), [self::NONE, self::WARZONE, self::SAFEZONE], true);
     }
 
+    public function isPermanent(): bool {
+        return $this->getFlag(Flag::PERMANENT);
+    }
+
     public function disband($reason = self::DISBAND_REASON_UNKNOWN, $delete = true)
     {
-        if ($this->getFlag(Flag::PERMANENT)) {
+        if ($this->isPermanent()) {
             throw new \LogicException("can not disband permanent faction $this ({$this->getId()})");
         }
         foreach ($this->getOnlineMembers() as $member) {

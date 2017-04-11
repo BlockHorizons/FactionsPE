@@ -17,4 +17,5 @@ money-withdraw: "Player <h>:player<white> withdrawed <h>:amount<white> from <h>:
 money-deposit: "Player <h>:player<white> deposited <h>:amount<white> into <h>:faction<white> faction"
 
 config-reloaded: "Config has been reloaded by <aqua>:0"
+purging-faction: "Disbanding :faction faction. Last time active: :last-online"
 ...
