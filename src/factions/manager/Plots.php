@@ -24,6 +24,7 @@ use factions\entity\IMember;
 use factions\entity\Plot;
 use factions\event\LandChangeEvent;
 use factions\FactionsPE;
+use factions\relation\RelationParticipator;
 use localizer\Localizer;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
@@ -61,7 +62,7 @@ class Plots
      * @param Plot $plot
      * @return string
      */
-    public static function getOwnerId(Plot $plot): string
+    public static function getOwnerId(Position $plot): string
     {
         return self::$plots[self::hash($plot)] ?? Faction::NONE;
     }
@@ -72,7 +73,7 @@ class Plots
      * @param Plot $pos
      * @return string
      */
-    public static function hash(Plot $pos): string
+    public static function hash(Position $pos): string
     {
         return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
     }
@@ -90,8 +91,8 @@ class Plots
 
     /**
      * Get all plots claimed by this Faction
-     * @param Faction $faction
-     * @return Plot[]
+     * @param Faction $f
+     * @return array|Plot[]
      */
     public static function getFactionPlots(Faction $f): array
     {
@@ -141,11 +142,12 @@ class Plots
 
     /**
      * Set owner Faction for Plot
-     * @param Faction $faction owner
-     * @param Plot $lot
+     * @param Faction $faction new owner
+     * @param Plot $plot
      * @param IMember $player who's claiming? if null, it's the Faction leader
      * @param bool $silent = false
      * @return bool
+     * @internal param Plot $lot
      */
     public static function claim(Faction $faction, Plot $plot, IMember $player = null, $silent = false): bool
     {
@@ -177,6 +179,7 @@ class Plots
     /**
      * Remove owner Faction from plot in given position
      * @param Plot $plot
+     * @param IMember|RelationParticipator $player
      * @param bool $silent = false, set to true if you don't want to call any event
      * @return bool
      */
@@ -189,6 +192,7 @@ class Plots
                     FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $leader, $plot, LandChangeEvent::UNCLAIM));
                     if ($e->isCancelled()) return false;
                     unset(self::$plots[$plot->hash()]);
+                    FactionsPE::get()->getDataProvider()->deletePlot($plot);
                     if ($player) {
                         $player->sendMessage(Localizer::translatable("plot-unclaimed", [
                             "x" => $plot->x,
@@ -232,7 +236,6 @@ class Plots
      */
     public static function isConnectedPlot(Plot $plot, Faction $faction): bool
     {
-        $nearby = null;
         $level = $plot->getLevel();
         $nearby = new Plot($plot->x + 1, $plot->z, $level);
         if ($faction === $nearby->getOwnerFaction()) return true;
@@ -246,6 +249,14 @@ class Plots
     }
 
     /**
+     * This checks if plot is on border of large faction territory like
+     * - - - - - - - - - - - - - - - -
+     * - - - - - - X - - - - - - - - -
+     * - - - - - X X X - - - - - - - -
+     * - - - - - X O X - - - - - - - -
+     * - - - - - X X X - - - - - - - -
+     * - - - - - - - - - - - - - - - -
+     * X - Border plots, O - Not a border plot.
      * @param Plot $plot
      * @return bool
      */

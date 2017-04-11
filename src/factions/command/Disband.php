@@ -42,6 +42,7 @@ class Disband extends Command
     public function perform(CommandSender $sender, $label, array $args)
     {
         // Args
+        /** @var Faction $faction */
         $faction = $this->getArgument(0);
         $member = Members::get($sender);
 
@@ -58,7 +59,7 @@ class Disband extends Command
         // Event
         $event = new FactionDisbandEvent($member, $faction);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-        if ($event->isCancelled()) return;
+        if ($event->isCancelled()) return false;
 
         // Merged Apply and Inform
         $faction->disband(Faction::DISBAND_REASON_COMMAND);

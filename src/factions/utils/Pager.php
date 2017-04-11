@@ -96,12 +96,18 @@ class Pager
             $page = 1;
         }
         $this->page = $page;
+        if(empty($objects)) return;
         $res = [];
-        foreach ($objects[$page - 1] as $i => $o) {
-            $r = $this->stringifier($o, $i);
-            if ($r === null) continue;
-            $res[] = $r;
-        }
+        $objs = $objects[$page - 1];
+        do {
+            foreach ($objs as $i => $o) {
+                if($this->height <= count($this->output)) break;
+                $r = $this->stringifier($o, $i);
+                if ($r === null) continue;
+                $res[] = $r;
+            }
+            $page++;
+        } while ($this->height <= count($this->output) && isset($objects[$page]) && $objs = $objects[$page - 1]);
         $this->output = $res;
     }
 

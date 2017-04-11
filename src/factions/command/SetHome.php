@@ -7,6 +7,7 @@ use dominate\requirement\SimpleRequirement;
 use factions\command\requirement\FactionPermission;
 use factions\command\requirement\FactionRequirement;
 use factions\manager\Members;
+use factions\manager\Permissions;
 use factions\manager\Plots;
 use factions\permission\Permission;
 use localizer\Localizer;

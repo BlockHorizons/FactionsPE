@@ -20,6 +20,7 @@
 namespace factions\entity;
 
 use factions\permission\Permission;
+use pocketmine\Player;
 
 interface IMember
 {
@@ -121,6 +122,11 @@ interface IMember
      * PLAYER
      * ----------------------------------------------------------
      */
+
+    /**
+     * @return Player|null
+     */
+    public function getPlayer();
 
     public function getFirstPlayed(): int;
 

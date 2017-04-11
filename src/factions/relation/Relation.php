@@ -139,8 +139,8 @@ final class Relation
         } else if (!$ignorePeaceful && ($thatFaction->getFlag(Flag::PEACEFUL) || $myFaction->getFlag(Flag::PEACEFUL))) {
             $ret = self::TRUCE;
         } else {
-            // The faction with the lowest wish "wins"
-            if (self::isLowerThan(($tw = $thatFaction->getRelationWish($myFaction)), ($mw = $myFaction->getRelationWish($thatFaction)))) {
+            // The faction with the highest (old: lowest) wish "wins"
+            if (self::isHigherThan(($tw = $thatFaction->getRelationWish($myFaction)), ($mw = $myFaction->getRelationWish($thatFaction)))) {
                 return $tw;
             } else {
                 return $mw;

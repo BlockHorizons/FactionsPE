@@ -36,7 +36,7 @@ class Status extends Command
 
     public function setup()
     {
-        $this->addParameter((new FactionParameter("faction"))->setDefaultValue("self"));
+        $this->addParameter((new FactionParameter("faction", true))->setDefaultValue("self"));
         $this->addParameter((new Parameter("page", Parameter::TYPE_INTEGER))->setDefaultValue(1));
     }
 

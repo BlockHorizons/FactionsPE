@@ -19,6 +19,7 @@
 
 namespace factions;
 
+use dominate\parameter\Parameter;
 use economizer\Economizer;
 use economizer\Transistor;
 use factions\command\FactionCommand;
@@ -31,6 +32,7 @@ use factions\engine\ChatEngine;
 use factions\engine\CombatEngine;
 use factions\engine\ExploitEngine;
 use factions\engine\MainEngine;
+use factions\entity\Faction;
 use factions\entity\FConsole;
 use factions\manager\Factions;
 use factions\manager\Flags;
@@ -52,7 +54,7 @@ class FactionsPE extends PluginBase
 
     private static $engines = [
         MainEngine::class,
-        ChatEngine::class,
+        //ChatEngine::class,
         CombatEngine::class,
         ExploitEngine::class
     ];
@@ -83,7 +85,7 @@ class FactionsPE extends PluginBase
         self::$instance = $this;
         LibLoader::loadLib($this->getFile(), "Localizer");
         LibLoader::loadLib($this->getFile(), "Economizer");
-        LibLoader::loadLib($this->getFile(), "Dominate");
+        //LibLoader::loadLib($this->getFile(), "Dominate");
 
         @mkdir($this->getDataFolder());
         if (!is_dir($tar = $this->getDataFolder() . "languages")) {
@@ -94,6 +96,11 @@ class FactionsPE extends PluginBase
             return Text::parse($text);
         });
 
+        # Save & Load config
+        if(!file_exists($cf = $this->getDataFolder() . "config.yml")) {
+            file_put_contents($cf, $c = stream_get_contents($f = $this->getResource("config.yml")));
+            fclose($f);
+        }
         $this->saveDefaultConfig();
 
         if (Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
@@ -106,7 +113,6 @@ class FactionsPE extends PluginBase
 
     public function onEnable()
     {
-
         $this->getLogger()->info(Localizer::trans("plugin.enabling"));
 
         # Load DataProvider
@@ -139,7 +145,7 @@ class FactionsPE extends PluginBase
             $lp = $faction->getLastOnline();
             if (time() - $lp > $week) {
                 $this->getLogger()->info($faction->getName() . " was disbanded. Last online: " . Text::ago($lp));
-                $faction->disband(true);
+                $faction->disband(Faction::DISBAND_REASON_PURGE, true);
             }
         }
 
@@ -250,6 +256,16 @@ class FactionsPE extends PluginBase
                 $this->getLogger()->info(Localizer::trans("economy-not-ready", ["name" => $this->economy->getName()]));
             }
         }
+        // If chat-formatter is set to false, then we assume that user is using PureChat
+        if($this->getConfig()->get("chat-formatter")) {
+            $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+            if($pc && $pc->isEnabled()) {
+                self::$engines[ChatEngine::class]->setPureChat($pc);
+                $this->getLogger()->info(Localizer::trans("chat-formatter-set", [
+                    "plugin" => "PureChat"
+                ]));
+            }
+        }
         end:
         return !$stop;
     }
@@ -269,7 +285,8 @@ class FactionsPE extends PluginBase
     private function runEngines()
     {
         foreach (self::$engines as $engine) {
-            $this->getServer()->getPluginManager()->registerEvents(new $engine($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
+            self::$engines[$engine] = $e;
         }
     }
 
@@ -313,7 +330,7 @@ class FactionsPE extends PluginBase
             $this->getDataProvider()->close();
         }
 
-        $this->getConfig()->save();
+        //$this->getConfig()->save();
         $this->getLogger()->info(Localizer::trans('plugin.disabled'));
     }
 

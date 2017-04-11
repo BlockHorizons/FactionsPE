@@ -1,7 +1,7 @@
 ---
 #
 #   FactionsPE: PocketMine-MP Plugin
-#   Copyright (C) 2016  Chris Prime
+#   Copyright (C) 2017  Chris Prime
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 #
 
 # Plugin language
+# en - English (USA)
+# lv - Latvian
 language: en
 
 # Economy
@@ -27,7 +29,7 @@ economy-plugin: "EconomyAPI"
 # Data provider settings
 # Supported types as of now: yaml, json, mysql
 data-provider:
-  type: "mysql"
+  type: "yaml"
   mysql:
     host: 127.0.0.1
     user: guest
@@ -35,7 +37,7 @@ data-provider:
     database: factions-pe
 
 # Chat
-# Set this to false if you want to use PureChat
+# Set this to false if you want to use PureChat or anything else
 chat-formatter: true
 
 mysql:
@@ -45,8 +47,9 @@ mysql:
  password: ChrisIsCool
  port: 3306
 
-# gameplay settings
+# Gameplay settings
 gameplay:
+  # These are messages you'll receive on certain events. They can be switched on/off
   log:
     faction-disband: true
     faction-new-leader: true
@@ -57,41 +60,67 @@ gameplay:
     override: true
     faction-chat: true
     perm-change: true
+  # Power settings, for players and factions
   power:
     player:
+      # Maximum possible amount of power for player
       max: 100
+      # Minimum possible amount of power for player
       min: -100
+      # Power decrease per death
       per-death: 5
+      # Power decrease per claim
       per-claim: 5
+      # How much power will player gain every update ?
       per-update: 1
+      # Default power value for player
       default: 10
+    # Power increase interval
     update-every: 10
+    # Should power increase time by time ?
     update-enabled: true
   faction:
+    # Automatically disband factions without any members (except special)
     destroy-empty-factions: true
+    # How many members can one faction hold ?
     member-limit: 10
+    # Idk what this means :D
     disable-permanent-leader-promotion: true
   faction-name:
+    # Maxmimum name length
     max-length: 12
+    # Minimum name length
     min-length: 3
   price:
+    # If economy is enabled, you can set how much should players pay for creating a new faction
     faction-creation: 5000
   home:
+    # Enable faction homes
     enabled: true
+    # Automatically teleport to faction home after re-spawn?
     teleport-to-on-death: true
+    # Is "/f home" enabled?
     teleport-command-enabled: true
+    # Home must be located in faction territory ?
     must-be-in-claimed-territories: true
+    # Can members teleport to faction while while being on enemy land ?
     teleport-allowed-from-enemy-territory: false
-    home.teleport-allowed-from-different-world: true
-    homes.teleport-allowed-enemy-distance: 10
+    # Is teleporting throughout different worlds allowed?
+    teleport-allowed-from-different-world: true
+    # What is minimum allowed distance, between player and enemy to allow teleportation ? (blocks)
+    teleport-allowed-enemy-distance: 10
+    # Ignore above setting, if you are in your own land ?
     teleport-ignore-enemies-if-in-own-territory: false
+  # Can player leave faction with negative power level ?
   can-leave-with-negative-power: false
+  # Can player join new faction with negative power level ?
   can-join-with-negative-power: false
+  # Built-in chat formatter settings
   chat:
     player: "{NAME}: {MESSAGE}"
     member: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}"
     member-title: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}"
-    faction-chat: "<gold>{BADGE}<white>{NAME}<white><gray>>><white> {MESSAGE}"
+    faction-chat: "<gray><bold>(<red>fac<gray><bold>) <red>{BADGE}<gray><{NAME}<gray>: <red>{MESSAGE}"
     badge:
       leader: "**"
       officer: "*"
@@ -102,28 +131,45 @@ gameplay:
     ally: "<green>"
     truce: "<gold>"
     neutral: "<white>"
+  # Where PVP is enabled and no default rules are checked?
   worlds-pvp-rules-enabled: []
+  # Where land can be claimed ?
   worlds-claiming-enabled: [world]
+  # Where players can loose their power ?
   worlds-power-loss-enabled: [world]
+  # Super-users list here
   players-who-bypass-all-protection: []
-  disable-pvp-for-factionless-players: true
+  # Can players with no faction deal no damage to others ?
+  enable-pvp-for-factionless-players: false
+  # Can members of faction kill faction-less player if he is in their territory ?
   enable-pvp-against-factionless-in-attackers-land: true
+  # Can faction-less players attack each other?
   enable-pvp-between-factionless-players: true
-  enable-pvp-for-factionless-players: true
-  set-radius-max: 5
+  # Should blocks break even tho TNT exploded in water ?
   handle-exploit-tnt-water-log: true
+  # Show faction's motd when member joins
   show-motd-on-join: true
+  # Minimum member count to start claiming land
   claims-require-min-faction-members: 1
+  # Maximum land count
   claimed-lands-max: 99999999
+  # Should next claim must be connected with previous ?
   claims-must-be-connected: true
+  # Can setting above be ignored if over-claiming ?
   claims-can-be-unconnected-if-owned-by-other-faction: true
+  # Is over-claiming allowed ?
   claiming-from-others-allowed: true
+  # Pain build damage
   action-denied-pain-amount: 1
+  # Protection from liquids
   protection-liquid-flow-enabled: true
+  # These values as of < v1.0.0 can't be changed.
+  # They are hard-coded into code
   materials-edit-on-interact: []
   materials-container: []
   materials-doors: []
   materials-edit-tools: []
   materials-edit-tools-dupe-bug: []
+  # Should, tip appear when plot owner changes ?
   send-plot-faction-description: true
 ...

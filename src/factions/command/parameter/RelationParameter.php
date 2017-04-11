@@ -45,7 +45,6 @@ class RelationParameter extends Parameter
 
     public function read(string $input, CommandSender $sender = null)
     {
-        $silent = $sender === null;
         if (strtolower($input) === "all") {
             $rel = Relation::getAll();
         } else {
@@ -65,7 +64,7 @@ class RelationParameter extends Parameter
             case self::RELATION:
                 return !Relation::isRankValid($value);
             case self::ANY:
-                return Relation::isValid($value);
+                return is_array($value) || Relation::isValid($value);
             case self::ONE:
                 return !is_array($value) && Relation::isValid($value);
             default:

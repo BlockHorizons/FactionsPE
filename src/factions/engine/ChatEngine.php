@@ -19,6 +19,8 @@
 
 namespace factions\engine;
 
+use _64FF00\PureChat\PureChat;
+use factions\event\member\MembershipChangeEvent;
 use factions\manager\Members;
 use factions\utils\Gameplay;
 use factions\utils\Text;
@@ -32,12 +34,15 @@ class ChatEngine extends Engine
 {
 
     const PLAYER_FORMAT = "{NAME}: {MESSAGE}";
-    const MEMBER_FORMAT = "<gray>[<gold>{ROLE-SIGN}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}";
+    const MEMBER_FORMAT = "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}";
     const MEMBER_TITLE_FORMAT = "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white>[{TITLE}]<white> {NAME}: {MESSAGE}";
-    const FACTION_CHAT_FORMAT = "<gold>{BADGE}<gray>{NAME}<white>:<gray> {MESSAGE}";
+    const FACTION_CHAT_FORMAT = "<gray><bold>(<red>fac<gray><bold>) <red>{BADGE}<gray><{NAME}<gray>: <red>{MESSAGE}";
 
     /** @var bool */
     protected $format;
+
+    /** @var PureChat|null */
+    protected $pureChat = null;
 
     public function setup()
     {
@@ -60,7 +65,7 @@ class ChatEngine extends Engine
             foreach ($faction->getOnlineMembers() as $member) {
                 $p[] = $member->getPlayer();
             }
-            $event->setRecipients($p, Members::get("CONSOLE"));
+            $event->setRecipients(array_merge($p, [Members::get("CONSOLE")]));
             if (count($p) === 1) {
 
                 $member->toggleFactionChat();
@@ -102,6 +107,20 @@ class ChatEngine extends Engine
     public static function getBadge(string $role): string
     {
         return Gameplay::get("chat.badge." . strtolower(trim($role)), "");
+    }
+
+    public function setPureChat(PureChat $pc) {
+        $this->pureChat = $pc;
+    }
+
+    public function getPureChat() {
+        return $this->pureChat;
+    }
+
+    public function onMembershipChange(MembershipChangeEvent $event) {
+        if($this->getPureChat()) {
+            $event->getMember()->getPlayer()->setNameTag($this->getPureChat()->getNametag($event->getMember()->getPlayer(), null));
+        }
     }
 
 }

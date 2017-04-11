@@ -22,6 +22,7 @@ namespace factions\entity;
 use factions\manager\Plots;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
+use pocketmine\level\Position;
 use pocketmine\Player;
 
 class Member extends OfflineMember
@@ -35,15 +36,21 @@ class Member extends OfflineMember
 
     /** @var boolean $mapAutoUpdating */
     protected $mapAutoUpdating = false;
+
     /**
      * Is player chatting with his faction mates?
      * @var bool
      */
     protected $fchat = false;
+
     /** @var Faction|null $autoClaimFaction */
     private $autoClaimFaction;
+
     /** @var bool $hud_visible */
     private $hud_visible = true;
+
+    /** @var string */
+    protected $factionHereId;
 
     public function __construct(Player $player)
     {

@@ -251,6 +251,9 @@ final class Permissions
         FactionsPE::get()->getDataProvider()->savePermissions(self::getAll());
     }
 
+    /**
+     * @return Permission[]
+     */
     public static function getAll(): array
     {
         return self::$permissions;

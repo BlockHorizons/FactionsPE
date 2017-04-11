@@ -278,4 +278,9 @@ class FConsole implements IMember, RelationParticipator
         return Relation::isEnemy($this->getRelationTo($observer, true));
     }
 
+    public function getPlayer()
+    {
+        return null;
+    }
+
 }

@@ -3,28 +3,29 @@
 permission-denied: "<rose>You don't have permission to use this command with parameter <aqua>:param<rose> entered"
 
 # Primitives
-type-string: "Argument :n passed to command must resolve into string"
-type-integer: "Argument :n passed to command must resolve into integer"
-type-float: "Argument :n passed to command must resolve into float"
-type-boolean: "Argument :n passed to command must resolve into boolean"
-type-null: "Argument :n passed to command must resolve into null"
+type-string: "<h>Argument <aqua>:n<h> passed to command must resolve <aqua>into text"
+type-integer: "<h>Argument :n<h> passed to command must resolve <aqua>into number"
+type-float: "<h>Argument :n<h> passed to command must resolve into <aqua>decimal number"
+type-boolean: "<h>Argument :n<h> passed to command must resolve into <aqua>true or false"
+type-null: "<h>Argument :n<h> passed to command must resolve into <aqua>nothing (aka. ~)"
 
 # Faction parameter types
-type-member: "No online member by name :value was found"
-type-offline-member: "No offline member by name :value was found"
-type-console-member: "Try again and make sure you type word 'console' correctly ;)"
-type-any-member: "No member by name :value was found"
-type-faction: "No faction by name :value was found"
+type-member: "<h>No online member by name <aqua>:value<h> was found"
+type-offline-member: "<h>No offline member by name <aqua>:value<h> was found"
+type-console-member: "<h>Try again and make sure you type word <aqua>'console'<h> correctly ;)"
+type-any-member: "<h>No member by name <aqua>:value<h> was found"
+type-faction: "<h>No faction by name <aqua>:value<h> was found"
+type-faction-plus-member: "<h>No faction and member were found by name <aqua>:value<reset>"
 
-type-perm-one: "No permission by id <aqua>:value<white> was found"
-type-perm-all: "Enter <aqua>'all'<white> to get all permissions"
-type-perm-any: "No permission by id <aqua>:value<white> was found. Perhaps you meant <aqua>'all'<white>?"
+type-perm-one: "<h>No permission by id <aqua>:value<h> was found"
+type-perm-all: "<i>Enter <aqua>'all'<i> to get all permissions"
+type-perm-any: "<h>No permission by id <aqua>:value<h> was found. Perhaps you meant <aqua>'all'<h>?"
 
-type-rel-all: "Enter <aqua>'all'<white> to get all relations"
-type-rel-any: "No relation or rank by name <aqua>:value<white> was found. Perhaps you meant <aqua>'all'<white>?"
-type-rel-one: "No relation or rank by name <aqua>:value<white> was found"
-type-rel-rank: "No valid rank by name <aqua>:value<white> was found"
-type-rel: "No valid relation by name <aqua>:value<white> was found"
+type-rel-all: "<h>No relation by name <aqua>:value<h> was found. Enter <aqua>'all'<h> to get all relations"
+type-rel-any: "<h>No relation or rank by name <aqua>:value<h> was found. Perhaps you meant <aqua>'all'<h>?"
+type-rel-one: "<h>No relation or rank by name <aqua>:value<h> was found"
+type-rel-rank: "<h>No valid rank by name <aqua>:value<h> was found"
+type-rel: "<h>No valid relation by name <aqua>:value<h> was found"
 
-type-rank: "Not a valid rank or an action (promote/demote)"
+type-rank: "<h> Not a valid rank or an action (promote/demote)"
 ...

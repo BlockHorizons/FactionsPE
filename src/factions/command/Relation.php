@@ -20,20 +20,19 @@
 namespace factions\command;
 
 use dominate\Command;
-use factions\utils\Text;
-use pocketmine\command\CommandSender;
+use dominate\parameter\Parameter;
+use factions\manager\Permissions;
 
 class Relation extends Command
 {
 
     public function setup()
     {
-        //
-    }
+        $this->addParameter(new Parameter("set|list|wishes"));
 
-    public function perform(CommandSender $sender, $label, array $args)
-    {
-        return Text::rainbow("this command is still in progress. Enjoy the rainbow tho :)");
+        $this->addChild(new RelationSet($this->getPlugin(), "set", "Set relation wish", Permissions::RELATION_SET));
+        $this->addChild(new RelationList($this->getPlugin(), "list", "List faction relations", Permissions::RELATION_LIST));
+        $this->addChild(new RelationWishes($this->getPlugin(), "wishes", "List faction relation wishes", Permissions::RELATION_WISHES));
     }
 
 }

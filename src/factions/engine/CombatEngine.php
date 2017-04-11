@@ -34,6 +34,7 @@ class CombatEngine extends Engine
 
     /**
      * @priority LOWEST
+     * @param EntityDamageEvent $event
      */
     public function onPlayerDamage(EntityDamageEvent $event)
     {
@@ -62,12 +63,13 @@ class CombatEngine extends Engine
         $defendFaction = $mdefender->getFaction();
         $attackFaction = $mattacker->getFaction(); # ERROR
 
-        if ($mattacker !== null && $mdefender->isOverriding()) return true;
+        if ($mattacker !== null && $mdefender->isOverriding() || $mattacker->isOverriding()) return true;
 
         $victimPosFac = Plots::getFactionAt($victim);
+        $relation = $defendFaction->getRelationTo($attackFaction);
 
         if ($mattacker->hasFaction() || $mdefender->hasFaction()) {
-            if ($mattacker->getFaction() === $mdefender->getFaction() && !$victimPosFac->getFlag(Flag::FRIENDLY_FIRE) || Relation::isFriend($relation = $defendFaction->getRelationTo($attackFaction))) {
+            if ($mattacker->getFaction() === $mdefender->getFaction() && !$victimPosFac->getFlag(Flag::FRIENDLY_FIRE) || Relation::isFriend($relation)) {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-allies"));
                 return false;
             }
@@ -92,15 +94,18 @@ class CombatEngine extends Engine
         if (in_array($attacker->getLevel()->getName(), Gameplay::get("worlds-pvp-rules-enabled", []), true)) return true;
 
         if ($defendFaction->isNone()) {
+            // Players can attack faction-less players if they are on their land
             if ($victimPosFac === $attackFaction && Gameplay::get("enable-pvp-against-factionless-in-attackers-land", true)) {
                 return true;
+            // Players are able to attach each other if they don't have factions
+            } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
+                return true;
+            // Can't attack players if they are faction-less
             } elseif (Gameplay::get("disable-pvp-for-factionless-players", true)) {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-factionless"));
                 return false;
-            } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
-                return true;
             }
-        } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-for-factionless-players", true)) {
+        } elseif ($attackFaction->isNone() && !Gameplay::get("enable-pvp-for-factionless-players", true)) {
             $attacker->sendMessage(Localizer::translatable("cant-hurt-while-factionless"));
             return false;
         }

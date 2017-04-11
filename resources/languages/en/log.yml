@@ -1,6 +1,7 @@
 ---
-faction-disband-reason-empty: "The faction :name (:id) has been disbanded since it has no members left."
 faction-disband-reason-unknown: "The faction :name (:id) has been disbanded"
+faction-disband-reason-empty: "The faction :name (:id) has been disbanded since it has no members left."
+faction-disband-reason-purge: "The faction :name (:id) has been disbanded due to lack of activity."
 faction-disband-by-command: "<i>The faction <h>:0 <i>(<h>:1<i>) was disbanded by <h>:1<i>."
 
 member-faction-changed: "Member::setFactionId() moved <h>:0 <i>aka <h>:1 <i>from <h>:2 <i>aka <h>:3 <i>to <h>:4 <i>aka <h>:5<i>."

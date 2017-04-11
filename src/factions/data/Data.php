@@ -19,14 +19,21 @@
 
 namespace factions\data;
 
+use factions\utils\Text;
+
 abstract class Data
 {
 
     /**
-     * Unix timestamp of last save
+     * Unix timestamp of last save (milliseconds)
      * @var integer
      */
     public $lastSaved;
+
+    /**
+     * @var string md5 hash
+     */
+    public $hash;
 
     /*
      * ----------------------------------------------------------
@@ -40,7 +47,22 @@ abstract class Data
     public function changed()
     {
         $this->save();
-        $this->lastSaved = time();
+        $this->lastSaved = microtime(true);
+        $this->hash = md5(json_decode($this->__toArray()));
+        echo "Saved!";
+        var_dump($this->__debugInfo());
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isDataChanged(): bool
+    {
+        $hash = md5(json_encode($this->__toArray()));
+        $ret = $this->hash === $hash ? true : false;
+        $this->hash = $hash;
+        return $ret;
     }
 
     /**
@@ -53,5 +75,26 @@ abstract class Data
      * @return array
      */
     public abstract function __toArray();
+
+    // AUTO SAVE FUNCTION
+    // When someone calls set, toggle, reset
+    // This class data will be saved
+    public function __call($name, $arguments)
+    {
+        echo $name.PHP_EOL;
+        if(Text::strpos($name, ["set", "toggle", "reset"])) {
+            if($this->isDataChanged()) {
+                $this->changed();
+            }
+        }
+    }
+
+    public function __debugInfo()
+    {
+        return [
+            "hash" => $this->hash,
+            "lastSaved" => $this->lastSaved." or ".Text::ago($this->lastSaved / 1000)
+        ];
+    }
 
 }

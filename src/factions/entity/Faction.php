@@ -32,6 +32,7 @@ use factions\permission\Permission;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
 use factions\utils\Gameplay;
+use factions\utils\Text;
 use localizer\Localizer;
 use localizer\Translatable;
 use pocketmine\level\Level;
@@ -53,6 +54,7 @@ class Faction extends FactionData implements RelationParticipator
     const DISBAND_REASON_UNKNOWN = 0;
     const DISBAND_REASON_EMPTY_FACTION = 1;
     const DISBAND_REASON_COMMAND = 2;
+    const DISBAND_REASON_PURGE = 3;
 
     /**
      * Faction constructor
@@ -70,7 +72,7 @@ class Faction extends FactionData implements RelationParticipator
 
         if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
             if (empty($this->members)) {
-                $this->disband();
+                $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
             }
         }
     }
@@ -106,14 +108,14 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /**
-     * @var IMember[]
+     * @return Member[]
      */
     public function getMembers(): array
     {
         $r = [];
         foreach ($this->getRawMembers() as $role => $members) {
             foreach ($members as $name) {
-                $r[] = Members::get($name);
+                $r[] = Members::get($name, true);
             }
         }
         return $r;
@@ -153,6 +155,9 @@ class Faction extends FactionData implements RelationParticipator
                 case self::DISBAND_REASON_EMPTY_FACTION:
                     $msg = Localizer::trans('log.faction-disband-reason-empty', $args);
                     break;
+                case self::DISBAND_REASON_PURGE:
+                    $msg = Localizer::trans("log.faction-disband-reason-purge", $args);
+                    break;
                 default:
                     break;
             }
@@ -178,6 +183,9 @@ class Faction extends FactionData implements RelationParticipator
         return $flag->isStandard();
     }
 
+    /**
+     * @return IMember[]
+     */
     public function getOnlineMembers(): array
     {
         $ret = [];
@@ -354,7 +362,7 @@ class Faction extends FactionData implements RelationParticipator
     {
         if ($this->isNone()) return;
         if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) return;
-        if ($leader && !$leader->hasFaction() or $leader && $leader->getFactionId() !== $this->getFactionId()) return;
+        if ($leader && !$leader->hasFaction() or $leader && $leader->getFactionId() !== $this->getId()) return;
         $oldLeader = $this->getLeader();
         // get list of officers, or list of normal members if there are no officers
         $replacements = $leader instanceof Member ? [$leader] : $this->getMembersWhereRole(Relation::OFFICER);
@@ -375,9 +383,9 @@ class Faction extends FactionData implements RelationParticipator
         } else {
             // promote new faction leader
             if ($oldLeader != null) {
-                $oldLeader->setRole(Rel::MEMBER);
+                $oldLeader->setRole(Relation::MEMBER);
             }
-            $replacements[0]->setRole(Rel::LEADER);
+            $replacements[0]->setRole(Relation::LEADER);
             $this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
             if (Gameplay::get('log.faction-new-leader', true)) {
                 FactionsPE::get()->getLogger()->info(Localizer::trans('log.new-leader', [
@@ -445,7 +453,7 @@ class Faction extends FactionData implements RelationParticipator
         }
 
         // Disband the faction if necessary
-        if ($this->isNormal() && !$permanent && empty($this->getMembers())) {
+        if ($this->isNormal() && !$permanent && empty($this->getRawMembers())) {
             $this->disband(Faction::DISBAND_REASON_EMPTY_FACTION);
         }
         return true;
@@ -724,7 +732,7 @@ class Faction extends FactionData implements RelationParticipator
      * @param string $rel
      * @return Faction[]
      */
-    public function getFactionsWhereRelation(string $relation): array
+    public function getFactionsWhereRelation(string $rel): array
     {
         $r = [];
         foreach (Factions::getAll() as $f) {
@@ -740,9 +748,9 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /**
-     * @param IFaction|string $faction
-     * @param string $rel
+     * @param Faction|string $faction
      * @return string relation id
+     * @internal param string $rel
      */
     public function getRelationWish($faction): string
     {
@@ -751,8 +759,8 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /**
-     * @param IFaction|string
-     * @param string $rel id
+     * @param Faction|string $faction
+     * @param string $rel
      *
      */
     public function setRelationWish($faction, string $rel)

@@ -24,6 +24,8 @@ use dominate\Command;
 use dominate\parameter\Parameter;
 use factions\FactionsPE;
 use factions\manager\Permissions;
+use factions\relation\Relation as Rel;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class FactionCommand extends Command
@@ -59,7 +61,8 @@ class FactionCommand extends Command
             new Reload($plugin, "reload", "Reload config file", Permissions::RELOAD),
             new Rank($plugin, "rank", "Manage member ranks", Permissions::RANK),
             new Relation($plugin, "relation", "Manage relations", Permissions::RELATION),
-            new HudSwitch($plugin, "hud", "Toggle HUD", Permissions::HUD)
+            new HudSwitch($plugin, "hud", "Toggle HUD", Permissions::HUD),
+            new Power($plugin, "power", "Manage power", Permissions::POWERBOOST)
         ];
 
         if ($plugin->economyEnabled()) {
@@ -68,6 +71,10 @@ class FactionCommand extends Command
 
         foreach ($childs as $child) {
             $this->addChild($child);
+        }
+        foreach (Rel::getAll() as $rel) {
+            if(Rel::isRankValid($rel)) continue;
+            $this->addChild(new RelationSetQuick($this, $rel, "Set relation wish to ".$rel, Permissions::RELATION_SET));
         }
 
         $this->addParameter(new Parameter("command"));

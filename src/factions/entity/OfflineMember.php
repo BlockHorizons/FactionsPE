@@ -28,7 +28,9 @@ use factions\permission\Permission;
 use factions\relation\Relation;
 use factions\relation\RelationParticipator;
 use factions\utils\Gameplay;
+use factions\utils\Text;
 use localizer\Localizer;
+use pocketmine\Player;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator
 {

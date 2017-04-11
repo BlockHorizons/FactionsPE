@@ -36,3 +36,5 @@ economy-not-ready: "Economy plugin <gold>:name<white> is not ready for use!"
 power-update-enabled: "Power regeneration enabled"
 
 hud-enabled: "Built-In <gold>HUD<white> enabled"
+
+chat-formatter-set: "Chat formatter: <gold>:plugin<reset>"

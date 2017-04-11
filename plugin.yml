@@ -14,10 +14,15 @@
 ##
 name: FactionsPE
 author: Chris Prime
-api: [2.0.0, 2.1.0, 3.0.0]
+api:
+- 2.0.0
+- 1.0.0
+- 3.0.0
+- 3.0.0-ALPHA5
 main: factions\FactionsPE
-version: 0.9.7.3
-softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd]
+version: 0.9.8.5
+softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PureChat, PurePerms]
+loadafter: [PurePerms, PureChat]
 
 permissions:
   factions.*:
@@ -86,7 +91,6 @@ permissions:
       factions.relation.set: {description: set relation wish to another faction, default: true}
       factions.relation.wishes: {description: list the relation wishes, default: true}
       factions.seechunk: {description: see the chunk you stand in, default: true}
-      factions.seechunkold: {description: see the chunk you stand in, default: true}
       factions.sethome: {description: set the faction home, default: true}
       factions.setpower: {description: set power, default: op}
       factions.status: {description: show status, default: true}

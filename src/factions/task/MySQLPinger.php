@@ -23,7 +23,7 @@ class MySQLPinger extends Task
 
     public function onRun($currentTick)
     {
-        $this->connection->ping();
+        @$this->connection->ping();
     }
 
 }

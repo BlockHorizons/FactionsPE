@@ -50,6 +50,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -87,6 +88,8 @@ class MainEngine extends Engine
         Block::ACACIA_DOOR_BLOCK,
         Block::DARK_OAK_DOOR_BLOCK
     ];
+
+    const EDIT_TOOLS = [];
 
     public function onPlayerPrelogin(PlayerPreLoginEvent $event)
     {
@@ -128,7 +131,9 @@ class MainEngine extends Engine
         }
         if ($member->isAutoClaiming()) {
             $af = $member->getAutoClaimFaction();
-            $this->getMain()->getServer()->dispatchCommand("faction " . ($af->isNone() ? "unclaim" : "claim") . " one {$af->getName()}", $member->getPlayer());
+            if(Plots::claim($af, new Plot($member->getPlayer()), $member, false)) {
+                $member->getPlayer()->sendTip(Text::parse("<green>CLAIMED"));
+            }
         }
     }
 
@@ -254,20 +259,33 @@ class MainEngine extends Engine
                         return;
                     }
                     // ... the old faction might not be inflated enough ...
-                    if ($currentFaction->hasLandInflation()) {
+                    if (!$currentFaction->hasLandInflation()) {
                         $player->sendMessage(Localizer::translatable("cant-claim-owner-too-strong", [$currentFaction->getName()]));
                         $event->setCancelled(true);
                         return;
                     }
                     // ... and you might be trying to claim without starting at the border ...
-                    if (!Plots::isBorderPlot($chunk)) {
-                        $player->sendMessage(Localizer::parse("must-start-claim-at-border"));
+                    if (!Plots::isBorderPlot($plot)) {
+                        $player->sendMessage(Localizer::translatable("must-start-claim-at-border"));
                         $event->setCancelled(true);
                         return;
                     }
                     // ... otherwise you may claim from this old faction even though you lack explicit permission from them.
 
                 }
+            }
+        }
+    }
+
+    /**
+     * # TODO
+     */
+    public function teleportToHomeOnRespawn(PlayerRespawnEvent $event) {
+        $player = Members::get($event->getPlayer());
+        if($player->hasFaction()) {
+            if($player->getFaction()->isValidHome($player->getFaction()->getHome())) {
+                $event->setRespawnPosition($player->getFaction()->getHome());
+                $player->sendMessage(Text::parse("<b>Teleported to faction home"));
             }
         }
     }
@@ -374,12 +392,11 @@ class MainEngine extends Engine
     public function blockBreak(BlockBreakEvent $event)
     {
         if (self::canPlayerBuildAt($event->getPlayer(), $event->getBlock())) return;
-        $event->getPlayer()->sendMessage(Localizer::translatable("faction-permission-error", [
-            "perm_desc" => Permissions::getById(Permission::BUILD)->getDescription(),
+        $event->setCancelled(true);
+        $event->getPlayer()->sendMessage(Localizer::translatable("cant-edit-land-here", [
             "faction" => ($f = Plots::getFactionAt($event->getBlock()))->getName(),
             "rel-color" => $f->getColorTo(Members::get($event->getPlayer()))
         ]));
-        $event->setCancelled(true);
     }
 
     public static function canPlayerBuildAt(Player $player, Position $pos): bool
@@ -495,15 +512,18 @@ class MainEngine extends Engine
 
     public static function canPlayerUseBlock(Player $player, Block $block)
     {
-        $name = $player->getName();
-        if (in_array($name, Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
+        if (in_array(strtolower($player->getName()), Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
         $me = Members::get($player);
         if ($me->isOverriding()) return true;
         $id = $block->getId();
         $factionHere = Plots::getFactionAt($block);
-        if (in_array($id, Gameplay::get("materials-edit-on-interact", self::TOUCH_SENSITIVE), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
-        if (in_array($id, Gameplay::get("materials-container", self::CONTAINERS), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
-        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
+        // CONSTANTS Are fille with necessary ids, but they should be editable. #TODO
+//        if (in_array($id, Gameplay::get("materials-edit-on-interact", self::TOUCH_SENSITIVE), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
+//        if (in_array($id, Gameplay::get("materials-container", self::CONTAINERS), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
+//        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
+        if (in_array($id, self::TOUCH_SENSITIVE, true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
+        if (in_array($id, self::CONTAINERS, true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
+        if (in_array($id, self::DOORS, true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if ($id === Block::STONE_BUTTON && !Permissions::getById(Permission::BUTTON)->has($me, $factionHere)) return false;
         if ($id === Block::LEVER && !Permissions::getById(Permission::LEVER)->has($me, $factionHere)) return false;
         if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
@@ -512,9 +532,8 @@ class MainEngine extends Engine
 
     public static function playerCanUseItemHere(Player $player, Position $pos, Item $item)
     {
-        if (!in_array($item->getId(), Gameplay::get("materials-edit-tools", []), true) && !in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) return true;
-        $name = $player->getName();
-        if (in_array($name, Settings::get("players-who-bypass-all-protection", []), true)) return true;
+        if (!in_array($item->getId(), self::EDIT_TOOLS, true) && !in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) return true;
+        if (in_array(strtolower($player->getName()), Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
         $fplayer = Members::get($player);
         if ($fplayer->isOverriding()) return true;
         return Permissions::getById(Permission::BUILD)->has($fplayer, Plots::getFactionAt($pos));

@@ -21,17 +21,17 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\parameter\Parameter;
+use factions\manager\Permissions;
 
 class Power extends Command
 {
 
     public function setup()
     {
-        $this->addAliase("powerboost");
+        $this->setAliases(["powerboost", "pb"]);
         $this->addParameter(new Parameter("set|add"));
 
-        $this->addChild(new PowerAdd($this->plugin, "add", "Add power to player", Permissions::POWERBOOST));
-        $this->addChild(new PowerSet($this->plugin, "set", "Set players power", Permissions::POWERBOOST));
+        $this->addChild(new PowerSet($this->plugin, "set", "Set players or faction's power", Permissions::SETPOWER));
     }
 
 }
