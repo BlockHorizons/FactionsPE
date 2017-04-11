@@ -76,6 +76,12 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	 */
 	protected $swap = true;
 
+	/**
+	 * Give sender suggestions if more than command met token
+	 * @var bool
+	 */
+	protected $smart = true;
+
 	// Last execution parameters
 	
 	/** @var CommandSender */
@@ -89,6 +95,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 	/** @var Plugin */
 	protected $plugin;
+
 
     /**
      * @param Plugin|Command $owner
@@ -448,6 +455,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
                 return true;
             } else {
             	$this->endPoint = $this;
+       			if(!$this->smart) return false;
             	// Token was too ambiguous
                 if($matchCount > 8) {
                     $sender->sendMessage(Localizer::trans("command-too-ambiguous", ["token" => $this->values[0]]));
@@ -495,13 +503,41 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
         $this->reset();
         return true;
 	}
+	
+	public function perform(CommandSender $sender, $label, array $args) {
+		return true;
+	}
+
+	// SWAP
 
 	private function swap() {
 		// TODO
 	}
 
-	public function perform(CommandSender $sender, $label, array $args) {
-		return true;
+	public function swappingEnabled(): bool {
+		return $this->swap;
+	}
+
+	public function setSwapping(bool $value) {
+		$this->swap = $value;
+	}
+
+	public function toggleSwapping() {
+		$this->swap = !$this->swap;
+	}
+
+	// SMART
+
+	public function isSmart(): bool {
+		return $this->smart;
+	}
+
+	public function setSmart(bool $value) {
+		$this->smart = $value;
+	}
+
+	public function toggleSmart() {
+		$this->smart = !$this->smart;
 	}
 
 	public function reset() {
