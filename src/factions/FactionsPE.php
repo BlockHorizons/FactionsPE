@@ -54,7 +54,7 @@ class FactionsPE extends PluginBase
 
     private static $engines = [
         MainEngine::class,
-        //ChatEngine::class,
+        ChatEngine::class,
         CombatEngine::class,
         ExploitEngine::class
     ];
@@ -83,9 +83,11 @@ class FactionsPE extends PluginBase
     public function onLoad()
     {
         self::$instance = $this;
-        LibLoader::loadLib($this->getFile(), "Localizer");
-        LibLoader::loadLib($this->getFile(), "Economizer");
-        //LibLoader::loadLib($this->getFile(), "Dominate");
+        // This is disabled as I moved these libraries from plugin/lib folder
+        // I'll return this when I update sub-modules
+        // LibLoader::loadLib($this->getFile(), "Localizer");
+        // LibLoader::loadLib($this->getFile(), "Economizer");
+        // LibLoader::loadLib($this->getFile(), "Dominate");
 
         @mkdir($this->getDataFolder());
         if (!is_dir($tar = $this->getDataFolder() . "languages")) {
@@ -259,7 +261,7 @@ class FactionsPE extends PluginBase
         // If chat-formatter is set to false, then we assume that user is using PureChat
         if($this->getConfig()->get("chat-formatter")) {
             $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
-            if($pc && $pc->isEnabled()) {
+            if($pc !== null && $pc->isEnabled()) {
                 self::$engines[ChatEngine::class]->setPureChat($pc);
                 $this->getLogger()->info(Localizer::trans("chat-formatter-set", [
                     "plugin" => "PureChat"

@@ -74,8 +74,10 @@ class ChatEngine extends Engine
                 $event->setCancelled(true);
                 return;
             }
+            // We define chat format here, but apply it later down
             $format = Gameplay::get("chat.faction-chat", self::FACTION_CHAT_FORMAT);
         }
+        // Format will be applied if it's enabled or required by /f chat
         if ($this->format || isset($format)) {
             // Get type of format we need
             if (!isset($format)) {
@@ -109,15 +111,31 @@ class ChatEngine extends Engine
         return Gameplay::get("chat.badge." . strtolower(trim($role)), "");
     }
 
-    public function setPureChat(PureChat $pc) {
+    /**
+     * @param PureChat $pc 
+     */
+    public function setPureChat($pc) 
+    {
         $this->pureChat = $pc;
     }
 
-    public function getPureChat() {
+    /**
+     * @return PureChat|null
+     */
+    public function getPureChat() 
+    {
         return $this->pureChat;
     }
 
-    public function onMembershipChange(MembershipChangeEvent $event) {
+    /**
+     * Updates player's nametag
+     *
+     * @param MembershipChangeEvent $event
+     * @priority HIGHEST
+     * @ignoreCancelled true
+     */
+    public function onMembershipChange(MembershipChangeEvent $event) 
+    {
         if($this->getPureChat()) {
             $event->getMember()->getPlayer()->setNameTag($this->getPureChat()->getNametag($event->getMember()->getPlayer(), null));
         }
