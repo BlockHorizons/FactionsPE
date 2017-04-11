@@ -261,7 +261,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator
 
     public function isPermitted(Permission $permission): bool
     {
-        return $this->getFaction()->isPermitted($permission, $this->getRole());
+        return $this->getFaction()->isPermitted($this->getRole(), $permission);
     }
 
     public function isOverriding(): bool

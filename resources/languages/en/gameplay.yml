@@ -192,4 +192,12 @@ relation-wish-request-sent: "<i>Relation wish request was sent to :faction facti
 
 relation-list-header: "<white>:faction's Relations <a>(:page/:max)"
 cant-list-relation: "<h>Relation :relation cant be listed. Try ally, truce, enemy!"
+
+version-info-header: "About Plugin"
+version: "<rose>Version: <green>:version"
+author: "<rose>Authors: <green>:author"
+organization: "<rose>Organization: <green>:organization"
+
+you-renamed-faction: "<aqua>:old-name<i> was renamed to <aqua>:new-name<i>."
+faction-renamed: "<i>Faction renamed to <aqua>:name<i> by <green>:by<i>."
 ...

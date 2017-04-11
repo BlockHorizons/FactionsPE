@@ -62,7 +62,9 @@ class FactionCommand extends Command
             new Rank($plugin, "rank", "Manage member ranks", Permissions::RANK),
             new Relation($plugin, "relation", "Manage relations", Permissions::RELATION),
             new HudSwitch($plugin, "hud", "Toggle HUD", Permissions::HUD),
-            new Power($plugin, "power", "Manage power", Permissions::POWERBOOST)
+            new Power($plugin, "power", "Manage power", Permissions::POWERBOOST),
+            new Version($plugin, "version", "See current plugin version and information", Permissions::VERSION),
+            new Name($plugin, "name", "Rename faction", Permissions::NAME)
         ];
 
         if ($plugin->economyEnabled()) {
