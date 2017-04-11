@@ -4,10 +4,10 @@
 FactionsPE is currently installed on my server: __synch.scalacube.org:19132__
 
 ### Installing
-As of 30th December, the FactionsPE is now usable. Check out how to install this plugin [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
+Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
 
-### This project is under heavy development.
-Project is now considered a stable for production, feel free to use.
+### For developers
+API methods and examples can be found [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/API)
 
 ### Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
