@@ -1,5 +1,7 @@
 ![Factions - PE](https://raw.githubusercontent.com/BlockHorizons/FactionsPE/reborn/resources/logo.png "FactionsPE Logo")
 
+[![Join the chat at https://gitter.im/BlockHorizons/FactionsPE](https://badges.gitter.im/BlockHorizons/FactionsPE.svg)](https://gitter.im/BlockHorizons/FactionsPE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ### Live preview:
 FactionsPE is currently installed on my server: __synch.scalacube.org:19132__
 
