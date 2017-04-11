@@ -150,8 +150,8 @@ class FactionData extends Data
         $ret = [
             "name" => $this->name,
             "id" => $this->id,
-            "flags" => $this->getFlags(),
-            "perms" => $this->getPermissions(),
+            "flags" => $this->flags,
+            "perms" => $this->perms,
             "members" => $this->members,
             "powerBoost" => $this->powerBoost,
             "relationWishes" => $this->relationWishes,
