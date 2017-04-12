@@ -40,7 +40,7 @@ class Reload extends Command
         
         # Reload language files
         Localizer::clean();
-        Localizer::loadLanguages($this->getPlugin()->getDataFolder() . "languges");
+        Localizer::loadLanguages($this->getPlugin()->getDataFolder() . "languages");
 
         return ["config-reloaded", [$sender->getName()]];
     }
