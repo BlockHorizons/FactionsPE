@@ -13,7 +13,10 @@
 ## @link https://github.com/Chris-Prime/FactionsPE
 ##
 name: FactionsPE
-author: Chris Prime
+author: BlockHorizons
+authors:
+- Chris-Prime (@PrimusLV)
+- Sandertv (@Sandertv)
 api:
 - 2.0.0
 - 1.0.0
