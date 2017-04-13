@@ -263,14 +263,14 @@ class Faction extends FactionData implements RelationParticipator
      */
     public function verifyHome()
     {
-        if ($this->home == null) return;
+        if ($this->home === null) return;
         if ($this->isValidHome($this->home)) return;
         $this->home = null;
         $this->save();
         $this->sendMessage(Localizer::translatable("home-out-of-bounds"));
     }
 
-    public function isValidHome(Position $home): bool
+    public function isValidHome($home): bool
     {
         if ($home === null) return false;
         if (!$home instanceof Position) return false;
