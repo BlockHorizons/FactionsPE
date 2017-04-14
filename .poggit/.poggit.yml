@@ -1,0 +1,15 @@
+---
+# Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Chris-Prime/FactionsPE
+model: default
+branches:
+- reborn
+projects:
+  FactionsPE:
+    path: ""
+    model: default
+    libs:
+     - local: lib/Localizer
+     - local: lib/Economizer
+     - local: lib/Dominate
+     - local: src/sll
+...
