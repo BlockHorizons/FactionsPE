@@ -19,6 +19,7 @@
  
  namespace economizer;
  
+use economizer\transistor\iEconomy;
 use pocketmine\plugin\Plugin;
 
 use economizer\transistor\EconomyAPI;
@@ -32,6 +33,7 @@ class Economizer {
 	const POCKET_MONEY		= "PocketMoney";
 	const MASSIVE_ECONOMY 	= "MassiveEconomy";
 	const ESSENTIALSPE		= "EssentialsPE";
+	const IECONOMY          = "iEconomy";
 	const DEFAULT_API		= self::ECONOMY_API;
 	
 	/** @var Economizer */
@@ -47,8 +49,9 @@ class Economizer {
 	public static $transistors = [
 		self::ECONOMY_API		=> EconomyAPI::class,
 		self::POCKET_MONEY 		=> PocketMoney::class,
-		self::MASSIVE_ECONOMY 		=> MassiveEconomy::class,
-		self::ESSENTIALSPE		=> EssentialsPE::class
+		self::MASSIVE_ECONOMY 	=> MassiveEconomy::class,
+		self::ESSENTIALSPE		=> EssentialsPE::class,
+        self::IECONOMY          => iEconomy::class
 	];
 
 	public function __construct(Plugin $plugin, Transistor $transistor = null) {
