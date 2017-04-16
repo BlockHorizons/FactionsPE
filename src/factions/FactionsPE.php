@@ -120,9 +120,6 @@ class FactionsPE extends PluginBase
         # Load DataProvider
         if (!$this->loadDataProvider()) goto stop;
 
-        # Load Integrations
-        if (!$this->loadIntegrations()) goto stop;
-
         # Load Gameplay settings
         Gameplay::setData($this->getConfig()->get('gameplay', []));
 
@@ -168,6 +165,9 @@ class FactionsPE extends PluginBase
 
         # Register engines
         $this->runEngines();
+
+        # Load Integrations
+        if (!$this->loadIntegrations()) goto stop;
 
         # Schedule update task
         if (Gameplay::get("power.update-enabled", true)) {
@@ -292,9 +292,9 @@ class FactionsPE extends PluginBase
 
     private function runEngines()
     {
-        foreach (self::$engines as $engine) {
+        foreach (self::$engines as $k => $engine) {
             $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
-            self::$engines[$engine] = $e;
+            self::$engines[is_int($k) ? $engine : $k] = $e;
         }
     }
 

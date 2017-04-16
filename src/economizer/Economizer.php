@@ -30,9 +30,13 @@ class Economizer {
 
 	const ECONOMY_API		= "EconomyAPI";
 	const POCKET_MONEY		= "PocketMoney";
-	const MASSIVE_ECONOMY 		= "MassiveEconomy";
+	const MASSIVE_ECONOMY 	= "MassiveEconomy";
 	const ESSENTIALSPE		= "EssentialsPE";
 	const DEFAULT_API		= self::ECONOMY_API;
+	
+	/** @var Economizer */
+	private static $instance;
+	public static function get() { return self::$instance; }
 
 	/** @var Transistor */
 	protected $transistor;
@@ -50,6 +54,7 @@ class Economizer {
 	public function __construct(Plugin $plugin, Transistor $transistor = null) {
 		$this->main = $plugin;
 		if($transistor !== null) $this->transistor = $transistor;
+		self::$instance = $this;
 	}
 
 	/**
@@ -90,3 +95,4 @@ class Economizer {
 	}
 
 }
+
