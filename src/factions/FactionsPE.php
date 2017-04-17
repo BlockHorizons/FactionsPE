@@ -265,7 +265,7 @@ class FactionsPE extends PluginBase
             }
         }
         // If chat-formatter is set to false, then we assume that user is using PureChat
-        if($this->getConfig()->get("chat-formatter")) {
+        if(!$this->getConfig()->get("chat-formatter")) {
             $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
             if($pc !== null && $pc->isEnabled()) {
                 self::$engines[ChatEngine::class]->setPureChat($pc);
