@@ -198,6 +198,7 @@ class FactionData extends Data
     public function setHome(Position $home)
     {
         $this->home = $home;
+        $this->save();
     }
 
     /*
