@@ -434,7 +434,7 @@ class MainEngine extends Engine
      */
     public function blockPlace(BlockPlaceEvent $event)
     {
-        if (self::canPlayerBuildAt($event->getPlayer(), $event->getPlayer())) return;
+        if (self::canPlayerBuildAt($event->getPlayer(), $event->getBlock())) return;
         $event->setCancelled(true);
     }
 
