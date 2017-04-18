@@ -23,7 +23,7 @@ api:
 - 3.0.0
 - 3.0.0-ALPHA5
 main: factions\FactionsPE
-version: 0.9.8.5
+version: 0.9.8.6
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PureChat, PurePerms]
 loadafter: [PurePerms, PureChat]
 
