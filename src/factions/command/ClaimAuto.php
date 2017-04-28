@@ -19,8 +19,6 @@
 
 namespace factions\command;
 
-use evalcore\command\Command;
-use evalcore\command\parameter\Parameter;
 use factions\entity\Perm;
 use factions\manager\Members;
 use factions\manager\Permissions;
