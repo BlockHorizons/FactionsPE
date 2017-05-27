@@ -56,6 +56,10 @@ mysql:
 
 # Gameplay settings
 gameplay:
+  hud:
+    enabled: true
+    popup: "this isn't implemented yet"
+    tip: "And this one aswell"
   # These are messages you'll receive on certain events. They can be switched on/off
   log:
     faction-disband: true
