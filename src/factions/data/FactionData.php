@@ -215,6 +215,10 @@ class FactionData extends Data
             throw new \Exception("faction data is not assigned to valid faction");
         }
     }
+    
+    public function onDisable(){
+        $this->save
+    }
 
     public function getId(): string
     {
