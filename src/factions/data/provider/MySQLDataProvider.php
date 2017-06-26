@@ -122,7 +122,9 @@ class MySQLDataProvider extends DataProvider
     public function loadMember(string $name)
     {
         if (($r = $this->query("SELECT * FROM `members` WHERE `name`='$name';"))) {
-            return new MemberData($r->fetch_assoc());
+            if(!empty($data = $r->fetch_assoc())) {
+                return new MemberData($data);
+            }
         }
         return null;
     }
