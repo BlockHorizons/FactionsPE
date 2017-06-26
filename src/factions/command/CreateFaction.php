@@ -104,6 +104,11 @@ class CreateFaction extends Command
                 $faction->getName()
             ]));
         }
+        try {
+            $faction->save();
+        } catch (\Exception $e) {
+            // Ignore :D   
+        }
 
         return true;
     }
