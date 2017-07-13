@@ -71,11 +71,11 @@ class Translatable extends TextContainer {
     return Localizer::{$locale}($this->key, $this->params, $this->default);
   }
   
-  public function getText() {
+  public function getText() : string {
    return $this->get(); 
   }
   
-  public function __toString() {
+  public function __toString() : string {
     return $this->getText(); 
   }
   
