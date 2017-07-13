@@ -80,8 +80,6 @@ class RelationSet extends Command
                     "faction" => $faction->getName(),
                     "relation" => $event->getNewRelation()
                 ]));
-            } else {
-                echo "Fail here".PHP_EOL;
             }
         }
 
