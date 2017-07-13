@@ -109,6 +109,7 @@ class Flags
         foreach (self::$flags as $flag) {
             if ($flag->getId() === strtolower(trim($id))) return $flag;
         }
+        return null;
     }
 
     public static function create(string $id, int $priority, string $name, Translatable $desc, Translatable $descYes, Translatable $descNo, bool $standard, bool $editable, bool $visible)

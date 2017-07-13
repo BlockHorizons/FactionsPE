@@ -20,6 +20,7 @@
 namespace factions\command;
 
 use pocketmine\command\CommandSender;
+use pocketmine\level\Position;
 
 class ClaimAll extends ClaimX
 {
@@ -37,4 +38,8 @@ class ClaimAll extends ClaimX
         ]];
     }
 
+    public function getPlots(Position $position) : array
+    {
+
+    }
 }

@@ -31,9 +31,11 @@ use factions\manager\Permissions;
 use factions\manager\Plots;
 use factions\permission\Permission;
 use factions\relation\Relation;
+use factions\relation\RelationParticipator;
 use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class Home extends Command
 {
@@ -47,6 +49,7 @@ class Home extends Command
 
     public function perform(CommandSender $sender, $label, array $args): bool
     {
+    	if(!$sender instanceof Player) return false;
         $member = Members::get($sender);
         if (!Gameplay::get("home.teleport-command-enabled", true)) {
             $sender->sendMessage(Localizer::translatable("home-teleport-command-disabled"));
@@ -89,6 +92,7 @@ class Home extends Command
             )
         ) {
             foreach (Members::getAllOnline() as $otherPlayer) {
+            	if(!$otherPlayer instanceof RelationParticipator) continue;
                 if ($member->getRelationTo($otherPlayer) !== Relation::ENEMY) continue;
 
                 if ($sender->distance($otherPlayer->getPlayer()) < $max) {

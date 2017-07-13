@@ -26,8 +26,11 @@ use factions\FactionsPE;
 use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\permission\Permission;
+use factions\relation\Relation;
+use factions\relation\RelationParticipator;
 use factions\utils\Pager;
 use factions\utils\Text;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class InviteList extends Command
@@ -65,9 +68,9 @@ class InviteList extends Command
                 $isAre = "is";
                 $targetRank = $target->getRole();
                 $targetFaction = $target->getFaction();
-                $theAan = $targetRank === Rel::LEADER ? "the" : Text::aan($targetRank);
+                $theAan = $targetRank === Relation::LEADER ? "the" : Text::aan($targetRank);
                 $rankName = strtolower(Text::getNicedEnum($targetRank));
-                $ofIn = $targetRank === Rel::LEADER ? "of" : "in";
+                $ofIn = $targetRank === Relation::LEADER ? "of" : "in";
                 $factionName = $targetFaction->getName();
                 return Text::parse(sprintf("%s <i>%s %s <h>%s <i>%s %s<i>.", $targetName, $isAre, $theAan, $rankName, $ofIn, $factionName));
             } else {

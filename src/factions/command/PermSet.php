@@ -70,7 +70,7 @@ class PermSet extends Command
             return true;
         }
 
-        if (!$member->isOverriding() || !$perm->isEditable()) {
+        if (!$member->isOverriding()) {
             $sender->sendMessage(Localizer::translatable("perm-not-editable", [$perm->getName()]));
             return true;
         }
@@ -89,8 +89,8 @@ class PermSet extends Command
 
         // Apply
         $faction->setRelationPermitted($perm, $rel, $newVal);
-        if ($perm === Permissions::getById(Permission::PERMS) && in_array(Rel::LEADER, Permissions::getById(Permission::PERMS)->getStandard(), true)) {
-            $faction->setRelationPermitted(Permissions::getById(Permission::PERMS), Rel::LEADER, true);
+        if ($perm === Permissions::getById(Permission::PERMS) && in_array(Relation::LEADER, Permissions::getById(Permission::PERMS)->getStandard(), true)) {
+            $faction->setRelationPermitted(Permissions::getById(Permission::PERMS), Relation::LEADER, true);
         }
 
         $messages = [];

@@ -89,7 +89,7 @@ class Help extends Command
                 if ($cmd->testPermissionSilent($sender)) {
                     $message = TextFormat::YELLOW . "--------- " . TextFormat::WHITE . " Help: " . $cmd->getName() . TextFormat::YELLOW . " ---------\n";
                     $message .= TextFormat::GOLD . "Description: " . TextFormat::WHITE . $cmd->getDescription() . "\n";
-                    $message .= TextFormat::GOLD . "Usage: " . TextFormat::WHITE . $cmd->getUsage($sender) . "\n";
+                    $message .= TextFormat::GOLD . "Usage: " . TextFormat::WHITE . $cmd->getUsage() . "\n";
                     $sender->sendMessage($message);
                     return true;
                 }

@@ -70,7 +70,6 @@ class RelationSet extends Command
             // Send information message
             // enemy = 8000
             // ally = 5000
-            echo $previousRelation." => ".$event->getNewRelation().PHP_EOL;
             if(Rel::isLowerThan($event->getNewRelation(), $previousRelation)) {
                 $faction->sendMessage(Localizer::translatable("relation-wish-request", [
                     "faction" => $senderFaction->getName(),

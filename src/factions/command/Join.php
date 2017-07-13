@@ -15,6 +15,7 @@ use factions\relation\Relation;
 use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class Join extends Command
 {
@@ -38,6 +39,7 @@ class Join extends Command
      */
     public function perform(CommandSender $sender, $label, array $args)
     {
+    	if(!$sender instanceof Player) return false;
         $msender = Members::get($sender);
         $mplayer = $this->getArgument(1);
         $samePlayer = ($msender === $mplayer);

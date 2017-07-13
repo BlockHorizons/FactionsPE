@@ -18,6 +18,7 @@
  */
 namespace dominate;
 
+use factions\FactionsPE;
 use Message;
 use pocketmine\command\Command as PocketMineCommand;
 use pocketmine\command\PluginIdentifiableCommand;
@@ -498,7 +499,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
         		}
         	}
     	} catch(ThrowableMessage $e) {
-    		$sender->sendMessage(Localizer::translatable($e->getMessage(), $e->getParameters()));
+    		$sender->sendMessage(Localizer::translatable($e->getMessage(), []));
     	}
         $this->reset();
         return true;
@@ -550,7 +551,10 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		}
 	}
 
-	public function getPlugin() {
+	/**
+	 * @return FactionsPE
+	 */
+	public function getPlugin(): Plugin {
 		return $this->plugin;
 	}
 

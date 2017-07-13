@@ -45,6 +45,7 @@ class CreateFaction extends Command
 
     public function perform(CommandSender $sender, $label, array $args): bool
     {
+    	$need = 0;
         if (FactionsPE::get()->economyEnabled()) {
             if ($sender instanceof Player) {
                 if (($has = FactionsPE::get()->getEconomy()->balance($sender)) < ($need = Gameplay::get('price.faction-creation', 0))) {
@@ -79,7 +80,7 @@ class CreateFaction extends Command
 
         $event = new FactionCreateEvent($creator, $fid, $name);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-        if ($event->isCancelled()) return;
+        if ($event->isCancelled()) return false;
 
         $faction = new Faction($fid, [
             "name" => $name,
@@ -107,7 +108,7 @@ class CreateFaction extends Command
         try {
             $faction->save();
         } catch (\Exception $e) {
-            // Ignore :D   
+            // Ignore :D
         }
 
         return true;

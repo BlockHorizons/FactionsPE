@@ -85,11 +85,12 @@ class Economizer {
 	 */
 	public function __call($method, $arguments) {
 		if(!method_exists($this, $method)) {
-			if(!$this->transistor) return;
+			if(!$this->transistor) return null;
 			if(method_exists($this->transistor, $method)) {
 				return call_user_func_array([$this->transistor, $method], $arguments);
 			}
 		}
+		return null;
 	}
 
 	public static function getTransistorFor(Plugin $plugin) {

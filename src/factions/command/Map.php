@@ -26,6 +26,7 @@ use factions\manager\Members;
 use factions\utils\Collections;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class Map extends Command
 {
@@ -40,6 +41,7 @@ class Map extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
+    	if(!$sender instanceof Player) return false;
         if (isset($args[0])) {
             $val = $args[0];
             $fsender = Members::get($sender);

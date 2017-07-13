@@ -182,7 +182,6 @@ class Parameter {
      * @return bool
      */
     public static function validateInputType($input, int $type) : bool {
-        if(!isset(self::PRIMITIVE_TYPES[$type])) return false;
 		switch ($type) {
             case self::TYPE_STRING:
                 return is_string($input);
@@ -203,7 +202,6 @@ class Parameter {
                     default:
                         return false;
                 }
-                return false;
             case self::TYPE_DOUBLE:
             case self::TYPE_FLOAT:
                 if(strpos($input, ".") === false) return false;
@@ -239,7 +237,7 @@ class Parameter {
     }
 
     public function isPrimitive() : bool {
-        return isset(self::PRIMITIVE_TYPES[$this->type]);
+        return self::PRIMITIVE_TYPES[$this->type] !== null;
 	}
 
     /*

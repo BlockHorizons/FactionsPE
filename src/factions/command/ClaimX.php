@@ -25,6 +25,7 @@ use factions\manager\Members;
 use factions\manager\Plots;
 use pocketmine\command\CommandSender;
 use pocketmine\level\Position;
+use pocketmine\Player;
 
 abstract class ClaimX extends Command
 {
@@ -51,8 +52,9 @@ abstract class ClaimX extends Command
         return $this;
     }
 
-    public function perform(CommandSender $sender, $label, array $args): BOOL
+    public function perform(CommandSender $sender, $label, array $args): bool
     {
+    	if(!$sender instanceof Player) return false;
         $this->sender = $sender;
 
         // Args

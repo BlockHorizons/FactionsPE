@@ -31,6 +31,7 @@ use factions\relation\Relation;
 use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class Kick extends Command
 {
@@ -43,6 +44,7 @@ class Kick extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
+    	if(!$sender instanceof Player) return false;
         $target = $this->getArgument(0);
         $msender = Members::get($sender);
         $overriding = $msender->isOverriding();
@@ -80,11 +82,11 @@ class Kick extends Command
         }
 
         $faction = $target->getFaction();
-        if (!$faction->isPermitted($faction->getRelationTo($msender), Permissions::getById(Permission::KICK))) return;
+        if (!$faction->isPermitted($faction->getRelationTo($msender), Permissions::getById(Permission::KICK))) return false;
 
         $event = new MembershipChangeEvent($target, $faction, MembershipChangeEvent::REASON_KICK);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
-        if ($event->isCancelled()) return;
+        if ($event->isCancelled()) return false;
 
         $faction->sendMessage(Localizer::translatable("member-kicked-inform-faction", [
             "by" => $sender->getDisplayName(),

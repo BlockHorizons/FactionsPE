@@ -38,13 +38,11 @@ class Link extends Command {
 
 
 	public function __construct(Command $target, array $pairs) {
-	    echo $target->getName().PHP_EOL;
-	    return;
         $this->target = $target;
         $this->pairs = $pairs;
 	}
 
-	public function getUsage(CommandSender $sender = null) {
+	public function getUsage(CommandSender $sender = null): string {
 		$cmd = "/" . $this->target->getName();
 		foreach($this->pairs as $local => $ext) {
 		    $cmd .= " ".$this->getParameterAt($ext)->getTemplate($sender);

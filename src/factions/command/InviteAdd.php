@@ -27,6 +27,7 @@ use factions\FactionsPE;
 use factions\manager\Members;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class InviteAdd extends Command
 {
@@ -41,8 +42,9 @@ class InviteAdd extends Command
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
     }
 
-    public function perform(CommandSender $sender, $label, array $args)
+    public function perform(CommandSender $sender, $label, array $args) : bool
     {
+    	if(!$sender instanceof Player) return false;
         $member = $this->getArgument(0);
         $msender = Members::get($sender);
         $faction = $msender->getFaction();
@@ -58,7 +60,7 @@ class InviteAdd extends Command
 
         $faction->setInvited($member, true);
         $sender->sendMessage(Localizer::translatable('invite-add-success', [$member->getDisplayName()]));
-        if ($member->isOnline()) $member->sendMessage(Localizer::parse('invite-add-inform-target', [
+        if ($member->isOnline()) $member->sendMessage(Localizer::trans('invite-add-inform-target', [
             "player" => $sender->getDisplayName(),
             "faction" => $faction->getName()
         ]));

@@ -409,7 +409,7 @@ class Faction extends FactionData implements RelationParticipator
 
     public function join(IMember $member, $role = Relation::RECRUIT): bool
     {
-
+		return true;
     }
 
     public function leave(IMember $member): bool

@@ -23,12 +23,15 @@ use dominate\Command;
 use factions\command\parameter\FactionParameter;
 use factions\entity\Faction;
 use factions\event\faction\FactionDisbandEvent;
+use factions\FactionsPE;
 use factions\flag\Flag;
 use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\permission\Permission;
+use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
 class Disband extends Command
 {
@@ -41,10 +44,12 @@ class Disband extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-        // Args
+	    if(!$sender instanceof Player) return false;
+	    // Args
         /** @var Faction $faction */
         $faction = $this->getArgument(0);
         $member = Members::get($sender);
+
 
         // MPerm
         if (!($perm = Permissions::getById(Permission::DISBAND))->has($member, $faction)) {
