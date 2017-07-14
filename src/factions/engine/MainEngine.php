@@ -72,7 +72,7 @@ class MainEngine extends Engine
     ];
 
     const DOORS = [
-        Block::DOOR_BLOCK,
+        Block::WOODEN_DOOR_BLOCK,
         Block::TRAPDOOR,
         Block::FENCE_GATE,
         Block::NETHER_BRICK_FENCE,
