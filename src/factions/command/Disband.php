@@ -31,7 +31,6 @@ use factions\permission\Permission;
 use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
-use pocketmine\Player;
 
 class Disband extends Command
 {
@@ -44,7 +43,7 @@ class Disband extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-	    if(!$sender instanceof Player) return false;
+	    if(!$sender instanceof \pocketmine\Player) return false;
 	    // Args
         /** @var Faction $faction */
         $faction = $this->getArgument(0);
