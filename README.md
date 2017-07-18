@@ -2,9 +2,6 @@
 
 [![Join the chat at https://gitter.im/BlockHorizons/FactionsPE](https://badges.gitter.im/BlockHorizons/FactionsPE.svg)](https://gitter.im/BlockHorizons/FactionsPE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-### Live preview:
-FactionsPE is currently installed on my server: __synch.scalacube.org:19132__
-
 ### Installing
 Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
 
