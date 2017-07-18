@@ -28,7 +28,7 @@ use pocketmine\scheduler\PluginTask;
 class PowerUpdateTask extends PluginTask
 {
 
-    public function onRun($currentTick)
+    public function onRun(int $currentTick)
     {
         foreach (Members::getAllOnline() as $member) {
             // if($member->isNone()) continue;
