@@ -64,7 +64,8 @@ class FactionCommand extends Command
             new HudSwitch($plugin, "hud", "Toggle HUD", Permissions::HUD),
             new Power($plugin, "power", "Manage power", Permissions::POWERBOOST),
             new Version($plugin, "version", "See current plugin version and information", Permissions::VERSION),
-            new Name($plugin, "name", "Rename faction", Permissions::NAME)
+            new Name($plugin, "name", "Rename faction", Permissions::NAME),
+            new Info($plugin, "info", "Get faction information", Permissions::INFO)
         ];
 
         if ($plugin->economyEnabled()) {

@@ -310,6 +310,10 @@ class FactionData extends Data
         return $this->createdAt;
     }
 
+    public function getAge(): int {
+        return time() - $this->getCreatedAt();
+    }
+
     public function getPowerBoost(): int
     {
         return $this->powerBoost;

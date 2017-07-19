@@ -622,11 +622,7 @@ class Faction extends FactionData implements RelationParticipator
      */
     public function getFlags(): array
     {
-        $r = [];
-        foreach (Flags::getAll() as $flag) {
-            $r[$flag->getId()] = $this->flags[$flag->getId()] ?? $flag->isStandard();
-        }
-        return $r;
+        return $this->flags;
     }
 
     /**
@@ -638,6 +634,7 @@ class Faction extends FactionData implements RelationParticipator
         foreach ($flags as $flag) {
             $flagIds[$flag->getId()] = $flag->isStandard();
         }
+        $this->flags = array_merge($flagIds, $this->flags);
     }
 
     /*
