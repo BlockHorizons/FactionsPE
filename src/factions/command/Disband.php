@@ -43,14 +43,12 @@ class Disband extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-	    if(!$sender instanceof \pocketmine\Player) return false;
 	    // Args
         /** @var Faction $faction */
         $faction = $this->getArgument(0);
         $member = Members::get($sender);
 
-
-        // MPerm
+        // Perm
         if (!($perm = Permissions::getById(Permission::DISBAND))->has($member, $faction)) {
             return ["faction-permission-error", ["perm_desc" => $perm->getDescription()]];
         }

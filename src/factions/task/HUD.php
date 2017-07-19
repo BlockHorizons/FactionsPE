@@ -13,15 +13,18 @@ use pocketmine\scheduler\PluginTask;
 class HUD extends PluginTask
 {
 
-    const DEFAULT_HUD = "》 Power: &6{POWER}&f/&6{MAXPOWER} &8|&f Money: &6{MU}{MONEY} &8|&f Faction: &6{FACTION} &8|&f Faction power: &6{F-POWER}&f/&6{MAXF-POWER}&f 《";
+    const DEFAULT_POPUP = "》 Power: &6{POWER}&f/&6{MAXPOWER} &8|&f Money: &6{MU}{MONEY} &8|&f Faction: &6{FACTION} &8|&f Faction power: &6{F-POWER}&f/&6{MAXF-POWER}&f 《";
+    const DEFAULT_TIP = null;
 
     /** @var string */
-    protected $hud = self::DEFAULT_HUD;
+    protected $popup = self::DEFAULT_POPUP;
+    protected $tip = self::DEFAULT_TIP;
 
     public function __construct(Plugin $plugin)
     {
         parent::__construct($plugin);
-        $this->hud = Gameplay::get("hud.popup", $this->hud);
+        $this->popup = Gameplay::get("hud.popup", $this->popup);
+        $this->tip = Gameplay::get('hud.tip', $this->tip);
     }
 
     public function onRun($currentTick)
@@ -29,7 +32,8 @@ class HUD extends PluginTask
         foreach (Members::getAllOnline() as $member) {
             if (!$member->hasHUD()) continue;
 
-            $member->getPlayer()->sendPopup(Text::parse(self::parseTags($member, $this->hud)));
+            $member->getPlayer()->sendPopup(Text::parse(self::parseTags($member, $this->popup)));
+            if($this->tip) $member->getPlayer()->sendTip(Text::parse(self::parseTags($member, $this->tip)));
         }
     }
 
@@ -52,5 +56,19 @@ class HUD extends PluginTask
     {
         return ($e = FactionsPE::get()->getEconomy()) ? $e->balance($member->getPlayer()) : 0;
     }
+
+    public function setTip(string $tip) 
+    {
+        $this->tip = $tip;
+    }
+
+    public function setPopup(string $popup) 
+    {
+        $this->popup = $popup;
+    }
+
+    // public function setInterval(int $interval) {
+    // # TODO        
+    // }
 
 }
