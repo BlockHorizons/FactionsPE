@@ -15,7 +15,6 @@ API methods and examples can be found [at the wiki](https://github.com/BlockHori
 ### Third-party libraries
 + [Localizer](https://github.com/Chris-Prime/Localizer)
 + [Economizer](https://github.com/Chris-Prime/Economizer)
-+ [Simple-LibLoader](https://github.com/Chris-Prime/Simple-LibLoader)
 + [Dominate](https://github.com/Chris-Prime/Dominate)
 
 #### Random screenshots
