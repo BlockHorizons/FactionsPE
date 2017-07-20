@@ -28,7 +28,7 @@ use pocketmine\Player;
 class Member extends OfflineMember
 {
 
-    /** @var string $factionHereId */
+    /** @var array */
     public $chunkPos = [0, 0];
 
     /** @var $lastActivityMillis */

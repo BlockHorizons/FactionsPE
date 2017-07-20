@@ -276,7 +276,9 @@ class Plots
 
     public static function saveAll()
     {
-        FactionsPE::get()->getDataProvider()->savePlots(self::$plots);
+        if($p = FactionsPE::get()->getDataProvider()) {
+            $p->savePlots(self::$plots);
+        }
     }
 
     public static function getAll(): array

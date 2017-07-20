@@ -217,7 +217,7 @@ class FactionsPE extends PluginBase
                     break;
             }
         } catch (\Exception $e) {
-            $this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage()]));
+            $this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage(), $e->getCode()]));
             $this->getServer()->getPluginManager()->disablePlugin($this);
             return false;
         }

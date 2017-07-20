@@ -39,7 +39,6 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator
     {
         $sd = FactionsPE::get()->getDataProvider()->loadMember($name);
         parent::__construct(array_merge($data, compact("name"), $sd ? $sd->__toArray() : []));
-        Members::attach($this);
         $this->updateFaction();
     }
 

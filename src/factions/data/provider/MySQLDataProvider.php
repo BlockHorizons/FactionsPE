@@ -8,6 +8,7 @@
 
 namespace factions\data\provider;
 
+use factions\entity\Faction;
 use factions\data\FactionData;
 use factions\data\MemberData;
 use factions\entity\Member;
@@ -205,7 +206,7 @@ class MySQLDataProvider extends DataProvider
     {
         if (($r = $this->query("SELECT * FROM `permissions`;"))) {
             while ($data = $r->fetch_assoc()) {
-                $data["standard"] = json_decode($data["standard"]);
+                $data["standard"] = json_decode($data["standard"], true);
                 $this->loadPermission($data["name"], $data);
             }
         }
@@ -251,7 +252,10 @@ class MySQLDataProvider extends DataProvider
     {
         if (($r = $this->query("SELECT `id` FROM `factions`;"))) {
             while ($data = $r->fetch_assoc()) {
-                $this->loadFaction($data["id"]);
+                $f = $this->loadFaction($data["id"]);
+                if($f instanceof Faction) {
+                    Factions::attach($f);
+                }
             }
         }
     }
@@ -264,11 +268,12 @@ class MySQLDataProvider extends DataProvider
     {
         if (($r = $this->query("SELECT * FROM `factions` WHERE `id`='$id';"))) {
             $data = $r->fetch_assoc();
-            $data["perms"] = json_decode($data["perms"]);
-            $data["flags"] = json_decode($data["flags"]);
-            $data["relationWishes"] = json_decode($data["relationWishes"]);
-            $data["members"] = json_decode($data["members"]);
-            return new FactionData($data);
+            $data["perms"] = json_decode($data["perms"], true);
+            $data["flags"] = json_decode($data["flags"], true);
+            $data["relationWishes"] = json_decode($data["relationWishes"], true);
+            $data["members"] = json_decode($data["members"], true);
+            $data["invitedPlayers"] = json_decode($data["invitedPlayers"], true);
+            return new Faction($id, $data);
         }
         return null;
     }
@@ -276,14 +281,38 @@ class MySQLDataProvider extends DataProvider
     protected function prepare()
     {
         $st = microtime(true);
-        $d = $this->getMain()->getConfig()->get("mysql");
+        $d = $this->getMain()->getConfig()->getNested("data-provider.mysql");
 
-        $this->connection = @new \mysqli($d["host"], $d["user"], $d["password"], $d["database"], $d["port"]);
-        if ($this->connection->connect_error) {
-            throw new \Exception($this->connection->connect_error, $this->connection->connect_errno);
-        }
+        $this->connection = @new \mysqli($d["host"], $d["user"], $d["password"], "", $d["port"]);
         $this->getMain()->getServer()->getScheduler()->scheduleRepeatingTask(new MySQLPinger($this->connection), 600);
         $this->connection_time = microtime(true) - $st;
+
+        if ($this->connection->connect_error) {
+            throw new \Exception($this->connection->connect_error, $this->connection->connect_errno);
+        } else {
+            try {
+                $this->query("CREATE DATABASE ".$d["database"].";");
+            } catch (\Exception $e) {
+                if($e->getCode() !== 1007) { // Ignore
+                    throw $e;
+                }
+            }
+        }
+        $this->query("USE ".$d["database"]."");
+
+        $query = stream_get_contents($h = $this->getMain()->getResource("mysql.sql"));
+        @fclose($h);
+        foreach (explode("CREATE", $query) as $st) {
+            if(empty($st)) continue;
+            try {
+                $this->query("CREATE".$st);
+            } catch (\Exception $e) {
+                if($e->getCode() !== 1050) { // Ignore
+                    throw $e;
+                }
+            }
+        }
+
     }
 
     /**

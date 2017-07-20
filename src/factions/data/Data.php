@@ -49,7 +49,6 @@ abstract class Data
         $this->save();
         $this->lastSaved = microtime(true);
         $this->hash = md5(json_decode($this->__toArray()));
-        var_dump($this->__debugInfo());
     }
 
 
@@ -85,14 +84,6 @@ abstract class Data
                 $this->changed();
             }
         }
-    }
-
-    public function __debugInfo()
-    {
-        return [
-            "hash" => $this->hash,
-            "lastSaved" => $this->lastSaved." or ".Text::ago($this->lastSaved / 1000)
-        ];
     }
 
 }

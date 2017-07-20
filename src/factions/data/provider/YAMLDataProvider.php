@@ -89,7 +89,10 @@ class YAMLDataProvider extends DataProvider
             return substr($el, strpos($el, "factions/") + 9, -4);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
-            $this->loadFaction($faction);
+            $f = $this->loadFaction($faction);
+            if($f instanceof Faction) {
+                Factions::attach($f);
+            }
         }
     }
 

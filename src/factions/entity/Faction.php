@@ -64,7 +64,6 @@ class Faction extends FactionData implements RelationParticipator
     public function __construct(string $id, array $data)
     {
         parent::__construct(array_merge(["id" => $id], $data));
-        Factions::attach($this);
 
         if (isset($data["creator"]) && !$this->getLeader()) {
             $this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));

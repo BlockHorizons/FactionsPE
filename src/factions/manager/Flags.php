@@ -38,7 +38,9 @@ class Flags
 
     public static function saveAll()
     {
-        FactionsPE::get()->getDataProvider()->saveFlags(self::getAll());
+        if($p = FactionsPE::get()->getDataProvider()) {
+            $p->saveFlags(self::getAll());
+        }
     }
 
     public static function getAll(): array
