@@ -5,6 +5,10 @@
 ### Installing
 Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
 
+### PureChat support
+There is no official support for FactionsPE. However I've made [fork](https://github.com/Chris-Prime/PureChat) which does support this plugin. 
+**NOTE**: ``chat-formatter`` must be set to false in order to allow PureChat format your chat instead.
+
 ### For developers
 API methods and examples can be found [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/API)
 
