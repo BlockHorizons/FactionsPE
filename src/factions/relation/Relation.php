@@ -24,6 +24,7 @@ use factions\entity\IMember;
 use factions\flag\Flag;
 use factions\utils\Gameplay;
 use factions\utils\Text;
+use factions\command\Info;
 use pocketmine\utils\TextFormat;
 
 final class Relation
