@@ -25,7 +25,7 @@ use factions\entity\Faction;
 use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\utils\Gameplay;
-use factions\relation\Relation;
+use factions\relation\Relation as REL;
 use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
@@ -63,9 +63,9 @@ class Info extends Command
         $flags = rtrim($f, "| ");
 
         $relations = [
-            Relation::ALLY => $faction->getFactionsWhereRelation(Relation::ALLY),
-            Relation::TRUCE => $faction->getFactionsWhereRelation(Relation::TRUCE),
-            Relation::ENEMY => $faction->getFactionsWhereRelation(Relation::ENEMY)
+            REL::ALLY => $faction->getFactionsWhereRelation(REL::ALLY),
+            REL::TRUCE => $faction->getFactionsWhereRelation(REL::TRUCE),
+            REL::ENEMY => $faction->getFactionsWhereRelation(REL::ENEMY)
         ];
         $title = Text::titleize("Faction ".$member->getColorTo($faction).$faction->getName());
 
