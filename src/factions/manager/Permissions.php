@@ -215,15 +215,20 @@ final class Permissions
             ]
         ];
         foreach ($perms as $perm => $data) {
-            self::create($data[0], $perm, $perm, Localizer::translatable("permission." . $perm), $data[1], $data[2], $data[3], $data[4]);
+            if (self::getById($perm) instanceof Permission) {
+                continue;
+            }
+            Permissions::create($data[0], $perm, $perm, Localizer::translatable("permission." . $perm), $data[1], $data[2], $data[3], $data[4]);
+
         }
     }
 
     public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible): Permission
     {
-        $ret = self::getById($id);
-        if ($ret) return $ret;
-        $ret = new Permission($priority, $name, $desc, $standard, $territory, $editable, $visible);
+        if (self::getById($id) instanceof Permission) {
+            throw new \Exception("Permission with id=$id has been already registered");
+        }
+        $ret = new Permission($id, $priority, $name, $desc, $standard, $territory, $editable, $visible);
         self::attach($ret);
         return $ret;
     }

@@ -40,7 +40,7 @@ class Factions
     public static function createSpecialFactions()
     {
         if (self::getByName(Faction::NAME_NONE) === null) {
-            new Faction(Faction::NONE, [
+            Factions::attach(new Faction(Faction::NONE, [
                 "name" => Faction::NAME_NONE,
                 "flags" => [
                     Flag::PVP => true,
@@ -62,10 +62,10 @@ class Factions
                     Permission::BUTTON => Relation::getAll(),
                     Permission::DOOR => Relation::getAll()
                 ],
-            ]);
+            ]));
         }
         if (self::getByName(Faction::NAME_SAFEZONE) === null) {
-            new Faction(Faction::SAFEZONE, [
+            Factions::attach(new Faction(Faction::SAFEZONE, [
                 "name" => Faction::NAME_SAFEZONE,
                 "flags" => [
                     Flag::PEACEFUL => true,
@@ -73,10 +73,10 @@ class Factions
                     Flag::INFINITY_POWER => true
                 ],
                 "description" => "Save from PVP and Monsters" # TODO: Translatable
-            ]);
+            ]));
         }
         if (self::getByName(Faction::NAME_WARZONE) === null) {
-            new Faction(Faction::WARZONE, [
+            Factions::attach(new Faction(Faction::WARZONE, [
                 "name" => Faction::NAME_WARZONE,
                 "flags" => [
                     Flag::PVP => true,
@@ -84,8 +84,62 @@ class Factions
                     Flag::INFINITY_POWER => true
                 ],
                 "description" => "Be careful enemies can be nearby" # TODO: Translatable
-            ]);
+            ]));
         }
+    }
+
+    /**
+     * This faction should be manually attached to global store using Factions::attach() method
+     * 
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param array $members = []
+     * @param array|Flag[] $flags = [] (flag => bool | Flag[])
+     * @param array|Permission[] $perms = [] (permission => array(relations) | Permission[])
+     * @param array $data = []
+     *
+     * @return Faction
+     */
+    public static function create(string $id, string $name, string $description, array $members = [], array $flags = [], array $perms = [], array $data = []): Faction {
+        if(self::getById($id)) {
+            throw new \Exception("Can not create faction: id '$id' taken");
+        } elseif (self::getByName($name)) {
+            throw new \Exception("Can not create faction: name '$name' taken");
+        }
+        // TODO: Validate description
+        return new Faction($id, array_merge([
+            "name" => $name,
+            "description" => $description,
+            "members" => $members,
+            "flags" => $flags,
+            "perms" => $perms,
+            ], $data));
+    }
+
+    /**
+     * Creates a member list in correct format. This list can be passed in Faction::__construct method via $data variable
+     * or self::create() method via $members variable
+     *
+     * @param IMember $leader
+     * @param IMember[]|string[]|IPlayer[] $officers = []
+     * @param IMember[]|string[]|IPlayer[] $members = []
+     * @param IMember[]|string[]|IPlayer[] $recruits = []
+     *
+     * @return array (rank => IMember[])
+     */
+    public static function createMembersList(IMember $leader, array $officers = [], array $members = [], array $recruits = []): array {
+        foreach ($vars = [$officers, $members, $recruits] as $var) {
+            foreach ($var as $key => $member) {
+                $var[$key] = Members::get($member, true);
+            }
+        }
+        return [
+            Relation::LEADER => [$leader],
+            Relation::OFFICER => $officers,
+            Relation::MEMBER => $members,
+            Relation::RECRUIT => $recruits
+        ];
     }
 
     /**

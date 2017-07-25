@@ -313,6 +313,7 @@ class FactionsPE extends PluginBase
                 eval($code);
             } catch (\Exception $e) {
                 $this->getLogger()->error("Error while executing a test: " . $e->getMessage());
+                echo $e->getTraceAsString();
             }
         }
 

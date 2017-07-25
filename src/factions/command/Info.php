@@ -77,7 +77,7 @@ class Info extends Command
         $member->sendMessage(Text::parse("<gold>Flags: ".$flags));
         $member->sendMessage(Text::parse("<gold>".implode("/", array_keys($power)).": <yellow>".implode("/", array_values($power))));
         foreach ($relations as $rel => $factions) {
-            $member->sendMessage(Text::parse("<gold>Relation ".Relation::getColor($rel).ucfirst($rel)."<gold>(".count($factions)."):"));
+            $member->sendMessage(Text::parse("<gold>Relation ".REL::getColor($rel).ucfirst($rel)."<gold>(".count($factions)."):"));
             if(empty($factions)) {
                 $member->sendMessage(Text::parse("<gray>none"));
             } else {

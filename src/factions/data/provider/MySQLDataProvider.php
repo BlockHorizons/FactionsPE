@@ -11,6 +11,7 @@ namespace factions\data\provider;
 use factions\entity\Faction;
 use factions\data\FactionData;
 use factions\data\MemberData;
+use factions\manager\Factions;
 use factions\entity\Member;
 use factions\entity\Plot;
 use factions\flag\Flag;

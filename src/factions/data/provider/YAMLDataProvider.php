@@ -20,6 +20,7 @@ namespace factions\data\provider;
 
 use factions\data\FactionData;
 use factions\data\MemberData;
+use factions\manager\Factions;
 use factions\entity\Faction;
 use factions\entity\Plot;
 use factions\manager\Plots;

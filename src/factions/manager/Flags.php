@@ -102,7 +102,7 @@ class Flags
             $desc = Localizer::translatable("flag.$id-desc");
             $descYes = Localizer::translatable("flag.$id-desc-yes");
             $descNo = Localizer::translatable("flag.$id-desc-no");
-            self::create($id, $flag[0], $id, $desc, $descYes, $descNo, $flag[1], $flag[2], $flag[3]);
+            Flags::create($id, $flag[0], $id, $desc, $descYes, $descNo, $flag[1], $flag[2], $flag[3]);
         }
     }
 

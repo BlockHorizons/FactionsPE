@@ -65,12 +65,15 @@ class Faction extends FactionData implements RelationParticipator
     {
         parent::__construct(array_merge(["id" => $id], $data));
 
+        /**
+         * You can pass initial player (creator) using "creator" or "members" data created by Factions::createMemberList
+         */
         if (isset($data["creator"]) && !$this->getLeader()) {
             $this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
         }
 
         if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
-            if (empty($this->members)) {
+            if ($this->isEmpty()) {
                 $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
             }
         }
@@ -82,6 +85,13 @@ class Faction extends FactionData implements RelationParticipator
      * STATUS
      * ----------------------------------------------------------
      */
+
+    /**
+     * @internal
+     */
+    private function isEmpty(): bool {
+        return empty($this->getMembers());
+    }
 
     /**
      * Returns this Faction's leader, if returned null and this faction isn't special

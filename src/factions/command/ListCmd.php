@@ -48,7 +48,7 @@ class ListCmd extends Command
                 return Localizer::trans("list-wilderness", [count(Members::getFactionless()) - 1]); // minus one, because of CONSOLE object
                 # <i>Factionless<i> %d online
             } else {
-                if ($faction->isSpecial()) return null;
+                if ($faction->isSpecial() && !Members::get($sender)->isOverriding()) return null;
                 return Localizer::trans("list-info",
                         [
                             $faction->getName(),

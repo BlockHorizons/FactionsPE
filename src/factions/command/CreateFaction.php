@@ -86,6 +86,7 @@ class CreateFaction extends Command
             "name" => $name,
             "creator" => $creator
         ]);
+        Factions::attach($faction);
         $creator->updateFaction();
 
         $event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);
