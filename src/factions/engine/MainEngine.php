@@ -282,11 +282,9 @@ class MainEngine extends Engine
      */
     public function teleportToHomeOnRespawn(PlayerRespawnEvent $event) {
         $player = Members::get($event->getPlayer());
-        if($player->hasFaction()) {
-            if($player->getFaction()->isValidHome($player->getFaction()->getHome())) {
-                $event->setRespawnPosition($player->getFaction()->getHome());
-                $player->sendMessage(Text::parse("<b>Teleported to faction home"));
-            }
+        if($player->hasFaction() && $player->getFaction()->hasHome()) {
+            $event->setRespawnPosition($player->getFaction()->getHome());
+            $player->sendMessage(Text::parse("<b>Teleported to faction home"));
         }
     }
 

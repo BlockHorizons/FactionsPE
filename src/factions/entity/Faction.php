@@ -279,10 +279,13 @@ class Faction extends FactionData implements RelationParticipator
         $this->sendMessage(Localizer::translatable("home-out-of-bounds"));
     }
 
-    public function isValidHome($home): bool
+    public function hasHome(): bool {
+        $this->verifyHome();
+        return $this->home instanceof Position;
+    }
+
+    public function isValidHome(Position $home): bool
     {
-        if ($home === null) return false;
-        if (!$home instanceof Position) return false;
         if (!Gameplay::get("home.must-be-in-claimed-territories", true)) return true;
         if (Plots::getFactionAt($home) === $this) return true;
         return false;
