@@ -27,6 +27,7 @@ use factions\entity\Faction;
 use factions\event\faction\FactionCreateEvent;
 use factions\event\member\MembershipChangeEvent;
 use factions\FactionsPE;
+use factions\manager\Factions;
 use factions\manager\Members;
 use factions\utils\Gameplay;
 use localizer\Localizer;

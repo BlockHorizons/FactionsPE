@@ -32,6 +32,7 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable
     const REASON_CREATE = 0x3;
     const REASON_KICK = 0x4;
     const REASON_DISBAND = 0x5;
+    
     public static $handlerList = null;
     public static $eventPool = [];
     public static $nextEvent = 0;
