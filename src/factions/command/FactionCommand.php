@@ -65,7 +65,8 @@ class FactionCommand extends Command
             new Power($plugin, "power", "Manage power", Permissions::POWERBOOST),
             new Version($plugin, "version", "See current plugin version and information", Permissions::VERSION),
             new Name($plugin, "name", "Rename faction", Permissions::NAME),
-            new Info($plugin, "info", "Get faction information", Permissions::INFO)
+            new Info($plugin, "info", "Get faction information", Permissions::INFO),
+            new Description($plugin, "description", "Set faction's description", Permissions::DESCRIPTION)
         ];
 
         if ($plugin->economyEnabled()) {

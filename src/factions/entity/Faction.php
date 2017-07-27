@@ -293,8 +293,12 @@ class Faction extends FactionData implements RelationParticipator
 
     public function sendMessage($message)
     {
-        foreach ($this->getOnlineMembers() as $player) {
-            $player->sendMessage($message);
+        if($this->isSpecial()) {
+            Members::get("CONSOLE")->sendMessage($this->getName().": ".$message);
+        } else {
+            foreach ($this->getOnlineMembers() as $player) {
+                $player->sendMessage($message);
+            }
         }
     }
 
