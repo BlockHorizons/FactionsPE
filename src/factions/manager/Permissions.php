@@ -135,6 +135,10 @@ final class Permissions
         return isset(self::$permissions[$perm->getId()]);
     }
 
+    public static function flush() {
+        self::$permissions = [];
+    }
+
     /**
      * Creates a Permissions
      */

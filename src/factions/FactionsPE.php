@@ -124,10 +124,12 @@ class FactionsPE extends PluginBase
         Gameplay::setData($this->getConfig()->get('gameplay', []));
 
         # Load flags
+        Flags::flush();
         $this->getDataProvider()->loadFlags();
         Flags::init();
 
         # Load Permissions
+        Permissions::flush();
         $this->getDataProvider()->loadPermissions();
         Permissions::init();
 
