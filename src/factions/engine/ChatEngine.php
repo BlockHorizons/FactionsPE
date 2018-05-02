@@ -127,18 +127,18 @@ class ChatEngine extends Engine
         return $this->pureChat;
     }
 
-    /**
-     * Updates player's nametag
-     *
-     * @param MembershipChangeEvent $event
-     * @priority HIGHEST
-     * @ignoreCancelled true
-     */
-    public function onMembershipChange(MembershipChangeEvent $event) 
-    {
-        if($this->getPureChat()) {
-            $event->getMember()->getPlayer()->setNameTag($this->getPureChat()->getNametag($event->getMember()->getPlayer(), null));
-        }
-    }
+    // /**
+    //  * Updates player's nametag
+    //  *
+    //  * @param MembershipChangeEvent $event
+    //  * @priority HIGHEST
+    //  * @ignoreCancelled true
+    //  */
+    // public function onMembershipChange(MembershipChangeEvent $event) 
+    // {
+    //     if($this->getPureChat()) {
+    //         $event->getMember()->getPlayer()->setNameTag($this->getPureChat()->getNametag($event->getMember()->getPlayer(), null));
+    //     }
+    // }
 
 }

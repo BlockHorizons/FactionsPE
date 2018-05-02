@@ -337,7 +337,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		return true;
 	}
 
-	public function getUsage() : string {
+	public function getUsage(): string {
 		$sender = $this->sender;
 		$usage = "/";
         // add chain
@@ -385,7 +385,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		return true;
 	}
 
-	public function execute(CommandSender $sender, $label, array $args) {
+	public function execute(CommandSender $sender, string $label, array $args) {
 		$this->sender 	= $sender;
 		$this->label 	= $label;
 		$this->args 	= $args;

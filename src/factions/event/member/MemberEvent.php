@@ -22,7 +22,7 @@ namespace factions\event\member;
 use factions\entity\IMember;
 use pocketmine\event\Event;
 
-class MemberEvent extends Event
+abstract class MemberEvent extends Event
 {
 
     /** @var IMember */

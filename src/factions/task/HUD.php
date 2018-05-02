@@ -27,7 +27,7 @@ class HUD extends PluginTask
         $this->tip = Gameplay::get('hud.tip', $this->tip);
     }
 
-    public function onRun($currentTick)
+    public function onRun(int $currentTick)
     {
         foreach (Members::getAllOnline() as $member) {
             if (!$member->hasHUD()) continue;
