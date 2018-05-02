@@ -337,7 +337,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		return true;
 	}
 
-	public function getUsage() {
+	public function getUsage() : string {
 		$sender = $this->sender;
 		$usage = "/";
         // add chain
