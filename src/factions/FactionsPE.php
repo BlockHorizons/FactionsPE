@@ -141,20 +141,7 @@ class FactionsPE extends PluginBase
 
         // Delete inactive ones
         // This should be configurable
-        if($this->getConfig()->get("purge-inactive-factions", true)) {
-            $delta = $this->getConfig()->get("purge-after", 3600 * 24 * 7); // week
-            foreach (Factions::getAll() as $faction) {
-                if ($faction->isSpecial() or $faction->isPermanent()) continue;
-                $lp = $faction->getLastOnline();
-                if (time() - $lp > $delta) {
-                    $this->getLogger()->notice(Localizer::trans("log.purging-faction", [
-                        "faction" => $faction->getName(),
-                        "last-online" => Text::ago($lp)
-                        ]));
-                    $faction->disband(Faction::DISBAND_REASON_PURGE, true);
-                }
-            }
-        }
+        $this->purgeInactiveFactions();
 
         Factions::createSpecialFactions();
         $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
@@ -172,16 +159,10 @@ class FactionsPE extends PluginBase
         if (!$this->loadIntegrations()) goto stop;
 
         # Schedule update task
-        if (Gameplay::get("power.update-enabled", true)) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask($this), Gameplay::get("power.update-every", 10) * 20 * 60);
-            $this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
-        }
+        $this->scheduleUpdateTask();
 
         # Schedule HUD task
-        if (Gameplay::get("hud.enabled", true)) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
-            $this->getLogger()->info(Localizer::trans("plugin.hud-enabled"));
-        }
+        $this->scheduleHUDTask();
 
         # Run tests
         if (IN_DEV) {
@@ -192,6 +173,40 @@ class FactionsPE extends PluginBase
         return;
         stop:
         $this->getServer()->getPluginManager()->disablePlugin($this);
+    }
+
+    public function scheduleUpdateTask()
+    {
+    	if (Gameplay::get("power.update-enabled", true)) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask($this), Gameplay::get("power.update-every", 10) * 20 * 60);
+            $this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
+        }
+    }
+
+    public function scheduleHUDTask()
+    {
+    	if (Gameplay::get("hud.enabled", true)) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
+            $this->getLogger()->info(Localizer::trans("plugin.hud-enabled"));
+        }
+    }
+
+    public function purgeInactiveFactions()
+    {
+    	if($this->getConfig()->get("purge-inactive-factions", true)) {
+            $delta = $this->getConfig()->get("purge-after", 3600 * 24 * 7); // week
+            foreach (Factions::getAll() as $faction) {
+                if ($faction->isSpecial() or $faction->isPermanent()) continue;
+                $lp = $faction->getLastOnline();
+                if (time() - $lp > $delta) {
+                    $this->getLogger()->notice(Localizer::trans("log.purging-faction", [
+                        "faction" => $faction->getName(),
+                        "last-online" => Text::ago($lp)
+                        ]));
+                    $faction->disband(Faction::DISBAND_REASON_PURGE, true);
+                }
+            }
+        }
     }
 
     /**
@@ -275,6 +290,10 @@ class FactionsPE extends PluginBase
                     "plugin" => "PureChat"
                 ]));
             }
+        } else {
+        	$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
+        		"plugin" => $this->getName()
+        	]));
         }
         end:
         return !$stop;
