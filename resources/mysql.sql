@@ -1,5 +1,3 @@
-CREATE DATABASE fpe;
-USE fpe;
 CREATE TABLE members (
   name VARCHAR(16) PRIMARY KEY UNIQUE,
   title CHAR,
@@ -33,7 +31,7 @@ CREATE TABLE permissions (
 );
 CREATE TABLE flags (
   id VARCHAR(20) PRIMARY KEY UNIQUE,
-  name VARCHAR(16) UNIQUE,
+  name VARCHAR(32) UNIQUE,
   priority INT,
   description TEXT,
   descriptionYes TEXT,

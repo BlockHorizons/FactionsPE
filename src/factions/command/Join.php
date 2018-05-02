@@ -68,6 +68,7 @@ class Join extends Command
         $event = new MembershipChangeEvent($mplayer, $faction, MembershipChangeEvent::REASON_JOIN);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
         if ($event->isCancelled()) return true;
+        
         if (!$samePlayer) {
             $mplayer->sendMessage(Localizer::translatable("faction-joined-by-other", [$msender->getDisplayName(), $faction->getName()]));
         } else {

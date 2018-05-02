@@ -44,7 +44,7 @@ class Members
     public static function get($player, bool $create = true)
     {
         if (!$player) {
-            throw new \InvalidArgumentException("argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be IMember, CommandSender or string, " . Text::toString($player, false) . " given");
+            throw new \InvalidArgumentException("argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be IMember, IPlayer, CommandSender or string, " . Text::toString($player, false) . " given");
         }
         if ($player instanceof ConsoleCommandSender) {
             return self::get("console");
@@ -77,6 +77,7 @@ class Members
             if ($create)
                 return self::createOffline($player);
         }
+        return null;
     }
 
     /**
@@ -117,21 +118,31 @@ class Members
     /**
      * Create a Member instance for Player if he doesn't have one already
      * @param Player $player
+     * @param bool $attach should this instance be saved
      */
-    public static function create(Player $player)
+    public static function create(Player $player, bool $attach = true)
     {
         if (($ret = self::getByName($player->getName())) !== NULL) return $ret;
-        return new Member($player);
+        $m = new Member($player);
+        if($attach) {
+            self::attach($m);
+        }
+        return $m;
     }
 
     /**
      * Returns a OfflinePlayer instance for player with $name
      * @param string $name
+     * @param bool $attach should this instance be saved
      */
-    public static function createOffline(string $name): OfflineMember
+    public static function createOffline(string $name, bool $attach = true): OfflineMember
     {
         if (($ret = self::getByName($name)) !== NULL) return $ret;
-        return new OfflineMember($name);
+        $m = new OfflineMember($name);
+        if($attach) {
+            self::attach($m);
+        }
+        return $m;
     }
 
     public static function getFactionless(): array
@@ -180,14 +191,14 @@ class Members
         return self::$players;
     }
 
-    public static function debug()
+    public function __debugInfo()
     {
-        var_dump([
+        return [
             "objects" => count(self::getAll()),
             "players" => array_map(function ($item) {
-                return $item->getName();
+                return ($item->isOnline() ? "(Online)" : "(Offline)")." ".$item->getName();
             }, self::getAll())
-        ]);
+        ];
     }
 
 }

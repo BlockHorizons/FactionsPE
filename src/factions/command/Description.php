@@ -20,22 +20,40 @@
 namespace factions\command;
 
 use dominate\Command;
+use dominate\parameter\Parameter;
 use pocketmine\command\CommandSender;
 use localizer\Localizer;
-use factions\utils\Text;
+use dominate\parameter\Parmater;
+use factions\command\requirement\FactionRequirement;
+use factions\manager\Members;
 
-class Version extends Command {
+class Description extends Command {
+
+	public function setup() {
+		$this->addParameter(new Parameter("...description", Parameter::TYPE_STRING));
+		//$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
+	}
 
 	public function perform(CommandSender $sender, $label, array $args) {
-		$sender->sendMessage(Text::titleize(Localizer::translatable("version-info-header")));
-		$sender->sendMessage(Localizer::translatable("version", [
-			"version" => $this->getPlugin()->getDescription()->getVersion(),
+		if(!($m = Members::get($sender))->isLeader() && !$m->isOverriding()) {
+			return ["requirement.faction-permission-error", ["perm_desc" => "set description"]]; # Not fully translatable TODO
+		}
+
+		$description = implode(" ", $args);
+
+		if(strlen($description) > 62) {
+			return "description-too-long";
+		}
+
+		$faction = $m->getFaction();
+
+		$faction->setDescription($description);
+
+		$faction->sendMessage(Localizer::translatable("description-updated", [
+			"player" => $m->getDisplayName()
 			]));
-		$sender->sendMessage(Localizer::translatable("author", [
-			"author" => "Chris-Prime (@PrimusLV), Sandertv {@Sandertv}"
-			]));
-		$sender->sendMessage(Localizer::translatable("organization", [
-			"organization" => "BlockHorizons (https://github.com/BlockHorizons/FactionsPE)"
+		$faction->sendMessage(Localizer::translatable("new-description", [
+			"description" => $description
 			]));
 		return true;
 	}

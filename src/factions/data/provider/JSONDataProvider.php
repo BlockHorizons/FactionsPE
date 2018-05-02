@@ -19,6 +19,7 @@
 namespace factions\data\provider;
 
 use factions\data\FactionData;
+use factions\manager\Factions;
 use factions\data\MemberData;
 use factions\entity\Faction;
 use factions\manager\Plots;
@@ -93,7 +94,10 @@ class JSONDataProvider extends DataProvider
             return substr($el, strpos($el, "factions/") + 9, -4);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
-            $this->loadFaction($faction);
+            $f = $this->loadFaction($faction);
+            if($f instanceof Faction) {
+                Factions::attach($f);
+            }
         }
     }
 

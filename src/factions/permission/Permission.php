@@ -80,7 +80,10 @@ class Permission
     const PRIORITY_STATUS = 24000;
 
     protected $priority = 0;
+
+    /** @var string */
     protected $name;
+    protected $id;
 
     /** @var Translatable */
     protected $desc;
@@ -106,10 +109,11 @@ class Permission
      */
     private $visible = true;
 
-    public function __construct(int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible)
+    public function __construct(string $id, int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible)
     {
         $this->priority = $priority;
         $this->name = $name;
+        $this->id = $id;
         $this->desc = $desc;
         $this->standard = $standard;
         $this->territory = $territory;
@@ -237,7 +241,7 @@ class Permission
 
     public function getId(): string
     {
-        return $this->name;
+        return $this->id;
     }
 
     public function getDescription(): Translatable

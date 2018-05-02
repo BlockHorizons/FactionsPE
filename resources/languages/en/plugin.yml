@@ -22,7 +22,7 @@ enabled: "Enabled"
 disabled: "Disabled"
 
 dataprovider-set: "Data provider: <gold>:0"
-dataprovider-error: "Data provider error: :0"
+dataprovider-error: "Data provider error [:1]: :0"
 
 invalid-locale: "Locale code ':locale' is not valid ISO-639_1 language code"
 

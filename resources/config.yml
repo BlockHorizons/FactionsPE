@@ -47,19 +47,12 @@ purge-inactive-factions: true
 # default: week (604800)
 purge-after: 604800
 
-mysql:
- host: 127.0.0.1
- user: root
- database: fpe
- password: ChrisIsCool
- port: 3306
-
 # Gameplay settings
 gameplay:
   hud:
     enabled: true
-    popup: "this isn't implemented yet"
-    tip: "And this one aswell"
+    popup: "》 Power: &6{POWER}&f/&6{MAXPOWER} &8|&f Money: &6{MU}{MONEY} &8|&f Faction: &6{FACTION} &8|&f Faction power: &6{F-POWER}&f/&6{MAXF-POWER}&f 《"
+    tip: null
   # These are messages you'll receive on certain events. They can be switched on/off
   log:
     faction-disband: true

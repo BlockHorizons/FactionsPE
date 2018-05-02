@@ -124,10 +124,12 @@ class FactionsPE extends PluginBase
         Gameplay::setData($this->getConfig()->get('gameplay', []));
 
         # Load flags
+        Flags::flush();
         $this->getDataProvider()->loadFlags();
         Flags::init();
 
         # Load Permissions
+        Permissions::flush();
         $this->getDataProvider()->loadPermissions();
         Permissions::init();
 
@@ -217,7 +219,7 @@ class FactionsPE extends PluginBase
                     break;
             }
         } catch (\Exception $e) {
-            $this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage()]));
+            $this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage(), $e->getCode()]));
             $this->getServer()->getPluginManager()->disablePlugin($this);
             return false;
         }
@@ -313,6 +315,7 @@ class FactionsPE extends PluginBase
                 eval($code);
             } catch (\Exception $e) {
                 $this->getLogger()->error("Error while executing a test: " . $e->getMessage());
+                $this->getLogger()->debug($e->getTraceAsString());
             }
         }
 

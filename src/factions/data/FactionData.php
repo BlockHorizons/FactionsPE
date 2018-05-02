@@ -23,6 +23,9 @@ use factions\FactionsPE;
 use factions\manager\Factions;
 use localizer\Localizer;
 use pocketmine\level\Position;
+use factions\flag\Flag;
+use factions\permission\Permission;
+use factions\entity\IMember;
 
 class FactionData extends Data
 {
@@ -132,6 +135,28 @@ class FactionData extends Data
         $this->relationWishes = $source["relationWishes"] ?? [];
         $this->bank = $source["bank"] ?? $this->bank;
 
+        foreach ($this->members as $rank => $members) {
+            foreach ($members as $key => $mem) {
+                if($mem instanceof IMember) {
+                    $this->members[$rank][$key] = $mem->getName();
+                }
+            }
+        }
+
+        foreach ($this->flags as $flag => $value) {
+            if($value instanceof Flag) {
+                unset($this->flags[$flag]);
+                $this->flags[$value->getId()] = $value->isStandard();
+            }
+        }
+
+        foreach ($this->perms as $perm => $value) {
+            if($value instanceof Permission) {
+                unset($this->perms[$perm]);
+                $this->perms[$value->getName()] = $value->getStandard();
+            }
+        }
+
         if (isset($source["home"])) {
             $p = explode(":", $source["home"]);
             if (($level = FactionsPE::get()->getServer()->getLevelByName($p[3]))) {
@@ -239,7 +264,7 @@ class FactionData extends Data
 
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->description ?? "";
     }
 
     public function setDescription(string $description)
@@ -308,6 +333,10 @@ class FactionData extends Data
     public function getCreatedAt(): int
     {
         return $this->createdAt;
+    }
+
+    public function getAge(): int {
+        return time() - $this->getCreatedAt();
     }
 
     public function getPowerBoost(): int

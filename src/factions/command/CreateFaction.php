@@ -27,6 +27,7 @@ use factions\entity\Faction;
 use factions\event\faction\FactionCreateEvent;
 use factions\event\member\MembershipChangeEvent;
 use factions\FactionsPE;
+use factions\manager\Factions;
 use factions\manager\Members;
 use factions\utils\Gameplay;
 use localizer\Localizer;
@@ -86,6 +87,7 @@ class CreateFaction extends Command
             "name" => $name,
             "creator" => $creator
         ]);
+        Factions::attach($faction);
         $creator->updateFaction();
 
         $event = new MembershipChangeEvent($creator, $faction, MembershipChangeEvent::REASON_CREATE);

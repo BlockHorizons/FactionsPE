@@ -64,14 +64,16 @@ class Faction extends FactionData implements RelationParticipator
     public function __construct(string $id, array $data)
     {
         parent::__construct(array_merge(["id" => $id], $data));
-        Factions::attach($this);
 
+        /**
+         * You can pass initial player (creator) using "creator" or "members" data created by Factions::createMemberList
+         */
         if (isset($data["creator"]) && !$this->getLeader()) {
             $this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
         }
 
         if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
-            if (empty($this->members)) {
+            if ($this->isEmpty()) {
                 $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
             }
         }
@@ -83,6 +85,13 @@ class Faction extends FactionData implements RelationParticipator
      * STATUS
      * ----------------------------------------------------------
      */
+
+    /**
+     * @internal
+     */
+    private function isEmpty(): bool {
+        return empty($this->getMembers());
+    }
 
     /**
      * Returns this Faction's leader, if returned null and this faction isn't special
@@ -270,10 +279,13 @@ class Faction extends FactionData implements RelationParticipator
         $this->sendMessage(Localizer::translatable("home-out-of-bounds"));
     }
 
-    public function isValidHome($home): bool
+    public function hasHome(): bool {
+        $this->verifyHome();
+        return $this->home instanceof Position;
+    }
+
+    public function isValidHome(Position $home): bool
     {
-        if ($home === null) return false;
-        if (!$home instanceof Position) return false;
         if (!Gameplay::get("home.must-be-in-claimed-territories", true)) return true;
         if (Plots::getFactionAt($home) === $this) return true;
         return false;
@@ -281,8 +293,12 @@ class Faction extends FactionData implements RelationParticipator
 
     public function sendMessage($message)
     {
-        foreach ($this->getOnlineMembers() as $player) {
-            $player->sendMessage($message);
+        if($this->isSpecial()) {
+            Members::get("CONSOLE")->sendMessage($this->getName().": ".$message);
+        } else {
+            foreach ($this->getOnlineMembers() as $player) {
+                $player->sendMessage($message);
+            }
         }
     }
 
@@ -622,11 +638,7 @@ class Faction extends FactionData implements RelationParticipator
      */
     public function getFlags(): array
     {
-        $r = [];
-        foreach (Flags::getAll() as $flag) {
-            $r[$flag->getId()] = $this->flags[$flag->getId()] ?? $flag->isStandard();
-        }
-        return $r;
+        return $this->flags;
     }
 
     /**
@@ -638,6 +650,7 @@ class Faction extends FactionData implements RelationParticipator
         foreach ($flags as $flag) {
             $flagIds[$flag->getId()] = $flag->isStandard();
         }
+        $this->flags = array_merge($flagIds, $this->flags);
     }
 
     /*

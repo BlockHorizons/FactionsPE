@@ -20,6 +20,7 @@ namespace factions\data\provider;
 
 use factions\data\FactionData;
 use factions\data\MemberData;
+use factions\manager\Factions;
 use factions\entity\Faction;
 use factions\entity\Plot;
 use factions\manager\Plots;
@@ -89,7 +90,10 @@ class YAMLDataProvider extends DataProvider
             return substr($el, strpos($el, "factions/") + 9, -4);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
-            $this->loadFaction($faction);
+            $f = $this->loadFaction($faction);
+            if($f instanceof Faction) {
+                Factions::attach($f);
+            }
         }
     }
 
