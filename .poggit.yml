@@ -7,9 +7,5 @@ projects:
   FactionsPE:
     path: ""
     model: default
-    libs:
-     - local: lib/Localizer
-     - local: lib/Economizer
-     - local: lib/Dominate
-     - local: src/sll
+    libs: []
 ...
