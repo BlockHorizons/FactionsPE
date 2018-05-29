@@ -1,7 +1,7 @@
 <?php
 namespace localizer;
 
-use pocketmine\event\TextContainer;
+use pocketmine\lang\TextContainer;
 
 class Translatable extends TextContainer {
   
