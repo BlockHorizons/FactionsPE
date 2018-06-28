@@ -1,6 +1,6 @@
 ![Factions - PE](https://raw.githubusercontent.com/BlockHorizons/FactionsPE/reborn/resources/logo.png "FactionsPE Logo")
 
-[![Join the chat at https://gitter.im/BlockHorizons/FactionsPE](https://badges.gitter.im/BlockHorizons/FactionsPE.svg)](https://gitter.im/BlockHorizons/FactionsPE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/BlockHorizons/FactionsPE](https://badges.gitter.im/BlockHorizons/FactionsPE.svg)](https://gitter.im/BlockHorizons/FactionsPE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![HitCount](http://hits.dwyl.io/BlockHorizons/FactionsPE.svg)](http://hits.dwyl.io/BlockHorizons/FactionsPE)
 
 ### Installing
 Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
