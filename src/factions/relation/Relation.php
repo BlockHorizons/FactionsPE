@@ -64,41 +64,21 @@ final class Relation
 
     public static function fromString(string $rel)
     {
-        switch (strtolower(trim($rel))) {
-            case 'ally':
-            case 'allies':
-            case 'friend':
-            case 'buddy':
-            case 'buddies':
-            case self::ALLY:
-                return self::ALLY;
-            case 'truce':
-            case 'tru':
-            case self::TRUCE:
-                return self::TRUCE;
-            case 'neutral':
-            case 'neu':
-            case self::NEUTRAL:
-                return self::NEUTRAL;
-            case 'enemy':
-            case 'ene':
-            case self::ENEMY:
-                return self::ENEMY;
-            case 'leader':
-            case 'lea':
-            case self::LEADER:
-                return self::LEADER;
-            case 'officer':
-            case 'off':
-                return self::OFFICER;
-            case 'member':
-            case 'mem':
-                return self::MEMBER;
-            case 'recruit':
-            case 'rec':
-                return self::RECRUIT;
+        $found = null;
+        $delta = PHP_INT_MAX;
+        foreach(self::getAll() as $other) {
+            if(stripos($other, $rel) === 0) {
+                $curDelta = strlen($other) - strlen($rel);
+                if($curDelta < $delta) {
+                    $found = $other;
+                    $delta = $curDelta;
+                }
+                if($curDelta < 0) {
+                    break;   
+                }
+            }
         }
-        return null;
+        return $found;
     }
 
     public static function getAll(): array
