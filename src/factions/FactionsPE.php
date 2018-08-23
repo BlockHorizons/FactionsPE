@@ -178,7 +178,7 @@ class FactionsPE extends PluginBase
     public function scheduleUpdateTask()
     {
     	if (Gameplay::get("power.update-enabled", true)) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask($this), Gameplay::get("power.update-every", 10) * 20 * 60);
+            $this->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask($this), Gameplay::get("power.update-every", 10) * 20 * 60);
             $this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
         }
     }
@@ -186,7 +186,7 @@ class FactionsPE extends PluginBase
     public function scheduleHUDTask()
     {
     	if (Gameplay::get("hud.enabled", true)) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
+            $this->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
             $this->getLogger()->info(Localizer::trans("plugin.hud-enabled"));
         }
     }
@@ -314,8 +314,12 @@ class FactionsPE extends PluginBase
     private function runEngines()
     {
         foreach (self::$engines as $k => $engine) {
-            $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
-            self::$engines[is_int($k) ? $engine : $k] = $e;
+            try {
+                $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
+                self::$engines[is_int($k) ? $engine : $k] = $e;
+            } catch (\Exception $e) {
+                $this->getLogger()->error("Error while initializing engine: " . $e->getMessage());
+            }
         }
     }
 

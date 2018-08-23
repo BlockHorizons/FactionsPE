@@ -74,8 +74,7 @@ class Plots
      * @return string
      */
     public static function hash(Position $pos): string
-    {
-        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
+    {        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
     }
 
 

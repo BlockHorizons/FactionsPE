@@ -23,9 +23,9 @@ use factions\entity\Member;
 use factions\manager\Members;
 use factions\utils\Gameplay;
 use localizer\Localizer;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 
-class PowerUpdateTask extends PluginTask
+class PowerUpdateTask extends Task
 {
 
     public function onRun(int $currentTick)

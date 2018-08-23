@@ -61,7 +61,7 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable
         return $this->reason;
     }
 
-    public function setCancelled($force = true)
+    public function setCancelled(bool $force = true): void
     {
         if ($this->reason === self::REASON_CREATE || $this->reason === self::REASON_DISBAND) {
             throw new \LogicException(self::class."(reason={self::$this->reason}) can't be cancelled");

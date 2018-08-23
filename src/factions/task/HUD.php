@@ -8,9 +8,9 @@ use factions\manager\Members;
 use factions\utils\Gameplay;
 use factions\utils\Text;
 use pocketmine\plugin\Plugin;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 
-class HUD extends PluginTask
+class HUD extends Task
 {
 
     const DEFAULT_POPUP = "》 Power: &6{POWER}&f/&6{MAXPOWER} &8|&f Money: &6{MU}{MONEY} &8|&f Faction: &6{FACTION} &8|&f Faction power: &6{F-POWER}&f/&6{MAXF-POWER}&f 《";
@@ -22,9 +22,13 @@ class HUD extends PluginTask
 
     public function __construct(Plugin $plugin)
     {
-        parent::__construct($plugin);
+        $this->plugin = $plugin;
         $this->popup = Gameplay::get("hud.popup", $this->popup);
         $this->tip = Gameplay::get('hud.tip', $this->tip);
+    }
+
+    public function getPlugin(): FactionsPE {
+        return $this->plugin;
     }
 
     public function onRun(int $currentTick)
