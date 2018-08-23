@@ -115,7 +115,7 @@ class FactionsPE extends PluginBase
 
     public function onEnable()
     {
-        $this->getLogger()->info(Localizer::trans("plugin.enabling"));
+        $this->getLogger()->info(Localizer::trans("plugin.enabling") . " version [PHOENIX]");
 
         # Load DataProvider
         if (!$this->loadDataProvider()) goto stop;
