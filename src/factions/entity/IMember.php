@@ -105,6 +105,8 @@ interface IMember
 
     public function getPowerBoost(): int;
 
+    public function addPower(int $power);
+
     /*
      * ----------------------------------------------------------
      * PERMISSION

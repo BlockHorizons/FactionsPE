@@ -34,6 +34,7 @@ use factions\utils\Gameplay;
 use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Liquid;
 use pocketmine\entity\Creeper;
 use pocketmine\event\block\BlockBreakEvent;
@@ -72,21 +73,21 @@ class MainEngine extends Engine
     ];
 
     const DOORS = [
-        Block::WOODEN_DOOR_BLOCK,
-        Block::TRAPDOOR,
-        Block::FENCE_GATE,
-        Block::NETHER_BRICK_FENCE,
-        Block::IRON_TRAPDOOR,
-        Block::SPRUCE_FENCE_GATE,
-        Block::BIRCH_FENCE_GATE,
-        Block::JUNGLE_FENCE_GATE,
-        Block::DARK_OAK_FENCE_GATE,
-        Block::ACACIA_FENCE_GATE,
-        Block::SPRUCE_DOOR_BLOCK,
-        Block::BIRCH_DOOR_BLOCK,
-        Block::JUNGLE_DOOR_BLOCK,
-        Block::ACACIA_DOOR_BLOCK,
-        Block::DARK_OAK_DOOR_BLOCK
+        BlockIds::WOODEN_DOOR_BLOCK,
+        BlockIds::TRAPDOOR,
+        BlockIds::FENCE_GATE,
+        BlockIds::NETHER_BRICK_FENCE,
+        BlockIds::IRON_TRAPDOOR,
+        BlockIds::SPRUCE_FENCE_GATE,
+        BlockIds::BIRCH_FENCE_GATE,
+        BlockIds::JUNGLE_FENCE_GATE,
+        BlockIds::DARK_OAK_FENCE_GATE,
+        BlockIds::ACACIA_FENCE_GATE,
+        BlockIds::SPRUCE_DOOR_BLOCK,
+        BlockIds::BIRCH_DOOR_BLOCK,
+        BlockIds::JUNGLE_DOOR_BLOCK,
+        BlockIds::ACACIA_DOOR_BLOCK,
+        BlockIds::DARK_OAK_DOOR_BLOCK
     ];
 
     const EDIT_TOOLS = [];
@@ -527,16 +528,24 @@ class MainEngine extends Engine
         if (in_array($id, self::DOORS, true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if ($id === Block::STONE_BUTTON && !Permissions::getById(Permission::BUTTON)->has($me, $factionHere)) return false;
         if ($id === Block::LEVER && !Permissions::getById(Permission::LEVER)->has($me, $factionHere)) return false;
-        if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         return true;
     }
 
     public static function playerCanUseItemHere(Player $player, Position $pos, Item $item)
     {
-        if (!in_array($item->getId(), self::EDIT_TOOLS, true) && !in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) return true;
-        if (in_array(strtolower($player->getName()), Gameplay::get("players-who-bypass-all-protection", []), true)) return true;
+        if (!in_array($item->getId(), self::EDIT_TOOLS, true)) {
+            if(!in_array($item->getId(), Gameplay::get("materials-edit-tools-dupe-bug", []), true)) {
+                return true;
+            }
+        }
+        if (in_array(strtolower($player->getName()), Gameplay::get("players-who-bypass-all-protection", []), true)) {
+            return true;
+        }
         $fplayer = Members::get($player);
-        if ($fplayer->isOverriding()) return true;
+        if ($fplayer->isOverriding()) {
+            return true;
+        }
+
         return Permissions::getById(Permission::BUILD)->has($fplayer, Plots::getFactionAt($pos));
     }
 

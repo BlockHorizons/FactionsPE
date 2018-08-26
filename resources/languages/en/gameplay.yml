@@ -72,6 +72,9 @@ cant-hurt-in-their-territory: "<i>You can't hurt :0<i> in their own territory un
 cant-hurt-allies: "<i>You can't hurt allies<i>."
 cant-hurt-factionless: "<i>You can't hurt players who are not currently in a faction."
 cant-hurt-while-factionless: "<i>You can't hurt other players until you join a faction."
+friendly-fire: "<i>Player <aqua>:0<i> killed ally <aqua>:1<i>"
+ally-kill-no-bonus: "<red>Killing an ally doesn't add to your power<red>"
+power-gained-from-kill: "<i>Power earned: <green>+:0<i> for killing <aqua>:rel-color<i>:2"
 
 invalid-radius: "<rose>If you specify radius, it must be at least 1."
 radius-exceeds-allowed: "<b>The maximum radius allowed is <h>:0<b>."

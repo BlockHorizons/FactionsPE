@@ -140,6 +140,11 @@ class FConsole implements IMember, RelationParticipator
         throw new \LogicException("invalid call on console object");
     }
 
+    public function addPower(int $power) 
+    {
+        throw new \LogicException("invalid call on console object");
+    }
+
     public function getFirstPlayed(): int
     {
         return 0;

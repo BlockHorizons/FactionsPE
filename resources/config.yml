@@ -79,16 +79,16 @@ gameplay:
       per-update: 1
       # Default power value for player
       default: 10
-    # Power increase interval
+    # Power increase interval in minutes
     update-every: 10
     # Should power increase time by time ?
     update-enabled: true
   faction:
-    # Automatically disband factions without any members (except special)
+    # Automatically disband factions without any members (except special ones)
     destroy-empty-factions: true
-    # How many members can one faction hold ?
+    # How many members can one faction hold?
     member-limit: 10
-    # Idk what this means :D
+    # Idk what this means :D. (I still don't know - 2018 August)
     disable-permanent-leader-promotion: true
   faction-name:
     # Maxmimum name length
@@ -101,15 +101,15 @@ gameplay:
   home:
     # Enable faction homes
     enabled: true
-    # Automatically teleport to faction home after re-spawn?
+    # Automatically teleport to faction home after respawn ?
     teleport-to-on-death: true
     # Is "/f home" enabled?
     teleport-command-enabled: true
     # Home must be located in faction territory ?
     must-be-in-claimed-territories: true
-    # Can members teleport to faction while while being on enemy land ?
+    # Can members teleport to faction home while being on enemy land ?
     teleport-allowed-from-enemy-territory: false
-    # Is teleporting throughout different worlds allowed?
+    # Is teleporting throughout different worlds allowed ?
     teleport-allowed-from-different-world: true
     # What is minimum allowed distance, between player and enemy to allow teleportation ? (blocks)
     teleport-allowed-enemy-distance: 10
@@ -119,7 +119,7 @@ gameplay:
   can-leave-with-negative-power: false
   # Can player join new faction with negative power level ?
   can-join-with-negative-power: false
-  # Built-in chat formatter settings
+  # Built-in chat formatter settings. Color tags are hardcoded, sorry!
   chat:
     player: "{NAME}: {MESSAGE}"
     member: "<gray>[<gold>{BADGE}<white>{FACTION}<gray>]<white> {NAME}: {MESSAGE}"
@@ -135,12 +135,16 @@ gameplay:
     ally: "<green>"
     truce: "<gold>"
     neutral: "<white>"
-  # Where PVP is enabled and no default rules are checked?
+  # Where PVP is enabled and no default rules are checked? This means that PVP will be allowed no matter what
   worlds-pvp-rules-enabled: []
   # Where land can be claimed ?
   worlds-claiming-enabled: [world]
   # Where players can loose their power ?
   worlds-power-loss-enabled: [world]
+  # Where players can gain power in pvp ?
+  world-power-gain-enabled: [world]
+  # Can players gain power by killing allies ?
+  allow-ally-kill-bonus: false
   # Super-users list here
   players-who-bypass-all-protection: []
   # Can players with no faction deal no damage to others ?
@@ -149,6 +153,8 @@ gameplay:
   enable-pvp-against-factionless-in-attackers-land: true
   # Can faction-less players attack each other?
   enable-pvp-between-factionless-players: true
+  # Broadcast friendly fire (teammate killed teammate) (Options: all, faction, off or false)
+  broadcast-friendly-fire: 'false'
   # Should blocks break even tho TNT exploded in water ?
   handle-exploit-tnt-water-log: true
   # Show faction's motd when member joins
