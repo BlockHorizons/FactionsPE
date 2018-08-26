@@ -521,13 +521,13 @@ class MainEngine extends Engine
         // CONSTANTS Are fille with necessary ids, but they should be editable. #TODO
 //        if (in_array($id, Gameplay::get("materials-edit-on-interact", self::TOUCH_SENSITIVE), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
 //        if (in_array($id, Gameplay::get("materials-container", self::CONTAINERS), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
-//        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
+        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if (in_array($id, self::TOUCH_SENSITIVE, true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
         if (in_array($id, self::CONTAINERS, true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
         if (in_array($id, self::DOORS, true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         if ($id === Block::STONE_BUTTON && !Permissions::getById(Permission::BUTTON)->has($me, $factionHere)) return false;
         if ($id === Block::LEVER && !Permissions::getById(Permission::LEVER)->has($me, $factionHere)) return false;
-        if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
+//        if ($id === Block::DOOR_BLOCK && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
         return true;
     }
 
