@@ -212,6 +212,11 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator
         return $p - $this->getPowerBoost();
     }
 
+    public function addPower(int $power)
+    {
+        $this->setPower($this->getPower() + $power);
+    }
+
     public function getPowerMin(): int
     {
         return (int)Gameplay::get('power.player.min', -100);
@@ -255,7 +260,7 @@ class OfflineMember extends MemberData implements IMember, RelationParticipator
 
     public function setPower(int $power)
     {
-        $this->power = $power;
+        $this->power = min(max($power, $this->getPowerMin()), $this->getPowerMax());
     }
 
     public function isPermitted(Permission $permission): bool

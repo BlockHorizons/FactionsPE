@@ -27,10 +27,62 @@ use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\Player;
 
 class CombatEngine extends Engine
 {
+
+    /**
+     * @priority LOWEST
+     * @param PlayerDeathEvent
+     */
+    public function onPlayerDeath(PlayerDeathEvent $event) {
+        if($event->getPlayer()->getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+            $attacker = $event->getPlayer()->getLastDamageCause()->getDamager();
+            if($attacker instanceof Player) {
+                $fplayer = Member::get($event->getPlayer());
+                $fattacker = Member::get($attacker);
+
+                // Inform friendly fire
+                if($ff = (Relation::sameFaction($fattacker, $fplayer) || Relation::isAlly($fattacker, $fplayer))) {
+                    $ffMessage = Localizer::translatable('friendly-fire', [
+                        $fattacker->getDisplayName(), $fplayer->getDisplayName()
+                    ]);
+                    switch(strtolower(Gameplay::get('broadcast-friendly-fire', 'faction'))) {
+                        case 'faction':
+                            $fplayer->getFaction()->sendMessage($ffMessage);
+                            if($fplayer->getFaction !== $fattacker->getFaction()) {
+                                $fattacker->getFaction()->sendMessage($ffMessage);
+                            }
+                            break;
+                        case 'all':
+                            $this->getMain()->getServer()->broadcastMessage($ffMessage);
+                            break;
+                        default:
+                            # Silence
+                            break;
+                    }
+                }
+
+                // Has attacker earned the power points if he killed ally...
+                if($ff && !Gameplay::get('allow-ally-kill-bonus', false)) {
+                    $fattacker->sendMessage(Localizer::translatable('ally-kill-no-bonus'));
+                    return;
+                }
+
+                // Calculate power gain
+                $bonus = Gameplay::get('power-per-kill', 10);
+                $fattacker->addPower($bonus);
+                // Inform
+                $fattacker->sendMessage(Localizer::translatable('power-gained-from-kill', [
+                    $bonus,
+                    'rel-color' => Relation::getColorOfThatToMe($fattacker, $fplayer),
+                    $player->getDisplayName()
+                ]));                
+            }
+        }
+    }
 
     /**
      * @priority LOWEST

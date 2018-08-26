@@ -237,4 +237,15 @@ final class Relation
         }
     }
 
+
+    /**
+     * @param IMember $playerA
+     * @param IMember $playerB
+     * @return bool
+     */
+    public static function sameFaction(IMember $playerA, IMember $playerB): bool 
+    {
+        return $playerA->getFactionId() === $playerB->getFactionId();
+    }
+
 }
