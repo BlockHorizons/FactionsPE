@@ -28,7 +28,7 @@ use factions\command\requirement\FactionRequirement;
 use factions\manager\Members;
 use factions\command\parameter\MemberParameter;
 
-class Description extends Command {
+class Title extends Command {
 
 	public function setup() {
 		$this->addParameter(new MemberParameter("player"));
