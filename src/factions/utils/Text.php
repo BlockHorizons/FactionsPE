@@ -74,7 +74,7 @@ final class Text
         return "a";
     }
 
-    public static function strpos(string $haystack, $needle, $offset = 0)
+    public static function strpos(string $haystack, string $needle, int $offset = 0)
     {
         if (!is_array($needle)) $needle = [$needle];
         foreach ($needle as $n) {

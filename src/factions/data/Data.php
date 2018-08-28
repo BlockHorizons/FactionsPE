@@ -74,16 +74,16 @@ abstract class Data
      */
     public abstract function __toArray();
 
-    // AUTO SAVE FUNCTION
-    // When someone calls set, toggle, reset
-    // This class data will be saved
-    public function __call($name, $arguments)
-    {
-        if(Text::strpos($name, ["set", "toggle", "reset"])) {
-            if($this->isDataChanged()) {
-                $this->changed();
-            }
-        }
-    }
+    // // AUTO SAVE FUNCTION
+    // // When someone calls set, toggle, reset
+    // // This class data will be saved
+    // public function __call($name, $arguments)
+    // {
+    //     if(Text::strpos($name, ["set", "toggle", "reset"])) {
+    //         if($this->isDataChanged()) {
+    //             $this->changed();
+    //         }
+    //     }
+    // }
 
 }

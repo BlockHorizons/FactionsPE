@@ -207,4 +207,12 @@ faction-renamed: "<i>Faction renamed to <aqua>:name<i> by <green>:by<i>."
 description-updated: "<aqua>:player<i> updated faction's description"
 new-description: "<i>New description: <gold>:description"
 description-too-long: "<rose>New description length exceeds <i>62<rose> characters"
+
+seeing-chunk-no-change: "<i>See Chunk is already :0"
+seeing-chunk-activated: "<i>You now see borders of the chunk you're standing on"
+seeing-chunk-deactivated: "<i>You no longer see chunk borders"
+
+
+state-on: "activated"
+state-off: "deactivated"
 ...

@@ -73,8 +73,10 @@ class Plots
      * @param Plot $pos
      * @return string
      */
-    public static function hash(Position $pos): string
-    {        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
+    public static function hash(Position $pos): string 
+    {
+        if(!$pos->level) return md5(microtime(true));
+        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
     }
 
 

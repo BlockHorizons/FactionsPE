@@ -24,6 +24,7 @@ use factions\interfaces\IFPlayer;
 use factions\manager\Plots;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
+use pocketmine\level\format\Chunk;
 use pocketmine\math\Vector3;
 
 class Plot extends Position
@@ -119,6 +120,18 @@ class Plot extends Position
         $z = ($z instanceof Vector3) ? $z->z : $z;
         $this->subtract(0, 0, $z);
         return $this;
+    }
+
+    /**
+     * Returns chunk that plot sits on or null if invalid plot or level is not loaded
+     * @return Chunk|null
+     */
+    public function getChunk(): ?Chunk 
+    {
+        if($this->level) {
+            return $this->level->getChunk($this->x, $this->z);
+        }
+        return null;
     }
 
 }

@@ -52,6 +52,9 @@ class Member extends OfflineMember
     /** @var string */
     protected $factionHereId;
 
+    /** @var boolean */
+    protected $seeChunk = false;
+
     public function __construct(Player $player)
     {
         parent::__construct($player->getName(), compact("player"));
@@ -178,6 +181,22 @@ class Member extends OfflineMember
     public function isAlive(): bool
     {
         return $this->getPlayer()->isAlive();
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * SHORTCUTS
+     * ----------------------------------------------------------
+     */
+
+    public function isSeeingChunk(): bool
+    {
+        return $this->seeChunk;
+    }
+
+    public function setSeeChunk(bool $value): void
+    {
+        $this->seeChunk = $value;
     }
 
 }

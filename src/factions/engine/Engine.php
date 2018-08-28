@@ -22,21 +22,30 @@ namespace factions\engine;
 use factions\FactionsPE;
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginLogger;
+use pocketmine\scheduler\Task;
+use pocketmine\scheduler\TaskHandler;
 
 /**
  * Engines are listeners which control behaviour of the plugin by communicating
  * with back-end
  */
-abstract class Engine implements Listener
+abstract class Engine extends Task implements Listener
 {
 
+    /** @var FactionsPE */
     protected $main;
+    /** @var TaskHandler */
+    protected $task;
 
-    public function __construct(FactionsPE $main)
+    public function __construct(FactionsPE $main, int $loop = -1)
     {
         $this->main = $main;
 
         $this->setup();
+
+        if($loop > 0) {
+            $this->startLoop($loop);
+        }
     }
 
     /**
@@ -45,6 +54,34 @@ abstract class Engine implements Listener
     public function setup()
     {
         # Do nothing
+    }
+
+    public function onRun(int $currentTick)
+    {
+        # Do nothing
+    }
+
+    /**
+     * Starts a loop. If no params given default interval, one second, is used.
+     */
+    public function startLoop(int $interval = 20) 
+    {
+        if($this->task !== null && !$this->task->isCancelled()) {
+            throw new \Exception("Loop already running");
+        }
+        $this->task = $this->getMain()->getScheduler()->scheduleRepeatingTask($this, $interval);
+    }
+
+    public function stopLoop() {
+        if(!$this->isLooping()) {
+            throw new \Exception("Loop is not running");
+        }
+        $this->getMain()->getScheduler()->cancelTask($this->getTaskId());
+        $this->task = null;
+    }
+
+    public function isLooping() : bool {
+        return $this->task !== null && !$this->task->isCancelled();
     }
 
     public function getLogger(): PluginLogger

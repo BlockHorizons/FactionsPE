@@ -28,10 +28,12 @@ use factions\data\provider\JSONDataProvider;
 use factions\data\provider\MySQLDataProvider;
 use factions\data\provider\SQLite3DataProvider;
 use factions\data\provider\YAMLDataProvider;
+use factions\engine\Engine;
 use factions\engine\ChatEngine;
 use factions\engine\CombatEngine;
 use factions\engine\ExploitEngine;
 use factions\engine\MainEngine;
+use factions\engine\SeeChunkEngine;
 use factions\entity\Faction;
 use factions\entity\FConsole;
 use factions\manager\Factions;
@@ -56,7 +58,8 @@ class FactionsPE extends PluginBase
         MainEngine::class,
         ChatEngine::class,
         CombatEngine::class,
-        ExploitEngine::class
+        ExploitEngine::class,
+        SeeChunkEngine::class
     ];
 
     /** @var FactionsPE */
@@ -314,13 +317,20 @@ class FactionsPE extends PluginBase
     private function runEngines()
     {
         foreach (self::$engines as $k => $engine) {
+            $class = is_int($k) ? $engine : $k;
+            $reflection = new \ReflectionClass($class);
+            $shortName = $reflection->getShortName();
             try {
                 $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
-                self::$engines[is_int($k) ? $engine : $k] = $e;
+                self::$engines[$shortName] = $e;
             } catch (\Exception $e) {
                 $this->getLogger()->error("Error while initializing engine: " . $e->getMessage());
             }
         }
+    }
+
+    public function getEngine(string $name) : ?Engine {
+        return self::$engines[$name];
     }
 
     /**

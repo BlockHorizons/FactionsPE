@@ -74,16 +74,22 @@ class Parameter {
     /** @var string */
     protected $permission;
 
+    /** @var bool */
+    protected $optional = false;
+
     /**
      * If this parameter doesn't resolve into necessary value, then we will try this parameter
      * @var Parameter
      */
     protected $nextParameter;
 
-    public function __construct(string $name, int $type = null, int $index = null) {
+    public function __construct(string $name, int $type = null, $index = null, $optional = null) {
         $this->type = $type ?? $this->type;
         $this->name = $name;
         $this->index = $index ?? $this->index;
+        if(is_bool($index)) { // Variable $index was used to carry $optional
+            $this->optional = $index;
+        }
 
         $this->setup();
     }
@@ -139,12 +145,19 @@ class Parameter {
         $this->value = $value;
     }
 
-    public function getValue() {
+    /**
+     * You can pass temporary default value
+     * @param mixed $default
+     */
+    public function getValue($default = null) {
+        if($default !== null && !$this->isset(true)) {
+            return $default;
+        }
         return $this->value;
     }
 
     public function isRequired(CommandSender $sender = null) : bool {
-        return !$this->isDefaultValueSet();
+        return !$this->isDefaultValueSet() && $this->optional === false;
     }
 
     /**
@@ -163,6 +176,15 @@ class Parameter {
 
     public function getDefaultValue() {
         return $this->default;
+    }
+
+    public function getOptional() : bool {
+        return $this->optional;
+    }
+
+    public function setOptional(bool $value) : Parameter {
+        $this->optional = $value;
+        return $this;
     }
 
     public function setCommand(Command $command) {
@@ -271,6 +293,8 @@ class Parameter {
                     case 'no':
                     case 'n':
                         return false;
+                    case 'toggle':
+                        return 'toggle';
                     default:
                         return null;
                 }
