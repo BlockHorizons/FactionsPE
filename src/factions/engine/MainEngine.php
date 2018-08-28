@@ -161,65 +161,71 @@ class MainEngine extends Engine
     {
         // For security reasons we block the chunk change on any error since an error might block security checks from happening.
         try {
-            $this->onChunksChangeInner($event);
+            if(!$this->canPlotBeClaimed($event)) {
+                $event->setCancelled(true);   
+            }
         } catch (\Exception $throwable) {
             $event->setCancelled(true);
             // echo $throwable->getTraceAsString();
         }
     }
-
-    public function onChunksChangeInner($event)
+    
+    /**
+     * @todo This actually can be event listener itself
+     *
+     */
+    public function canPlotBeClaimed($event)
     {
         if (!$event instanceof LandChangeEvent) {
             throw new \InvalidArgumentException("Argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be instanceof " . LandChangeEvent::class . ", '" . Text::toString($event) . "' given");
         }
+        
         // Args
         $player = $event->getPlayer();
+        
+        // If player is in Overriding mode then ignore all logics below
+        if ($player->isOverriding()) return true;
+        
         $newFaction = $event->getFaction();
         $plot = $event->getPlot();
         $currentFaction = Plots::getFactionAt($plot);
-        // Override Mode? Sure!
-        if ($player->isOverriding()) return;
         // CALC: Is there at least one normal faction among the current ones?
-        $currentFactionIsNormal = false;
-        if ($currentFaction->isNormal()) $currentFactionIsNormal = true;
+        $currentFactionIsNormal = $currentFaction->isNormal();
+        
         if ($event->getChangeType() === LandChangeEvent::CLAIM) {
             // If the new faction is normal (not wilderness/none), meaning if we are claiming for a faction ...
             if ($newFaction->isNormal()) {
                 $world = $plot->getLevel();
+                
+                // Can't claim a plot in this level (not specified in config)
                 if (!in_array($world->getName(), Gameplay::get("worlds-claiming-enabled", []), true)) {
                     $worldName = $world->getName();
                     $player->sendMessage(Localizer::translatable("claiming-disabled-in-world", [$worldName]));
-                    $event->setCancelled(true);
-                    return;
+                    return false;
                 }
                 // ... ensure we have permission to alter the territory of the new faction ...
                 if (!Permissions::getById(Permission::TERRITORY)->has($player, $newFaction)) {
                     // NOTE: No need to send a message. We send message from the permission check itself.
                     $player->sendMessage(Localizer::translatable("no-perm-to-claim-for", [$newFaction->getName()]));
-                    $event->setCancelled(true);
-                    return;
+                    return false;
                 }
                 // ... ensure the new faction has enough players to claim ...
                 if (count($newFaction->getMembers()) < $m = Gameplay::get("claims-require-min-faction-members", 1)) {
                     $player->sendMessage(Localizer::translatable("not-enough-members-to-claim", [$m]));
-                    $event->setCancelled(true);
-                    return;
+                    return false;
                 }
                 $claimedLandCount = $newFaction->getLandCount();
                 if (!$newFaction->getFlag(Flag::INFINITY_POWER)) {
                     // ... ensure the claim would not bypass the global max limit ...
                     if (Gameplay::get("claimed-lands-max", 99999999) != 0 && $claimedLandCount + 1 > Gameplay::get("claimed-lands-max", 999999999)) {
                         $player->sendMessage(Localizer::translatable("claim-limit-reached"));
-                        $event->setCancelled(true);
-                        return;
+                        return false;
                     }
                 }
                 // ... ensure the claim would not bypass the faction power ...
                 if (($claimedLandCount + 1) * Gameplay::get("power.per-claim", 5) > $newFaction->getPower(true)) {
                     $player->sendMessage(Localizer::translatable("not-enough-power-to-claim"));
-                    $event->setCancelled(true);
-                    return;
+                    return false;
                 }
                 // ... ensure claims are properly connected ...
                 if (
@@ -237,8 +243,7 @@ class MainEngine extends Engine
                     } else {
                         $player->sendMessage(Localizer::translatable("plot-must-be-connected-faction-territory"));
                     }
-                    $event->setCancelled(true);
-                    return;
+                    return false;
                 }
             }
             // Old faction..
@@ -250,32 +255,30 @@ class MainEngine extends Engine
                     // ... claiming from others may be forbidden ...
                     if (!Gameplay::get("claiming-from-others-allowed", true)) {
                         $player->sendMessage(Localizer::translatable("claim-from-others-not-allowed"));
-                        $event->setCancelled(true);
-                        return;
+                        return false;
                     }
                     // ... the relation may forbid ...
                     if (Relation::isAtLeast($currentFaction->getRelationTo($newFaction), Relation::TRUCE)) {
                         $player->sendMessage(Localizer::translatable("cant-claim-due-to-relation"));
                         $event->setCancelled(true);
-                        return;
+                        return false;
                     }
                     // ... the old faction might not be inflated enough ...
                     if (!$currentFaction->hasLandInflation()) {
                         $player->sendMessage(Localizer::translatable("cant-claim-owner-too-strong", [$currentFaction->getName()]));
                         $event->setCancelled(true);
-                        return;
+                        return false;
                     }
                     // ... and you might be trying to claim without starting at the border ...
                     if (!Plots::isBorderPlot($plot)) {
                         $player->sendMessage(Localizer::translatable("must-start-claim-at-border"));
                         $event->setCancelled(true);
-                        return;
+                        return false;
                     }
-                    // ... otherwise you may claim from this old faction even though you lack explicit permission from them.
-
                 }
             }
         }
+        return true; // You can claim!
     }
 
     /**
