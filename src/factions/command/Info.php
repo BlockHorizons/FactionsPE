@@ -29,6 +29,8 @@ use factions\relation\Relation as REL;
 use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\utils\TextFormat;
+use factions\engine\ChatEngine;
 
 class Info extends Command
 {
@@ -73,17 +75,38 @@ class Info extends Command
         $member->sendMessage($title);
         $member->sendMessage(Text::parse("<gold>ID: <yellow>".$id));
         $member->sendMessage(Text::parse("<gold>Description: <yellow>".$description));
-        $member->sendMessage(Text::parse("<gold>Created: <purple>".Text::ago($age)));
+        $member->sendMessage(Text::parse("<gold>Age: <purple>".Text::time_elapsed($age)));
         $member->sendMessage(Text::parse("<gold>Flags: ".$flags));
-        $member->sendMessage(Text::parse("<gold>".implode("/", array_keys($power)).": <yellow>".implode("/", array_values($power))));
+        $member->sendMessage(Text::parse("<gold>".implode(TextFormat::YELLOW." / ", array_keys($power)).": <yellow>".implode(TextFormat::YELLOW."/", array_values($power))));
         foreach ($relations as $rel => $factions) {
-            $member->sendMessage(Text::parse("<gold>Relation ".REL::getColor($rel).ucfirst($rel)."<gold>(".count($factions)."):"));
+            $member->sendMessage(Text::parse("<gold>Relation ".REL::getColor($rel).ucfirst($rel)." <gold>(".count($factions)."):"));
             if(empty($factions)) {
                 $member->sendMessage(Text::parse("<gray>none"));
             } else {
                 $member->sendMessage(Text::parse(implode(" ", array_map(function($f){return $f->getName();}, $factions))));
             }
         }
+        $member->sendMessage(Text::parse("<yellow>Followers Online (" . count($faction->getOnlineMembers()) . "):"));
+        $members = [];
+        foreach($faction->getOnlineMembers() as $m) {
+            $members[] = "<green>".ChatEngine::getBadge($m->getRole())."<rose>".$faction->getName()." <green>".$m->getDisplayName();
+        }
+        if(empty($members)) {
+            $members[] = "<gray>none";
+        }
+        $member->sendMessage(Text::parse(rtrim(implode(', ', $members), ', ')));
+        $member->sendMessage(Text::parse("<yellow>Followers Offline (" . count($faction->getOfflineMembers()) . "):"));
+        $members = [];
+        foreach($faction->getOfflineMembers() as $m) {
+            $members[] = "<green>".ChatEngine::getBadge($m->getRole())."<rose>".$faction->getName()." <green>".$m->getDisplayName();
+        }
+        // Text::getRelationColor(Relation::getRelationOfThatToMe($m, $member)) # Should I add this instead of showing
+        # All factions red?
+        if(empty($members)) {
+            $members[] = "<gray>none";
+        }
+        $member->sendMessage(Text::parse(rtrim(implode(', ', $members), ', ')));
+
 
         return true;
     }

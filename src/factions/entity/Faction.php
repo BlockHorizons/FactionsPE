@@ -197,7 +197,7 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /**
-     * @return IMember[]
+     * @return Member[]
      */
     public function getOnlineMembers(): array
     {
@@ -207,6 +207,19 @@ class Faction extends FactionData implements RelationParticipator
         }
         return $ret;
     }
+
+    /**
+     * @return OfflineMember[]
+     */
+    public function getOfflineMembers(): array
+    {
+        $ret = [];
+        foreach ($this->getMembers() as $member) {
+            if (!$member->isOnline()) $ret[] = $member;
+        }
+        return $ret;
+    }
+
 
     /*
      * ----------------------------------------------------------
