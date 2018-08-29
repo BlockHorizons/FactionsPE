@@ -243,24 +243,24 @@ class Localizer {
 			$text = $this->data[$name][$key] ?? ($default ?? $identifier);
 
 		// Complex if statements
-		while(($p = strpos($text, "{:_")) !== false) {
-			$pe = strpos($text, ":}}");
-			if(!$pe) break;
-			$v = substr($text, $p + 3, $pe);
-			$k = substr($v, 0, strpos($v, "="));
-			$v = str_replace(["$k={", ":}}"], ["", ""], $v);
+		// while(($p = strpos($text, "{:_")) !== false) {
+		// 	$pe = strpos($text, ":}}");
+		// 	if(!$pe) break;
+		// 	$v = substr($text, $p + 3, $pe);
+		// 	$k = substr($v, 0, strpos($v, "="));
+		// 	$v = str_replace(["$k={", ":}}"], ["", ""], $v);
 			
-			if(isset($params[$k])) {
-				$text = str_replace(substr($text, $p, $pe + 3), $v, $text);
-			} else {
-				$text = str_replace(substr($text, $p, $pe + 3), "", $text);
-			}
-		}
+		// 	if(isset($params[$k])) {
+		// 		$text = str_replace(substr($text, $p, $pe + 3), $v, $text);
+		// 	} else {
+		// 		$text = str_replace(substr($text, $p, $pe + 3), "", $text);
+		// 	}
+		// }
 		
 		// Loop through all variables
 		$i = 0;
 		foreach ($params as $name => $value) {
-			if($value instanceof Translatable) {
+			if($value instanceof Translatable && !is_int($name)) {
 				$value->setParams($params);
 				$value.""; // Parse into string
 				$params[$name] = $value; // Avoid second parse and possible loop
