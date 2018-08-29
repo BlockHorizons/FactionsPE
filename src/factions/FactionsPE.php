@@ -277,7 +277,7 @@ class FactionsPE extends PluginBase
         if(!$this->getConfig()->get("chat-formatter")) {
             $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
             if($pc !== null && $pc->isEnabled()) {
-                self::$engines[ChatEngine::class]->setPureChat($pc);
+                self::$engines["ChatEngine"]->setPureChat($pc);
                 $this->getLogger()->info(Localizer::trans("chat-formatter-set", [
                     "plugin" => "PureChat"
                 ]));
