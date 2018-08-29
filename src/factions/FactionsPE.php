@@ -19,7 +19,6 @@
 
 namespace factions;
 
-use dominate\parameter\Parameter;
 use economizer\Economizer;
 use economizer\Transistor;
 use factions\command\FactionCommand;
@@ -47,9 +46,8 @@ use factions\utils\Gameplay;
 use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\plugin\PluginBase;
-use sll\LibLoader;
 
-define("IN_DEV", file_exists(dirname(__FILE__) . "/.dev"));
+define("IN_DEV", true);
 
 class FactionsPE extends PluginBase
 {
@@ -80,18 +78,9 @@ class FactionsPE extends PluginBase
         return self::$instance;
     }
 
-    /**
-     * Prepare libraries and load config for further use
-     */
     public function onLoad()
     {
         self::$instance = $this;
-        // This is disabled as I moved these libraries from plugin/lib folder
-        // I'll return this when I update sub-modules
-        // LibLoader::loadLib($this->getFile(), "Localizer");
-        // LibLoader::loadLib($this->getFile(), "Economizer");
-        // LibLoader::loadLib($this->getFile(), "Dominate");
-
         @mkdir($this->getDataFolder());
         if (!is_dir($tar = $this->getDataFolder() . "languages")) {
             Localizer::transferLanguages($this->getFile() . "resources/languages", $tar);
@@ -181,7 +170,7 @@ class FactionsPE extends PluginBase
     public function scheduleUpdateTask()
     {
     	if (Gameplay::get("power.update-enabled", true)) {
-            $this->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask($this), Gameplay::get("power.update-every", 10) * 20 * 60);
+            $this->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask(), Gameplay::get("power.update-every", 10) * 20 * 60);
             $this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
         }
     }
@@ -295,7 +284,7 @@ class FactionsPE extends PluginBase
             }
         } else {
         	$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
-        		"plugin" => $this->getName()
+        		"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in')
         	]));
         }
         end:
@@ -313,14 +302,14 @@ class FactionsPE extends PluginBase
     /**
      * @internal
      */
-
     private function runEngines()
     {
         foreach (self::$engines as $k => $engine) {
-            $class = is_int($k) ? $engine : $k;
-            $reflection = new \ReflectionClass($class);
-            $shortName = $reflection->getShortName();
             try {
+                $class = is_int($k) ? $engine : $k;
+                $reflection = new \ReflectionClass($class);
+                $shortName = $reflection->getShortName();
+
                 $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
                 self::$engines[$shortName] = $e;
             } catch (\Exception $e) {
@@ -347,8 +336,8 @@ class FactionsPE extends PluginBase
             try {
                 eval($code);
             } catch (\Exception $e) {
-                $this->getLogger()->error("Error while executing a test: " . $e->getMessage());
-                $this->getLogger()->debug($e->getTraceAsString());
+                $this->getLogger()->error("Error while executing a test: " . $e->getMessage() . " on line " . $e->getLine());
+                $this->getLogger()->info($e->getTraceAsString());
             }
         }
 

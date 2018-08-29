@@ -40,6 +40,11 @@ class FConsole implements IMember, RelationParticipator
         return false;
     }
 
+    public function toggleHUD()
+    {
+        throw new \LogicException("Console can't have HUD");
+    }
+
     /**
      * @return Faction
      */

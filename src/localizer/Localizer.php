@@ -29,6 +29,8 @@ class Localizer {
 
 	/** @var Localizer[] */
 	private static $localizers = [];
+
+	private static $regexp = "//";//"/(?<={_)(.*)(?=\={(?<=)(.*)(?=}}))/";
 	
 	/**
 	 * The default language
@@ -239,9 +241,36 @@ class Localizer {
 			$text = $default ?? $identifier;
 		else
 			$text = $this->data[$name][$key] ?? ($default ?? $identifier);
-		foreach ($params as $name => $value) {
-			$text = str_replace(":$name", $value, $text);
+
+		// Complex if statements
+		while(($p = strpos($text, "{:_")) !== false) {
+			$pe = strpos($text, ":}}");
+			if(!$pe) break;
+			$v = substr($text, $p + 3, $pe);
+			$k = substr($v, 0, strpos($v, "="));
+			$v = str_replace(["$k={", ":}}"], ["", ""], $v);
+			
+			if(isset($params[$k])) {
+				$text = str_replace(substr($text, $p, $pe + 3), $v, $text);
+			} else {
+				$text = str_replace(substr($text, $p, $pe + 3), "", $text);
+			}
 		}
+		
+		// Loop through all variables
+		$i = 0;
+		foreach ($params as $name => $value) {
+			if($value instanceof Translatable) {
+				$value->setParams($params);
+				$value.""; // Parse into string
+				$params[$name] = $value; // Avoid second parse and possible loop
+			}
+
+			$text = str_replace([":$name", ":$i"], [$value, $value], $text);
+
+			$i++;
+		}
+
 		return self::$parser ? call_user_func(self::$parser, $text) : $text;
 	}
 

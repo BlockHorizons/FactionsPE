@@ -31,6 +31,8 @@ class FactionPermission extends SimpleRequirement
     /** @var Permission */
     public $permission;
 
+    public $faction;
+
     # TODO: Add faction
 
     /**
@@ -44,7 +46,9 @@ class FactionPermission extends SimpleRequirement
     public function hasMet(CommandSender $sender, $silent = false): bool
     {
         $member = Members::get($sender);
-        $r = $member->getFaction()->isPermitted($member->getRole(), $this->permission);
+        $faction = $faction ?? $member->getFaction();
+        $this->faction = $faction;
+        $r = $faction->isPermitted($member->getRole(), $this->permission);
         if (!$r && !$silent) {
             $sender->sendMessage($this->createErrorMessage($sender));
         }
@@ -54,7 +58,7 @@ class FactionPermission extends SimpleRequirement
     public function createErrorMessage(CommandSender $sender = null): Translatable
     {
         return new Translatable("requirement.faction-permission-error", [
-            'perm_desc' => $this->permission->getDescription()]);
+            'perm_desc' => $this->permission->getDescription(), 'faction' => $this->faction->getName()]);
     }
 
 }

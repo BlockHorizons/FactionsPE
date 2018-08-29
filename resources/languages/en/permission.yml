@@ -1,5 +1,5 @@
 ---
-build: "edit terrain"
+build: "edit terrain{:_faction={:detailed-desc:}}"
 painbuild: "edit, take damage"
 door: "use doors"
 button: "use stone buttons"
@@ -23,4 +23,5 @@ relation: "change Relationations"
 disband: "disband the faction"
 perms: "manage permissions"
 flags: "manage flags"
+detailed-desc: " on land owned by <aqua>faction"
 ...

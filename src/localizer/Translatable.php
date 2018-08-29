@@ -66,9 +66,9 @@ class Translatable extends TextContainer {
    *
    */
   
-  public function get(string $locale = null) {
+  public function get(string $locale = null, array $params = []) {
     $locale = $locale ?? $this->locale;
-    return Localizer::{$locale}($this->key, $this->params, $this->default);
+    return Localizer::{$locale}($this->key, array_merge($this->params, $params), $this->default);
   }
   
   public function getText() : string {

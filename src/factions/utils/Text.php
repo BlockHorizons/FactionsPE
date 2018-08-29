@@ -25,6 +25,29 @@ use pocketmine\utils\TextFormat;
 final class Text
 {
 
+    private static $rgbValues = [
+        TextFormat::BLACK => [0, 0, 0],
+        TextFormat::DARK_BLUE => [0, 0, 170],
+        TextFormat::DARK_GREEN => [0, 170, 0],
+        TextFormat::DARK_AQUA => [0, 170, 170],
+        TextFormat::DARK_RED => [170, 0, 0],
+        TextFormat::DARK_PURPLE => [170, 0, 170],
+        TextFormat::GOLD => [255, 170, 0],
+        TextFormat::GRAY => [170, 170, 170],
+        TextFormat::DARK_GRAY => [85, 85, 85],
+        TextFormat::BLUE => [85, 85, 255],
+        TextFormat::GREEN => [85, 255, 85],
+        TextFormat::AQUA => [85, 255, 255],
+        TextFormat::RED => [255, 85, 85],
+        TextFormat::LIGHT_PURPLE => [255, 85, 255],
+        TextFormat::YELLOW => [255, 255, 85],
+        TextFormat::WHITE => [255, 255, 255]
+    ];
+
+    public static function getRGB(string $colorCode): array {
+        return self::$rgbValues[$colorCode];
+    }
+
     private function __construct()
     {
     }
@@ -34,8 +57,9 @@ final class Text
         return $role;
     }
 
-    public static function getRelationColor($rel)
+    public static function getRelationColor(string $rel): string
     {
+        var_dump($rel);
         switch (strtolower($rel)) {
             case "neutral":
                 return TextFormat::GREEN;
@@ -46,7 +70,7 @@ final class Text
             case "ally":
                 return TextFormat::DARK_GREEN;
         }
-        return "";
+        return TextFormat::WHITE;
     }
 
     public static function titleize($string, int $length = null)

@@ -38,3 +38,4 @@ power-update-enabled: "Power regeneration enabled"
 hud-enabled: "Built-In <gold>HUD<white> enabled"
 
 chat-formatter-set: "Chat formatter: <gold>:plugin<reset>"
+built-in: 'built-in'

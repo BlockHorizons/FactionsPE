@@ -27,9 +27,17 @@ use factions\permission\Permission;
 use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use factions\command\requirement\FactionPermission;
 
 class ClaimAuto extends ClaimOne
 {
+
+    /** @var FactionRequirement */
+    protected $requirement;
+
+    public function setup() {
+        $this->requirement = new FactionPermission(Permissions::getById(Permission::TERRITORY));
+    }
 
     public function perform(CommandSender $sender, $label, array $args): bool
     {
@@ -37,14 +45,16 @@ class ClaimAuto extends ClaimOne
         $faction = $this->getArgument($this->getFactionArgIndex());
 
         // Disable?
-        if ($faction === null || $faction === $member->getAutoClaimFaction()) {
+        if (!isset($args[0]) && $member->getAutoClaimFaction() !== null) {
             $member->setAutoClaimFaction(null);
             $member->sendMessage(Text::parse("<i>Disabled auto-setting as you walk around."));
             return true;
         }
 
-        // MPerm Preemptive Check
-        if ($faction->isNormal() && !Permissions::getById(Permission::TERRITORY)->has($member, $faction)) return true;
+        // Permission Preemptive Check
+        if (!$this->requirement->hasMet($member, false)) {
+            return true;
+        }
 
         // Apply / Inform
         $member->setAutoClaimFaction($faction);

@@ -167,7 +167,11 @@ class Member extends OfflineMember
 
     public function isInEnemyTerritory(): bool
     {
-        return Plots::getFactionAt($this->player)->getRelationTo($this) === Relation::ENEMY;
+        return $this->getRelationToPlot() === Relation::ENEMY;
+    }
+
+    public function getRelationToPlot(): string {
+        return Plots::getFactionAt($this->player)->getRelationTo($this);
     }
 
     /**
