@@ -24,26 +24,48 @@ use factions\command\requirement\FactionRequirement;
 use factions\manager\Members;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 
-class LeaveFaction extends Command
-{
+class LeaveFaction extends Command {
 
-    public function setup()
-    {
-        $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
-    }
+	const BUTTON_YES = 0;
+	const BUTTON_NO  = 1;
 
-    public function perform(CommandSender $sender, $label, array $args)
-    {
-        $member = Members::get($sender);
-        $faction = $member->getFaction();
-        if ($faction->leave($member)) {
-            $sender->sendMessage(Localizer::translatable('you-left-faction', [
-                "faction" => $faction->getName(),
-            ]));
-        }
+	public function setup() {
+		$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
+	}
 
-        return true;
-    }
+	public function perform(CommandSender $sender, $label, array $args) {
+		$member  = Members::get($sender);
+		$faction = $member->getFaction();
+		if ($faction->leave($member)) {
+			$sender->sendMessage(Localizer::translatable('you-left-faction', [
+				"faction" => $faction->getName(),
+			]));
+		}
+
+		return true;
+	}
+
+	public function leaveForm(Player $player) {
+		if (!$this->testRequirements($player)) {
+			return;
+		}
+
+		$fapi = $this->getPlugin()->getFormAPI();
+		$form = $fapi->createSimpleForm(function (Player $player, int $result = 0) {
+			if ($result !== null) {
+				if ($result === self::BUTTON_YES) {
+					$this->perform($player, "", []);
+				} elseif ($result === self::BUTTON_NO) {
+					return;
+				}
+			}
+		});
+
+		$form->addButton(Localizer::trans("button-yes"));
+		$form->addButton(Localizer::trans("button-no"));
+		$form->sendTo($player);
+	}
 
 }

@@ -1,0 +1,37 @@
+---
+menu-title: "Factions Menu"
+button-create: "Create"
+button-map: "Map"
+button-description: "Set Description"
+button-commands: "See Commands"
+button-invite: "Invite"
+button-leave: "Leave"
+button-disband: "Disband"
+button-home: "Home"
+button-claim: "Claim"
+button-unclaim: "Unclaim"
+button-seechunk: "See Chunk"
+button-admin: "Toggle Overriding Mode {:_current={:current:}}"
+exit: "Exit"
+
+# Generic
+select-player: "Select player"
+button-yes: "<green>Yes"
+button-no: "<red>No"
+
+# Create Faction
+create-faction-form-title: "Create Faction"
+create-faction-form-content: "Choose a name for your new faction"
+
+# Description
+description-form-title: "Description"
+description-form-input: "New description"
+
+# Invite
+invite-form-title: "Invite"
+invite-form-content: "Invite new member to your faction"
+invite-form-input: "Enter player's name"
+invite-input-label: "Player"
+
+#
+...

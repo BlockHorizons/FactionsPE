@@ -30,21 +30,24 @@ class Localizer {
 	/** @var Localizer[] */
 	private static $localizers = [];
 
-	private static $regexp = "//";//"/(?<={_)(.*)(?=\={(?<=)(.*)(?=}}))/";
-	
+	private static $regexp = "//"; //"/(?<={_)(.*)(?=\={(?<=)(.*)(?=}}))/";
+
 	/**
 	 * The default language
 	 */
 	const DEFAULT_LOCALE = "en";
-  
+
 	/**
 	 * Check whetever language exists by country name or code
 	 * @return bool
 	 */
-	public static function checkLanguageExistence(string $identifier) : bool {
+	public static function checkLanguageExistence(string $identifier): bool{
 		$identifier = strtolower($identifier);
-		foreach(ISO_639_1::LANGUAGES as $code => $name) {
-			if($identifier === $code || $identifier === strtolower($name)) return true;
+		foreach (ISO_639_1::LANGUAGES as $code => $name) {
+			if ($identifier === $code || $identifier === strtolower($name)) {
+				return true;
+			}
+
 		}
 		return false;
 	}
@@ -52,7 +55,7 @@ class Localizer {
 	 * Returns the country, owner of the language $code or undefined if unknown code
 	 * @return string
 	 */
-	public static function getCountryByCode(string $code) : string {
+	public static function getCountryByCode(string $code): string {
 		return ISO_639_1::LANGUAGES[$code] ?? "undefined";
 	}
 	/**
@@ -70,15 +73,15 @@ class Localizer {
 	public static $globalLocale = self::DEFAULT_LOCALE;
 
 	/*
-	 * Formats
-	 */
+		 * Formats
+	*/
 
 	public $datetime_short = "";
-	public $datetime_long = "";
-	public $date_short = "";
-	public $date_long = "";
-	public $time = "";
-	
+	public $datetime_long  = "";
+	public $date_short     = "";
+	public $date_long      = "";
+	public $time           = "";
+
 	private static $parser;
 
 	/**
@@ -88,7 +91,7 @@ class Localizer {
 	 * @param string $fallbackLocale = null
 	 */
 	public function __construct(string $locale, string $directory) {
-		if(self::checkLanguageExistence($locale)) {
+		if (self::checkLanguageExistence($locale)) {
 			$this->locale = $locale;
 			$this->loadLanguage($directory, $locale);
 		} else {
@@ -96,14 +99,14 @@ class Localizer {
 		}
 		self::$localizers[strtolower(trim($this->locale))][] = $this;
 	}
-	
+
 	/**
 	 * Deletes all loaded data
 	 */
 	public static function clean() {
-		self::$localizers = [];	
+		self::$localizers = [];
 	}
-	
+
 	/**
 	 * Loads the language files from directory
 	 *
@@ -111,23 +114,23 @@ class Localizer {
 	 * @param string $locale to load
 	 */
 	public function loadLanguage(string $directory, string $locale) {
-		if(($path = realpath($directory))) 
-		{
-			if( ($pathToLocale = realpath($path . "/" . $locale)) )
-			{
-				foreach((new \DirectoryIterator($pathToLocale)) as $file) 
-				{
-					if($file->isDot()) continue;
-					if(!$file->isFile()) continue;
+		if (($path = realpath($directory))) {
+			if (($pathToLocale = realpath($path . "/" . $locale))) {
+				foreach ((new \DirectoryIterator($pathToLocale)) as $file) {
+					if ($file->isDot()) {
+						continue;
+					}
+
+					if (!$file->isFile()) {
+						continue;
+					}
+
 					$this->loadLanguageFile($file->getPathname());
 				}
-			} else 
-			{
+			} else {
 				throw new \InvalidArgumentException("locale directory '$directory/$locale' doesn't exist");
 			}
-		} 
-		else 
-		{
+		} else {
 			throw new \InvalidArgumentException("directory '$directory' doesn't exist");
 		}
 	}
@@ -136,30 +139,29 @@ class Localizer {
 	 * @param string $file
 	 * @return bool
 	 */
-	public function loadLanguageFile(string $file) : bool {
-		if(file_exists($file)) 
-		{
+	public function loadLanguageFile(string $file): bool {
+		if (file_exists($file)) {
 			$name = basename($file, substr($file, strpos($file, ".")));
 			$data = $this->getDataFromFile($file);
 			// Parse the data
-			foreach($data as $key => $value) {
-				switch($key) {
-					case '__datetime_short':
-						$this->datetime_short = $value;
-						break;
-					case '__datetime_long':
-						$this->datetime_long = $value;
-						break;
-					case '__date_short':
-						$this->date_short = $value;
-						break;
-					case '__date_long':
-						$this->date_long = $value;
-						break;
-					case '__time':
-						$this->time = $value;
-						break;
-					default: break;
+			foreach ($data as $key => $value) {
+				switch ($key) {
+				case '__datetime_short':
+					$this->datetime_short = $value;
+					break;
+				case '__datetime_long':
+					$this->datetime_long = $value;
+					break;
+				case '__date_short':
+					$this->date_short = $value;
+					break;
+				case '__date_long':
+					$this->date_long = $value;
+					break;
+				case '__time':
+					$this->time = $value;
+					break;
+				default:break;
 				}
 			}
 			$this->data[$name] = $data;
@@ -167,52 +169,55 @@ class Localizer {
 		}
 		return false;
 	}
-	
+
 	public static function setParser(callable $parser) {
-		self::$parser = $parser;	
+		self::$parser = $parser;
 	}
-	
+
 	/**
 	 * Read language file. Supported format: php (default), json and yaml.
 	 * @param string $file
 	 * @return array
 	 * @throw \Exception
 	 */
-	public function getDataFromFile(string $file) : array {
-		$ext = @end(explode('.', $file));
+	public function getDataFromFile(string $file): array{
+		$ext     = @end(explode('.', $file));
 		$content = file_get_contents($file);
-		switch($ext) {
-			default:
-			case 'php':
-				if(($pos = strpos($content, "return ")) !== false) {
-					$content = substr($content, $pos);
-				} else {
-					throw new \Exception("invalid language file php. no translations/return got");
+		switch ($ext) {
+		default:
+		case 'php':
+			if (($pos = strpos($content, "return ")) !== false) {
+				$content = substr($content, $pos);
+			} else {
+				throw new \Exception("invalid language file php. no translations/return got");
+			}
+			$data = eval($content);
+			break;
+		case 'yml':
+		case 'yaml':
+			if (extension_loaded("yaml")) {
+				$data = yaml_parse($content);
+				if (!$data) {
+					throw new \Exception("invalid language file yaml. decoding error");
 				}
-				$data = eval($content);
-				break;
-			case 'yml':
-			case 'yaml':
-				if(extension_loaded("yaml")) {
-					$data = yaml_parse($content);
-					if(!$data) {
-						throw new \Exception("invalid language file yaml. decoding error");
-					}
-				} else {
-					$data = [];
-				}
-				break;
-			case 'json':
-				$data = json_decode($content, true);
-				if(!$data) {
-					throw new \Exception("invalid language file json. decoding error: " . json_last_error());
-				}
-				break;
+			} else {
+				$data = [];
+			}
+			break;
+		case 'json':
+			$data = json_decode($content, true);
+			if (!$data) {
+				throw new \Exception("invalid language file json. decoding error: " . json_last_error());
+			}
+			break;
 		}
 		// Validate data
-		if(is_array($data)) {
-			foreach($data as $k => $t) {
-				if(is_array($t) || is_object($t)) throw new \Exception("invalid data type under key '$k'");
+		if (is_array($data)) {
+			foreach ($data as $k => $t) {
+				if (is_array($t) || is_object($t)) {
+					throw new \Exception("invalid data type under key '$k'");
+				}
+
 			}
 		} else {
 			throw new \Exception("file '$file' didn't return data in array format");
@@ -220,16 +225,16 @@ class Localizer {
 		return $data;
 	}
 
-	public function get(string $identifier, array $params = [], string $default = null) : string {
+	public function get(string $identifier, array $params = [], string $default = null): string{
 		$ps = explode(".", $identifier);
-		if(count($ps) > 1) {
+		if (count($ps) > 1) {
 			$name = $ps[0];
-			$key = $ps[1];
+			$key  = $ps[1];
 		} else {
 			// Search automatically
-			foreach($this->data as $n => $data) {
-				foreach($data as $k => $t) {
-					if($identifier === $k) {
+			foreach ($this->data as $n => $data) {
+				foreach ($data as $k => $t) {
+					if ($identifier === $k) {
 						$name = $n;
 						break 2;
 					}
@@ -237,32 +242,36 @@ class Localizer {
 			}
 			$key = $identifier;
 		}
-		if(!isset($name)) 
+		if (!isset($name)) {
 			$text = $default ?? $identifier;
-		else
+		} else {
 			$text = $this->data[$name][$key] ?? ($default ?? $identifier);
+		}
 
 		// Complex if statements
-		while(($p = strpos($text, "{:_")) !== false) {
+		while (($p = strpos($text, "{:_")) !== false) {
 			$pe = strpos($text, ":}}");
-			if(!$pe) break;
+			if (!$pe) {
+				break;
+			}
+
 			$v = substr($text, $p + 3, $pe);
 			$k = substr($v, 0, strpos($v, "="));
 			$v = str_replace(["$k={", ":}}"], ["", ""], $v);
-			
-			if(isset($params[$k])) {
+
+			if (isset($params[$k])) {
 				$text = str_replace(substr($text, $p, $pe + 3), $v, $text);
 			} else {
 				$text = str_replace(substr($text, $p, $pe + 3), "", $text);
 			}
 		}
-		
+
 		// Loop through all variables
 		$i = 0;
 		foreach ($params as $name => $value) {
-			if($value instanceof Translatable && !is_int($name)) {
+			if ($value instanceof Translatable && !is_int($name)) {
 				$value->setParams($params);
-				$value.""; // Parse into string
+				$value . ""; // Parse into string
 				$params[$name] = $value; // Avoid second parse and possible loop
 			}
 
@@ -276,17 +285,20 @@ class Localizer {
 
 	public static function trans(string $key, array $params = [], string $default = null, $locale = null) {
 		$locale = $locale ?? self::$globalLocale;
-		$key = strtolower($key);
-		if(isset(self::$localizers[$locale])) {
-			foreach(self::$localizers[$locale] as $localizer) {
-				if(($r = $localizer->get($key, $params, $default)) !== $key) return $r;
+		$key    = strtolower($key);
+		if (isset(self::$localizers[$locale])) {
+			foreach (self::$localizers[$locale] as $localizer) {
+				if (($r = $localizer->get($key, $params, $default)) !== $key) {
+					return $r;
+				}
+
 			}
 		}
 		return $r ?? $key;
 	}
-	
-	public static function translatable(string $key, array $params = [], string $default = null, $locale = self::DEFAULT_LOCALE) : Translatable {
-		return new Translatable($key, $params, $default, $locale);	
+
+	public static function translatable(string $key, array $params = [], string $default = null, $locale = self::DEFAULT_LOCALE): Translatable {
+		return new Translatable($key, $params, $default, $locale);
 	}
 
 	/**
@@ -296,20 +308,19 @@ class Localizer {
 	 * @param string $target
 	 */
 	public static function transferLanguages(string $source, string $target) {
-	    $dir = opendir($source); 
-	    @mkdir($target); 
-	    while(false !== ( $file = readdir($dir)) ) { 
-	        if (( $file != '.' ) && ( $file != '..' )) { 
-	            if ( is_dir($source . '/' . $file) ) { 
-	            	// recursive
-	                self::transferLanguages($source . '/' . $file,$target . '/' . $file); 
-	            } 
-	            else { 
-	                copy($source . '/' . $file,$target . '/' . $file); 
-	            } 
-	        } 
-	    } 
-	    closedir($dir); 
+		$dir = opendir($source);
+		@mkdir($target);
+		while (false !== ($file = readdir($dir))) {
+			if (($file != '.') && ($file != '..')) {
+				if (is_dir($source . '/' . $file)) {
+					// recursive
+					self::transferLanguages($source . '/' . $file, $target . '/' . $file);
+				} else {
+					copy($source . '/' . $file, $target . '/' . $file);
+				}
+			}
+		}
+		closedir($dir);
 	}
 
 	/**
@@ -317,14 +328,17 @@ class Localizer {
 	 * @param string $directory source
 	 */
 	public static function loadLanguages(string $directory) {
-		if(is_dir($directory)) {
-			foreach(new \DirectoryIterator($directory) as $content) {
-				if($content->isFile() || $content->isDot()) continue;
-				if($content->isDir()) {
+		if (is_dir($directory)) {
+			foreach (new \DirectoryIterator($directory) as $content) {
+				if ($content->isFile() || $content->isDot()) {
+					continue;
+				}
+
+				if ($content->isDir()) {
 					$locale = $content->getFilename();
 				}
 				// Now let's load the localizator
-				if(self::checkLanguageExistence($locale)) {
+				if (self::checkLanguageExistence($locale)) {
 					$localizator = new self($locale, $directory);
 				} else {
 					// Not a lang dir, skip
@@ -339,13 +353,13 @@ class Localizer {
 	// Handle all dynamic calls
 
 	public static function __callStatic(string $name, array $arguments) {
-		if(self::checkLanguageExistence($name)) {
+		if (self::checkLanguageExistence($name)) {
 			# Localizer::lv('monster', [], null)
 			# Localizer::trans('monster', [], null, 'lv')
 			$arguments[1] = $arguments[1] ?? [];
 			$arguments[2] = $arguments[2] ?? null;
 			$arguments[3] = $name;
-			return call_user_func_array(__CLASS__."::trans", $arguments);
+			return call_user_func_array(__CLASS__ . "::trans", $arguments);
 		}
 	}
 

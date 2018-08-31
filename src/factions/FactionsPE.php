@@ -27,9 +27,9 @@ use factions\data\provider\JSONDataProvider;
 use factions\data\provider\MySQLDataProvider;
 use factions\data\provider\SQLite3DataProvider;
 use factions\data\provider\YAMLDataProvider;
-use factions\engine\Engine;
 use factions\engine\ChatEngine;
 use factions\engine\CombatEngine;
+use factions\engine\Engine;
 use factions\engine\ExploitEngine;
 use factions\engine\MainEngine;
 use factions\engine\SeeChunkEngine;
@@ -44,335 +44,346 @@ use factions\task\HUD;
 use factions\task\PowerUpdateTask;
 use factions\utils\Gameplay;
 use factions\utils\Text;
+use jojoe77777\FormAPI\FormAPI;
 use localizer\Localizer;
 use pocketmine\plugin\PluginBase;
 
 define("IN_DEV", true);
 
-class FactionsPE extends PluginBase
-{
+class FactionsPE extends PluginBase {
 
-    private static $engines = [
-        MainEngine::class,
-        ChatEngine::class,
-        CombatEngine::class,
-        ExploitEngine::class,
-        SeeChunkEngine::class
-    ];
+	private static $engines = [
+		MainEngine::class,
+		ChatEngine::class,
+		CombatEngine::class,
+		ExploitEngine::class,
+		SeeChunkEngine::class,
+	];
 
-    /** @var FactionsPE */
-    private static $instance;
+	/** @var FactionsPE */
+	private static $instance;
 
-    /** @var DataProvider */
-    protected $dataProvider;
+	/** @var DataProvider */
+	protected $dataProvider;
 
-    /** @var Economizer|Transistor */
-    protected $economy;
+	/** @var Economizer|Transistor */
+	protected $economy;
 
-    /**
-     * Get current instance
-     * @return FactionsPE
-     */
-    public static function get(): FactionsPE
-    {
-        return self::$instance;
-    }
+	/** @var FormAPI|null */
+	protected $formAPI = null;
 
-    public function onLoad()
-    {
-        self::$instance = $this;
-        @mkdir($this->getDataFolder());
-        if (!is_dir($tar = $this->getDataFolder() . "languages")) {
-            Localizer::transferLanguages($this->getFile() . "resources/languages", $tar);
-        }
-        Localizer::loadLanguages($tar);
-        Localizer::setParser(function (string $text) {
-            return Text::parse($text);
-        });
+	/**
+	 * Get current instance
+	 * @return FactionsPE
+	 */
+	public static function get(): FactionsPE {
+		return self::$instance;
+	}
 
-        # Save & Load config
-        if(!file_exists($cf = $this->getDataFolder() . "config.yml")) {
-            file_put_contents($cf, $c = stream_get_contents($f = $this->getResource("config.yml")));
-            fclose($f);
-        }
-        $this->saveDefaultConfig();
+	public function onLoad() {
+		self::$instance = $this;
+		@mkdir($this->getDataFolder());
+		if (!is_dir($tar = $this->getDataFolder() . "languages")) {
+			Localizer::transferLanguages($this->getFile() . "resources/languages", $tar);
+		}
+		Localizer::loadLanguages($tar);
+		Localizer::setParser(function (string $text) {
+			return Text::parse($text);
+		});
 
-        if (Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
-            Localizer::$globalLocale = strtolower(trim($lan));
-        } else {
-            $this->getLogger()->warning(Localizer::trans('plugin.invalid-locale', ["locale" => $lan]));
-        }
-    }
+		# Save & Load config
+		if (!file_exists($cf = $this->getDataFolder() . "config.yml")) {
+			file_put_contents($cf, $c = stream_get_contents($f = $this->getResource("config.yml")));
+			fclose($f);
+		}
+		$this->saveDefaultConfig();
 
+		if (Localizer::checkLanguageExistence($lan = $this->getConfig()->get('language'))) {
+			Localizer::$globalLocale = strtolower(trim($lan));
+		} else {
+			$this->getLogger()->warning(Localizer::trans('plugin.invalid-locale', ["locale" => $lan]));
+		}
+	}
 
-    public function onEnable()
-    {
-        $this->getLogger()->info(Localizer::trans("plugin.enabling") . " version [PHOENIX]");
+	public function onEnable() {
+		$this->getLogger()->info(Localizer::trans("plugin.enabling") . " version [PHOENIX]");
 
-        # Load DataProvider
-        if (!$this->loadDataProvider()) goto stop;
+		# Load DataProvider
+		if (!$this->loadDataProvider()) {
+			goto stop;
+		}
 
-        # Load Gameplay settings
-        Gameplay::setData($this->getConfig()->get('gameplay', []));
+		# Load Gameplay settings
+		Gameplay::setData($this->getConfig()->get('gameplay', []));
 
-        # Load flags
-        Flags::flush();
-        $this->getDataProvider()->loadFlags();
-        Flags::init();
+		# Load flags
+		Flags::flush();
+		$this->getDataProvider()->loadFlags();
+		Flags::init();
 
-        # Load Permissions
-        Permissions::flush();
-        $this->getDataProvider()->loadPermissions();
-        Permissions::init();
+		# Load Permissions
+		Permissions::flush();
+		$this->getDataProvider()->loadPermissions();
+		Permissions::init();
 
-        # Register commands
-        $this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
+		# Register commands
+		$this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
 
-        # Load factions
-        $this->getDataProvider()->loadFactions();
+		# Load factions
+		$this->getDataProvider()->loadFactions();
 
-        // Delete inactive ones
-        // This should be configurable
-        $this->purgeInactiveFactions();
+		// Delete inactive ones
+		// This should be configurable
+		$this->purgeInactiveFactions();
 
-        Factions::createSpecialFactions();
-        $this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
+		Factions::createSpecialFactions();
+		$this->getLogger()->info(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
 
-        # Load Plots
-        $this->getDataProvider()->loadPlots();
+		# Load Plots
+		$this->getDataProvider()->loadPlots();
 
-        # attach Console object
-        Members::attach(new FConsole());
+		# attach Console object
+		Members::attach(new FConsole());
 
-        # Register engines
-        $this->runEngines();
+		# Register engines
+		$this->runEngines();
 
-        # Load Integrations
-        if (!$this->loadIntegrations()) goto stop;
+		# Load Integrations
+		if (!$this->loadIntegrations()) {
+			goto stop;
+		}
 
-        # Schedule update task
-        $this->scheduleUpdateTask();
+		# Schedule update task
+		$this->scheduleUpdateTask();
 
-        # Schedule HUD task
-        $this->scheduleHUDTask();
+		# Schedule HUD task
+		$this->scheduleHUDTask();
 
-        # Run tests
-        if (IN_DEV) {
-            $this->runTests();
-        }
+		# Run tests
+		if (IN_DEV) {
+			$this->runTests();
+		}
 
-        $this->getLogger()->info(Localizer::trans("plugin.enabled"));
-        return;
-        stop:
-        $this->getServer()->getPluginManager()->disablePlugin($this);
-    }
+		$this->getLogger()->info(Localizer::trans("plugin.enabled"));
+		return;
+		stop:
+		$this->getServer()->getPluginManager()->disablePlugin($this);
+	}
 
-    public function scheduleUpdateTask()
-    {
-    	if (Gameplay::get("power.update-enabled", true)) {
-            $this->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask(), Gameplay::get("power.update-every", 10) * 20 * 60);
-            $this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
-        }
-    }
+	public function scheduleUpdateTask() {
+		if (Gameplay::get("power.update-enabled", true)) {
+			$this->getScheduler()->scheduleRepeatingTask(new PowerUpdateTask(), Gameplay::get("power.update-every", 10) * 20 * 60);
+			$this->getLogger()->info(Localizer::trans("plugin.power-update-enabled"));
+		}
+	}
 
-    public function scheduleHUDTask()
-    {
-    	if (Gameplay::get("hud.enabled", true)) {
-            $this->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
-            $this->getLogger()->info(Localizer::trans("plugin.hud-enabled"));
-        }
-    }
+	public function scheduleHUDTask() {
+		if (Gameplay::get("hud.enabled", true)) {
+			$this->getScheduler()->scheduleRepeatingTask(new HUD($this), 15);
+			$this->getLogger()->info(Localizer::trans("plugin.hud-enabled"));
+		}
+	}
 
-    public function purgeInactiveFactions()
-    {
-    	if($this->getConfig()->get("purge-inactive-factions", true)) {
-            $delta = $this->getConfig()->get("purge-after", 3600 * 24 * 7); // week
-            foreach (Factions::getAll() as $faction) {
-                if ($faction->isSpecial() or $faction->isPermanent()) continue;
-                $lp = $faction->getLastOnline();
-                if (time() - $lp > $delta) {
-                    $this->getLogger()->notice(Localizer::trans("log.purging-faction", [
-                        "faction" => $faction->getName(),
-                        "last-online" => Text::ago($lp)
-                        ]));
-                    $faction->disband(Faction::DISBAND_REASON_PURGE, true);
-                }
-            }
-        }
-    }
+	public function purgeInactiveFactions() {
+		if ($this->getConfig()->get("purge-inactive-factions", true)) {
+			$delta = $this->getConfig()->get("purge-after", 3600 * 24 * 7); // week
+			foreach (Factions::getAll() as $faction) {
+				if ($faction->isSpecial() or $faction->isPermanent()) {
+					continue;
+				}
 
-    /**
-     * @internal
-     */
-    private function loadDataProvider(): bool
-    {
-        try {
-            switch (strtolower(trim($this->getConfig()->get('data-provider')["type"]))) {
-                default:
-                case 'yaml':
-                case 'yml':
-                    $this->setDataProvider(new YAMLDataProvider($this));
-                    break;
-                case 'json':
-                    $this->setDataProvider(new JSONDataProvider($this));
-                    break;
-                case 'sql':
-                case 'sqlite':
-                case 'sqlite3':
-                    $this->setDataProvider(new SQLite3DataProvider($this));
-                    break;
-                case 'mysql':
-                    $this->setDataProvider(new MySQLDataProvider($this));
-                    break;
-            }
-        } catch (\Exception $e) {
-            $this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage(), $e->getCode()]));
-            $this->getServer()->getPluginManager()->disablePlugin($this);
-            return false;
-        }
-        $this->getLogger()->info(Localizer::trans('plugin.dataprovider-set', [$this->getDataProvider()->getName()]));
-        return true;
-    }
+				$lp = $faction->getLastOnline();
+				if (time() - $lp > $delta) {
+					$this->getLogger()->notice(Localizer::trans("log.purging-faction", [
+						"faction"     => $faction->getName(),
+						"last-online" => Text::ago($lp),
+					]));
+					$faction->disband(Faction::DISBAND_REASON_PURGE, true);
+				}
+			}
+		}
+	}
 
-    public function getDataProvider()
-    {
-        return $this->dataProvider;
-    }
+	/**
+	 * @internal
+	 */
+	private function loadDataProvider(): bool {
+		try {
+			switch (strtolower(trim($this->getConfig()->get('data-provider')["type"]))) {
+			default:
+			case 'yaml':
+			case 'yml':
+				$this->setDataProvider(new YAMLDataProvider($this));
+				break;
+			case 'json':
+				$this->setDataProvider(new JSONDataProvider($this));
+				break;
+			case 'sql':
+			case 'sqlite':
+			case 'sqlite3':
+				$this->setDataProvider(new SQLite3DataProvider($this));
+				break;
+			case 'mysql':
+				$this->setDataProvider(new MySQLDataProvider($this));
+				break;
+			}
+		} catch (\Exception $e) {
+			$this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage(), $e->getCode()]));
+			$this->getServer()->getPluginManager()->disablePlugin($this);
+			return false;
+		}
+		$this->getLogger()->info(Localizer::trans('plugin.dataprovider-set', [$this->getDataProvider()->getName()]));
+		return true;
+	}
 
-    public function setDataProvider(DataProvider $provider)
-    {
-        $this->dataProvider = $provider;
-    }
+	public function getDataProvider() {
+		return $this->dataProvider;
+	}
 
-    /**
-     * @internal
-     */
-    private function loadIntegrations(): bool
-    {
-        $stop = false;
-        if ($this->economyEnabled()) {
-            $n = $this->getConfig()->get('economy-plugin', Economizer::DEFAULT_API);
-            $plugin = $this->getServer()->getPluginManager()->getPlugin($n);
-            if (!$plugin) {
-                $this->getLogger()->info(Localizer::trans("economy-plugin-not-found", ["name" => $n]));
-                $stop = true;
-                goto end;
-            }
+	public function setDataProvider(DataProvider $provider) {
+		$this->dataProvider = $provider;
+	}
 
-            $t = Economizer::getTransistorFor($plugin);
-            if (!$t) {
-                $this->getLogger()->info(Localizer::trans("economy-plugin-not-supported", ["name" => $n]));
-                $stop = true;
-                goto end;
-            }
+	/**
+	 * @internal
+	 */
+	private function loadIntegrations(): bool{
+		$stop = false;
+		if ($this->economyEnabled()) {
+			$n      = $this->getConfig()->get('economy-plugin', Economizer::DEFAULT_API);
+			$plugin = $this->getServer()->getPluginManager()->getPlugin($n);
+			if (!$plugin) {
+				$this->getLogger()->info(Localizer::trans("economy-plugin-not-found", ["name" => $n]));
+				$stop = true;
+				goto end;
+			}
 
-            $this->economy = new Economizer($this, $t);
-            if ($this->economy->ready()) {
-                $this->getLogger()->info(Localizer::trans("economy-plugin-selected", ["name" => $this->economy->getName()]));
-            } else {
-                $this->getLogger()->info(Localizer::trans("economy-not-ready", ["name" => $this->economy->getName()]));
-            }
-        }
-        // If chat-formatter is set to false, then we assume that user is using PureChat
-        if(!$this->getConfig()->get("chat-formatter")) {
-            $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
-            if($pc !== null && $pc->isEnabled()) {
-                self::$engines["ChatEngine"]->setPureChat($pc);
-                $this->getLogger()->info(Localizer::trans("chat-formatter-set", [
-                    "plugin" => "PureChat"
-                ]));
-            }
-        } else {
-        	$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
-        		"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in')
-        	]));
-        }
-        end:
-        return !$stop;
-    }
+			$t = Economizer::getTransistorFor($plugin);
+			if (!$t) {
+				$this->getLogger()->info(Localizer::trans("economy-plugin-not-supported", ["name" => $n]));
+				$stop = true;
+				goto end;
+			}
 
-    /**
-     * Returns true if economy support is turned on
-     */
-    public function economyEnabled(): bool
-    {
-        return (bool)$this->getConfig()->get('economy-support', true);
-    }
+			$this->economy = new Economizer($this, $t);
+			if ($this->economy->ready()) {
+				$this->getLogger()->info(Localizer::trans("economy-plugin-selected", ["name" => $this->economy->getName()]));
+			} else {
+				$this->getLogger()->info(Localizer::trans("economy-not-ready", ["name" => $this->economy->getName()]));
+			}
+		}
+		// If chat-formatter is set to false, then we assume that user is using PureChat
+		if (!$this->getConfig()->get("chat-formatter")) {
+			$pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+			if ($pc !== null && $pc->isEnabled()) {
+				self::$engines["ChatEngine"]->setPureChat($pc);
+				$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
+					"plugin" => "PureChat",
+				]));
+			}
+		} else {
+			$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
+				"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in'),
+			]));
+		}
+		if ($this->getConfig()->get('enable-form-menus', true)) {
+			$fapi = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+			if ($fapi && $fapi->isEnabled()) {
+				$this->formAPI = $fapi;
+			}
+			$this->getLogger()->info(Localizer::trans("form-support-enabled", [
+				$this->isFormsEnabled() ? "<green>" . Localizer::trans("on") : "<gold>" . Localizer::trans("off"),
+			]));
+		}
+		end:
+		return !$stop;
+	}
 
-    /**
-     * @internal
-     */
-    private function runEngines()
-    {
-        foreach (self::$engines as $k => $engine) {
-            try {
-                $class = is_int($k) ? $engine : $k;
-                $reflection = new \ReflectionClass($class);
-                $shortName = $reflection->getShortName();
+	/**
+	 * Returns true if economy support is turned on
+	 */
+	public function economyEnabled(): bool {
+		return (bool) $this->getConfig()->get('economy-support', true);
+	}
 
-                $this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
-                self::$engines[$shortName] = $e;
-            } catch (\Exception $e) {
-                $this->getLogger()->error("Error while initializing engine: " . $e->getMessage());
-            }
-        }
-    }
+	/**
+	 * @internal
+	 */
+	private function runEngines() {
+		foreach (self::$engines as $k => $engine) {
+			try {
+				$class      = is_int($k) ? $engine : $k;
+				$reflection = new \ReflectionClass($class);
+				$shortName  = $reflection->getShortName();
 
-    public function getEngine(string $name) : ?Engine {
-        return self::$engines[$name];
-    }
+				$this->getServer()->getPluginManager()->registerEvents($e = new $engine($this), $this);
+				self::$engines[$shortName] = $e;
+			} catch (\Exception $e) {
+				$this->getLogger()->error("Error while initializing engine: " . $e->getMessage());
+			}
+		}
+	}
 
-    /**
-     * @internal
-     */
-    private function runTests()
-    {
-        $tests = glob($this->getFile() . "test/*_test.php");
+	public function getEngine(string $name):  ? Engine {
+		return self::$engines[$name];
+	}
 
-        foreach ($tests as $test) {
-            $this->getLogger()->info("Running " . $test . "");
-            $code = file_get_contents($test);
-            $code = substr($code, strpos($code, "<?php") + 5);
-            try {
-                eval($code);
-            } catch (\Exception $e) {
-                $this->getLogger()->error("Error while executing a test: " . $e->getMessage() . " on line " . $e->getLine());
-                $this->getLogger()->info($e->getTraceAsString());
-            }
-        }
+	/**
+	 * @internal
+	 */
+	private function runTests() {
+		$tests = glob($this->getFile() . "test/*_test.php");
 
-    }
+		foreach ($tests as $test) {
+			$this->getLogger()->info("Running " . $test . "");
+			$code = file_get_contents($test);
+			$code = substr($code, strpos($code, "<?php") + 5);
+			try {
+				eval($code);
+			} catch (\Exception $e) {
+				$this->getLogger()->error("Error while executing a test: " . $e->getMessage() . " on line " . $e->getLine());
+				$this->getLogger()->info($e->getTraceAsString());
+			}
+		}
 
-    public function onDisable()
-    {
+	}
 
-        $this->getLogger()->info(Localizer::trans('plugin.disabling'));
-        if (!empty($d = Gameplay::getData())) {
-            $this->getConfig()->set('gameplay', $d);
-        }
+	public function onDisable() {
 
-        Members::saveAll();
-        Factions::saveAll();
-        Plots::saveAll();
-        Flags::saveAll();
-        Permissions::saveAll();
+		$this->getLogger()->info(Localizer::trans('plugin.disabling'));
+		if (!empty($d = Gameplay::getData())) {
+			$this->getConfig()->set('gameplay', $d);
+		}
 
-        Flags::flush();
+		Members::saveAll();
+		Factions::saveAll();
+		Plots::saveAll();
+		Flags::saveAll();
+		Permissions::saveAll();
 
-        if ($this->getDataProvider() instanceof DataProvider) {
-            $this->getDataProvider()->close();
-        }
+		Flags::flush();
 
-        //$this->getConfig()->save();
-        $this->getLogger()->info(Localizer::trans('plugin.disabled'));
-    }
+		if ($this->getDataProvider() instanceof DataProvider) {
+			$this->getDataProvider()->close();
+		}
 
-    /**
-     * @return Economizer|null
-     */
-    public function getEconomy()
-    {
-        return $this->economy;
-    }
+		//$this->getConfig()->save();
+		$this->getLogger()->info(Localizer::trans('plugin.disabled'));
+	}
+
+	public function isFormsEnabled() : bool {
+		return $this->getFormAPI() !== null;
+	}
+
+	public function getFormAPI():  ? FormAPI {
+		return $this->formAPI;
+	}
+
+	/**
+	 * @return Economizer|null
+	 */
+	public function getEconomy() {
+		return $this->economy;
+	}
 
 }

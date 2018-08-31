@@ -26,6 +26,9 @@ language: en
 economy-support: false
 economy-plugin: "EconomyAPI"
 
+# Form support, adds UI to commands.
+enable-form-menus: true
+
 # Data provider settings
 # Supported types as of now: yaml, json, mysql
 data-provider:
