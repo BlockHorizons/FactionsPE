@@ -65,7 +65,7 @@ class LeaveFaction extends Command {
 
 		$form->addButton(Localizer::trans("button-yes"));
 		$form->addButton(Localizer::trans("button-no"));
-		$form->sendTo($player);
+		$form->sendToPlayer($player);
 	}
 
 }

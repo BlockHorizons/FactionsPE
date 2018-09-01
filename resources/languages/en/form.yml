@@ -33,5 +33,6 @@ invite-form-content: "Invite new member to your faction"
 invite-form-input: "Enter player's name"
 invite-input-label: "Player"
 
-#
+# Settings
+button-settings: "Settings"
 ...

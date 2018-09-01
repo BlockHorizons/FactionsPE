@@ -35,6 +35,7 @@ use factions\engine\MainEngine;
 use factions\engine\SeeChunkEngine;
 use factions\entity\Faction;
 use factions\entity\FConsole;
+use factions\form\FactionForm;
 use factions\manager\Factions;
 use factions\manager\Flags;
 use factions\manager\Members;
@@ -64,13 +65,16 @@ class FactionsPE extends PluginBase {
 	private static $instance;
 
 	/** @var DataProvider */
-	protected $dataProvider;
+	private $dataProvider;
 
-	/** @var Economizer|Transistor */
-	protected $economy;
+	/** @var Economizer|Transistor|null */
+	private $economy;
 
 	/** @var FormAPI|null */
-	protected $formAPI = null;
+	private $formAPI;
+
+	/** @var FactionForm */
+	private $form;
 
 	/**
 	 * Get current instance
@@ -106,7 +110,7 @@ class FactionsPE extends PluginBase {
 	}
 
 	public function onEnable() {
-		$this->getLogger()->info(Localizer::trans("plugin.enabling") . " version [PHOENIX]");
+		$this->getLogger()->info(Localizer::trans("plugin.enabling"));
 
 		# Load DataProvider
 		if (!$this->loadDataProvider()) {
@@ -127,7 +131,10 @@ class FactionsPE extends PluginBase {
 		Permissions::init();
 
 		# Register commands
-		$this->getServer()->getCommandMap()->register("faction", new FactionCommand($this));
+		$this->getServer()->getCommandMap()->register("faction", $fc = new FactionCommand($this));
+
+		# Load form handler
+		$this->form = new FactionForm($this, $fc);
 
 		# Load factions
 		$this->getDataProvider()->loadFactions();
@@ -382,8 +389,12 @@ class FactionsPE extends PluginBase {
 	/**
 	 * @return Economizer|null
 	 */
-	public function getEconomy() {
+	public function getEconomy() :  ? Economizer {
 		return $this->economy;
+	}
+
+	public function getFormHandler() : FactionForm {
+		return $this->form;
 	}
 
 }

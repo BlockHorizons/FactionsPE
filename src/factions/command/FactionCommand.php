@@ -24,26 +24,14 @@ use dominate\Command;
 use dominate\parameter\Parameter;
 use factions\command\Player as PlayerCommand;
 use factions\FactionsPE;
+use factions\form\FactionForm;
+use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\relation\Relation as Rel;
-use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 
 class FactionCommand extends Command {
-
-	const CREATE_BUTTON      = 0;
-	const DESCRIPTION_BUTTON = 1;
-	const MAP_BUTTON         = 2;
-	const COMMANDS_BUTTON    = 3;
-	const INVITE_BUTTON      = 4;
-	const LEAVE_BUTTON       = 5;
-	const CLAIM_BUTTON       = 6;
-	const UNCLAIM_BUTTON     = 7;
-	const SEECHUNK_BUTTON    = 8;
-	const ADMIN_BUTTON       = 9;
-
-	private $buttons = ["create", "description", "map", "commands", "invite", "leave", "claim", "unclaim", "seechunk", "seechunk"];
 
 	public function __construct(FactionsPE $plugin) {
 		parent::__construct($plugin, 'faction', 'Main Faction command', Permissions::MAIN, ['fac', 'f']);
@@ -115,65 +103,19 @@ class FactionCommand extends Command {
 			}
 		} elseif ($sender instanceof Player) {
 			if ($this->getPlugin()->isFormsEnabled()) {
-				$this->factionForm($sender);
+				if (Members::get($sender)->hasFaction()) {
+					$this->getFormHandler()->factionForm($sender);
+				} else {
+					$this->getFormHandler()->factionlessForm($sender);
+				}
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public function factionForm(Player $player) {
-		$fapi = $this->getPlugin()->getFormAPI();
-		// Behaviour
-		$form = $fapi->createSimpleForm(function (Player $player, int $result = null) {
-			if ($result !== null) {
-				switch ($result) {
-				case self::CREATE_BUTTON:
-					$this->getChild("create")->createForm($player);
-					break;
-				case self::DESCRIPTION_BUTTON:
-					$this->getChild("description")->descriptionForm($player);
-					break;
-				case self::MAP_BUTTON:
-					$this->getChild("map")->execute($player, "", []);
-					break;
-				case self::COMMANDS_BUTTON:
-					$this->commandsForm($player);
-					break;
-				case self::INVITE_BUTTON:
-					$this->getChild("invite")->inviteForm($player);
-					break;
-				case self::LEAVE_BUTTON:
-					$this->getChild("leave")->leaveForm($player);
-					break;
-				case self::CLAIM_BUTTON:
-					$this->getChild("claim")->claimForm($player);
-					break;
-				case self::UNCLAIM_BUTTON:
-					$this->getChild("claim")->unclaimForm($player);
-					break;
-				case self::SEECHUNK_BUTTON:
-					$this->getChild("seechunk")->execute($player, "", []);
-					break;
-				case self::ADMIN_BUTTON:
-					$this->getChild("override")->execute($player, "", []);
-					break;
-				}
-			}
-		});
-		// Title
-		$form->setTitle(Localizer::trans("menu-title"));
-		// Buttons
-		foreach ($this->buttons as $name) {
-			$color = $name !== "commands" && $player->hasPermission($this->getChild($name)->getPermission()) && $this->getChild($name)->testRequirements($player, true) ? "" : "<gray>";
-			$form->addButton($color . Localizer::trans("button-" . $name));
-		}
-		// Show
-		$form->sendToPlayer($player);
-	}
-
-	public function commandsForm(Player $player) {
-		// TODO
+	public function getFormHandler(): FactionForm {
+		return $this->getPlugin()->getFormHandler();
 	}
 
 }
