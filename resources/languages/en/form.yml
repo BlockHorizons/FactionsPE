@@ -35,4 +35,7 @@ invite-input-label: "Player"
 
 # Settings
 button-settings: "Settings"
+
+# Leave
+form-leave-are-u-sure: "<i>Are you sure you want to leave <aqua>:faction<i> faction"
 ...

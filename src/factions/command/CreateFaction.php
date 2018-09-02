@@ -120,7 +120,9 @@ class CreateFaction extends Command {
 		$form = $fapi->createCustomForm(function (Player $player, array $data) {
 			$result = $data[1];
 			if ($result !== null) {
-				$this->execute($player, "", [$result]);
+				if ($this->execute($player, "", [$result])) {
+					$this->getParent()->getFormHandler()->descriptionHandler($player);
+				}
 			}
 		});
 

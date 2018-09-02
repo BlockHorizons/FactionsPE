@@ -28,9 +28,6 @@ use pocketmine\Player;
 
 class LeaveFaction extends Command {
 
-	const BUTTON_YES = 0;
-	const BUTTON_NO  = 1;
-
 	public function setup() {
 		$this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
 	}
@@ -53,18 +50,20 @@ class LeaveFaction extends Command {
 		}
 
 		$fapi = $this->getPlugin()->getFormAPI();
-		$form = $fapi->createSimpleForm(function (Player $player, int $result = 0) {
+		$form = $fapi->createModalForm(function (Player $player,  ? bool $result = null) {
+			var_dump($result);
 			if ($result !== null) {
-				if ($result === self::BUTTON_YES) {
+				if ($result) {
 					$this->perform($player, "", []);
-				} elseif ($result === self::BUTTON_NO) {
-					return;
 				}
 			}
 		});
 
-		$form->addButton(Localizer::trans("button-yes"));
-		$form->addButton(Localizer::trans("button-no"));
+		$form->setContent(Localizer::trans("form-leave-are-u-sure", [
+			"faction" => Members::get($player)->getFaction()->getName(),
+		]));
+		$form->setButton1(Localizer::trans("button-yes"));
+		$form->setButton2(Localizer::trans("button-no"));
 		$form->sendToPlayer($player);
 	}
 

@@ -61,6 +61,8 @@ class FactionForm {
 	}
 
 	public function factionForm(Player $player) {
+		// Make sure player is in a faction
+
 		$fapi = $this->getFormAPI();
 		// Behaviour
 		$form = $fapi->createSimpleForm(function (Player $player, int $result = null) {
@@ -79,15 +81,14 @@ class FactionForm {
 		// Title
 		$form->setTitle(Localizer::trans("menu-title"));
 		// Buttons
-		foreach ($this->factionButtons as $name => $id) {
-			$color = ($c = $this->getChild($name)) && $player->hasPermission($c->getPermission()) && $c->testRequirements($player, true) ?: "<gray>";
-			$form->addButton(Text::parse($color ?? "") . Localizer::trans("button-" . $name));
-		}
+		$this->setButtons($form, $this->factionButtons, $player);
 		// Show
 		$form->sendToPlayer($player);
 	}
 
 	public function factionlessForm(Player $player) {
+		// TODO: Check if player is actually factionless
+
 		$fapi = $this->getFormAPI();
 		// Behaviour
 		$form = $fapi->createSimpleForm(function (Player $player, int $result = null) {
@@ -103,15 +104,26 @@ class FactionForm {
 				}
 			}
 		});
+
 		// Title
 		$form->setTitle(Localizer::trans("menu-title"));
 		// Buttons
-		foreach ($this->factionlessButtons as $name => $id) {
-			$color = ($c = $this->getChild($name)) && $player->hasPermission($c->getPermission()) && $c->testRequirements($player, true) ?: "<gray>";
-			$form->addButton(Text::parse($color ?? "") . Localizer::trans("button-" . $name));
-		}
+		$this->setButtons($form, $this->factionlessButtons, $player);
 		// Show
 		$form->sendToPlayer($player);
+	}
+
+	public function setButtons($form, array $buttons, Player $player) {
+		foreach ($buttons as $name => $id) {
+			$form->addButton($this->getButton($name, $player));
+		}
+	}
+
+	public function getButton(string $name, Player $player): string{
+		$color = (($c = $this->getChild($name))
+			&& $player->hasPermission($c->getPermission())
+			&& $c->testRequirements($player, true) ? "" : "<lightgray>");
+		return Text::parse($color) . Localizer::trans("button-" . $name);
 	}
 
 	public function commandListForm(Player $player) {
@@ -144,6 +156,11 @@ class FactionForm {
 
 	public function commandsHandler(Player $player) {
 		$this->commandListForm($player);
+	}
+
+	public function settingsHandler(Player $player) {
+		$fapi = $this->getFormAPI();
+		//$form = $fapi->
 	}
 
 	public function inviteHandler(Player $player) {
