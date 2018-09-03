@@ -158,6 +158,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	 */
 	public function getChildsByToken(string $token): array
 	{
+		if(strlen($token) < 1) return [];
 		$matches = [];
 		foreach ($this->childs as $child) {
 			if ($token === ($name = $child->getName())) {

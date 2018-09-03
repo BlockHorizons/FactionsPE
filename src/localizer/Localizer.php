@@ -269,8 +269,8 @@ class Localizer {
 		// Loop through all variables
 		$i = 0;
 		foreach ($params as $name => $value) {
-			if ($value instanceof Translatable && !is_int($name)) {
-				$value->setParams($params);
+			if ($value instanceof Translatable) {
+				$value->setParams(array_splice($params, 1));
 				$value . ""; // Parse into string
 				$params[$name] = $value; // Avoid second parse and possible loop
 			}

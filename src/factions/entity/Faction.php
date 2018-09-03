@@ -370,7 +370,7 @@ class Faction extends FactionData implements RelationParticipator
         }
         if ($this->isMember($member)) return false;
         if (($f = Factions::getForMember($member))) {
-            throw new \InvalidStateException("Can not add new member to faction 
+            throw new \InvalidStateException("Can not add new member to faction
 				'{$this->getName()}'. Member '{$member->getName()}' is member of faction '{$f->getName()}'");
         }
         // TODO: Check for player limit
@@ -506,7 +506,7 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /**
-     * Member::leave() should be called first!
+     * Member::leave() should be called first if not then call Member::resetFactionData() yourself
      * @param IMember $member
      * @return bool
      */
@@ -520,9 +520,13 @@ class Faction extends FactionData implements RelationParticipator
                 unset($mir[$key]);
             }
         }
-        $members[$this->getRole($member)] = $mir;
+        if(!empty($mir)) {
+          $members[$this->getRole($member)] = $mir;
+        } else {
+          unset($members[$this->getRole($member)]);
+        }
         $this->members = $members;
-        return true;
+        return !$this->isMember($member);
     }
 
     /**
