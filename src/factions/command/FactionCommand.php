@@ -30,6 +30,7 @@ use factions\manager\Permissions;
 use factions\relation\Relation as Rel;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+use localizer\Localizer;
 
 class FactionCommand extends Command {
 
@@ -112,6 +113,14 @@ class FactionCommand extends Command {
 			}
 		}
 		return true;
+	}
+
+	public function sendUsage(? CommandSender $sender = null) {
+		$sender = $sender ?? $this->sender;
+		$sender->sendMessage(Localizer::trans("command-usage", [
+			"usage" => "/faction <sub-command>"
+		]));
+		$sender->sendMessage(Localizer::trans("faction-command-tip", ["help" => $this->getChild("help")->getUsage()]));
 	}
 
 	public function getFormHandler(): FactionForm {
