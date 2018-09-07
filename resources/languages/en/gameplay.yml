@@ -189,6 +189,7 @@ power-set: "<green>:target's<i> power boost set to: :power-boost"
 cant-edit-land-here: "<h>You can't edit land which belongs to :rel-color:faction<h> faction"
 
 relation-set-duplicate: "<b>You already have that relation wish set with :faction."
+cant-set-relation-cuz-faction-peaceful: "<i>Target faction has peaceful flag enabled!"
 cant-relate-to-self: "<b>Nope! You can't declare a relation to yourself :)"
 relation-set: ":faction<i> is now :relation."
 relation-wish-request: "<i>:faction wishes to by :relation. Type <b>:command<i> to accept"
@@ -212,6 +213,10 @@ description-too-long: "<rose>New description length exceeds <i>62<rose> characte
 seeing-chunk-no-change: "<i>See Chunk is already :0"
 seeing-chunk-activated: "<i>You now see borders of the chunk you're standing on"
 seeing-chunk-deactivated: "<i>You no longer see chunk borders"
+
+# Flags
+flag-list-title: "Flag list page <aqua>:page<reset> of <aqua>:max<reset>"
+flag-show-title: "Flag list for <aqua>:faction<aqua> page <aqua>:page<reset> of <aqua>:max<reset>"
 
 
 state-on: "activated"

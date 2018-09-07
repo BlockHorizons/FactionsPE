@@ -29,39 +29,43 @@ use factions\utils\Text;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-class PermList extends Command
-{
+class PermList extends Command {
 
-    public function setup()
-    {
-        // Parameters
-        $this->addParameter((new Parameter("page", Parameter::TYPE_INTEGER, 1))->setDefaultValue(1));
-    }
+	public function setup() {
+		// Parameters
+		$this->addParameter((new Parameter("page", Parameter::TYPE_INTEGER, 1))->setDefaultValue(1));
+	}
 
-    public function perform(CommandSender $sender, $label, array $args)
-    {
-        // Args
-        $page = $this->getArgument(0);
+	public function perform(CommandSender $sender, $label, array $args) {
+		// Args
+		$page = $this->getArgument(0);
 
-        // Create messages
-        $perms = [];
-        $member = Members::get($sender);
-        foreach (Permissions::getAll() as $perm) {
-            if (!$perm->isVisible() && !$member->isOverriding()) continue;
-            $perms[] = $perm;
-        }
+		// Create messages
+		$perms  = [];
+		$member = Members::get($sender);
+		foreach (Permissions::getAll() as $perm) {
+			if (!$perm->isVisible() && !$member->isOverriding()) {
+				continue;
+			}
 
-        $pager = new Pager("perm-list-header", $page, 5, $perms, $sender, function (Permission $perm, int $i, CommandSender $sender) {
-            return Localizer::translatable("perm-list-line", [$i, $perm->getDescription(), $perm->getName()]);
-        });
+			$perms[] = $perm;
+		}
 
-        // Send messages
-        $pager->stringify();
+		$pager = new Pager("perm-list-header", $page, 5, $perms, $sender, function (Permission $perm, int $i, CommandSender $sender) {
+			return Localizer::translatable("perm-list-line", [$i, $perm->getDescription(), $perm->getName()]);
+		});
 
-        $sender->sendMessage(Text::titleize(Localizer::translatable($pager->getHeader(), [$pager->getPage(), $pager->getMax()])));
-        foreach ($pager->getOutput() as $line) $sender->sendMessage($line);
+		// Send messages
+		$pager->stringify();
 
-        return true;
-    }
+		$pager->sendTitle($sender);
+
+		$sender->sendMessage(Text::titleize(Localizer::translatable($pager->getHeader(), [$pager->getPage(), $pager->getMax()])));
+		foreach ($pager->getOutput() as $line) {
+			$sender->sendMessage($line);
+		}
+
+		return true;
+	}
 
 }

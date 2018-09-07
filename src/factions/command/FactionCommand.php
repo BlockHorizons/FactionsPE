@@ -28,9 +28,9 @@ use factions\form\FactionForm;
 use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\relation\Relation as Rel;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
-use localizer\Localizer;
 
 class FactionCommand extends Command {
 
@@ -69,7 +69,8 @@ class FactionCommand extends Command {
 			new Name($plugin, "name", "Rename faction", Permissions::NAME),
 			new Info($plugin, "info", "Get faction information", Permissions::INFO),
 			new Description($plugin, "description", "Set faction's description", Permissions::DESCRIPTION),
-			new SeeChunk($plugin, "seechunk", "See chunk borders", Permissions::SEECHUNK, ["sc"]),
+			new SeeChunk($plugin, "seechunk", "See chunk borders", Permissions::SEECHUNK, ["sc", "border"]),
+			new FlagCommand($plugin, "flag", "Manage faction flags", Permissions::FLAG),
 		];
 
 		if ($plugin->economyEnabled()) {
@@ -80,10 +81,6 @@ class FactionCommand extends Command {
 			$this->addChild($child);
 		}
 		foreach (Rel::getAll() as $rel) {
-			if (Rel::isRankValid($rel)) {
-				continue;
-			}
-
 			$this->addChild(new RelationSetQuick($this, $rel, "Set relation wish to " . $rel, Permissions::RELATION_SET));
 		}
 
@@ -115,15 +112,15 @@ class FactionCommand extends Command {
 		return true;
 	}
 
-	public function sendUsage(? CommandSender $sender = null) {
+	public function sendUsage( ? CommandSender $sender = null) {
 		$sender = $sender ?? $this->sender;
 		$sender->sendMessage(Localizer::trans("command-usage", [
-			"usage" => "/faction <sub-command>"
+			"usage" => "/faction <sub-command>",
 		]));
 		$sender->sendMessage(Localizer::trans("faction-command-tip", ["help" => $this->getChild("help")->getUsage()]));
 	}
 
-	public function getFormHandler(): FactionForm {
+	public function getFormHandler() : FactionForm {
 		return $this->getPlugin()->getFormHandler();
 	}
 

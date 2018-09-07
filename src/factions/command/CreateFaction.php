@@ -65,7 +65,6 @@ class CreateFaction extends Command {
 				"count" => $c,
 			]));
 			foreach ($errors as $n => $error) {
-				echo __LINE__.PHP_EOL;
 				$sender->sendMessage(Localizer::translatable('invalid-faction-name-error', [
 					"error" => $error,
 					"n"     => $n + 1,

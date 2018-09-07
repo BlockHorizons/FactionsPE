@@ -158,7 +158,10 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	 */
 	public function getChildsByToken(string $token): array
 	{
-		if(strlen($token) < 1) return [];
+		if (strlen($token) < 1) {
+			return [];
+		}
+
 		$matches = [];
 		foreach ($this->childs as $child) {
 			if ($token === ($name = $child->getName())) {
@@ -310,9 +313,9 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		return null;
 	}
 
-	public function getArgument(int $index) {
+	public function getArgument(int $index, $default = null) {
 		if (isset($this->parameters[$index])) {
-			return $this->parameters[$index]->getValue();
+			return $this->parameters[$index]->getValue($default);
 		}
 		return null;
 	}
@@ -474,9 +477,9 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 			if (($matchCount = count($matches)) === 1) {
 				array_shift($args);
-				$matches[0]->execute($sender, $label, $args);
+				$r              = $matches[0]->execute($sender, $label, $args);
 				$this->endPoint = $matches[0]->endPoint;
-				return true;
+				return $r;
 			} else {
 				$this->endPoint = $this;
 				if (!$this->smart) {

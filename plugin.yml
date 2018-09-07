@@ -17,7 +17,7 @@ author: BlockHorizons
 authors:
 - Chris-Prime (@PrimusLV, @flipkris)
 - Sandertv (@Sandertv)
-api: 4.0.0
+api: [3.0.0, 4.0.0]
 main: factions\FactionsPE
 version: 1.1.0
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PureChat, PurePerms, FormAPI]
