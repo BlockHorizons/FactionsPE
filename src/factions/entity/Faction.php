@@ -38,848 +38,883 @@ use localizer\Translatable;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 
-class Faction extends FactionData implements RelationParticipator
-{
+class Faction extends FactionData implements RelationParticipator {
 
-    const NONE = "wilderness";
-    const SAFEZONE = "safezone";
-    const WARZONE = "warzone";
-    const WILDERNESS = self::NONE;
+	const NONE       = "wilderness";
+	const SAFEZONE   = "safezone";
+	const WARZONE    = "warzone";
+	const WILDERNESS = self::NONE;
 
-    const NAME_NONE = "Wilderness";
-    const NAME_SAFEZONE = "Safezone";
-    const NAME_WARZONE = "Warzone";
-    const NAME_WILDERNESS = self::NAME_NONE;
+	const NAME_NONE       = "Wilderness";
+	const NAME_SAFEZONE   = "Safezone";
+	const NAME_WARZONE    = "Warzone";
+	const NAME_WILDERNESS = self::NAME_NONE;
 
-    const DISBAND_REASON_UNKNOWN = 0;
-    const DISBAND_REASON_EMPTY_FACTION = 1;
-    const DISBAND_REASON_COMMAND = 2;
-    const DISBAND_REASON_PURGE = 3;
+	const DISBAND_REASON_UNKNOWN       = 0;
+	const DISBAND_REASON_EMPTY_FACTION = 1;
+	const DISBAND_REASON_COMMAND       = 2;
+	const DISBAND_REASON_PURGE         = 3;
 
-    /**
-     * Faction constructor
-     * @param string $id
-     * @param array $data
-     */
-    public function __construct(string $id, array $data)
-    {
-        parent::__construct(array_merge(["id" => $id], $data));
+	/**
+	 * Faction constructor
+	 * @param string $id
+	 * @param array $data
+	 */
+	public function __construct(string $id, array $data) {
+		parent::__construct(array_merge(["id" => $id], $data));
 
-        /**
-         * You can pass initial player (creator) using "creator" or "members" data created by Factions::createMemberList
-         */
-        if (isset($data["creator"]) && !$this->getLeader()) {
-            $this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
-        }
+		/**
+		 * You can pass initial player (creator) using "creator" or "members" data created by Factions::createMemberList
+		 */
+		if (isset($data["creator"]) && !$this->getLeader()) {
+			$this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
+		}
 
-        if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
-            if ($this->isEmpty()) {
-                $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
-            }
-        }
-    }
+		if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
+			if ($this->isEmpty()) {
+				$this->disband(self::DISBAND_REASON_EMPTY_FACTION);
+			}
+		}
+	}
 
+	/*
+		     * ----------------------------------------------------------
+		     * STATUS
+		     * ----------------------------------------------------------
+	*/
 
-    /*
-     * ----------------------------------------------------------
-     * STATUS
-     * ----------------------------------------------------------
-     */
+	/**
+	 * @internal
+	 */
+	private function isEmpty(): bool {
+		return empty($this->getMembers());
+	}
 
-    /**
-     * @internal
-     */
-    private function isEmpty(): bool {
-        return empty($this->getMembers());
-    }
+	/**
+	 * Returns this Faction's leader, if returned null and this faction isn't special
+	 * Then this object is considered invalid and must be destroyed or new Leader has to be attached.
+	 * As invalid faction object in runtime may cause an unexpected behaviour
+	 *
+	 * @return IMember|NULL
+	 */
+	public function getLeader() {
+		$ret = $this->getMembersWhereRole(Relation::LEADER);
+		if (empty($ret)) {
+			return null;
+		}
 
-    /**
-     * Returns this Faction's leader, if returned null and this faction isn't special
-     * Then this object is considered invalid and must be destroyed or new Leader has to be attached.
-     * As invalid faction object in runtime may cause an unexpected behaviour
-     *
-     * @return IMember|NULL
-     */
-    public function getLeader()
-    {
-        $ret = $this->getMembersWhereRole(Relation::LEADER);
-        if (empty($ret)) return null;
-        return $ret[0];
-    }
+		return $ret[0];
+	}
 
-    public function getMembersWhereRole(string $role): array
-    {
-        $ret = [];
-        foreach ($this->getMembers() as $player) {
-            if ($player->getRole() === $role) $ret[] = $player;
-        }
-        return $ret;
-    }
+	public function getMembersWhereRole(string $role): array
+	{
+		$ret = [];
+		foreach ($this->getMembers() as $player) {
+			if ($player->getRole() === $role) {
+				$ret[] = $player;
+			}
 
-    /**
-     * @return Member[]
-     */
-    public function getMembers(): array
-    {
-        $r = [];
-        foreach ($this->getRawMembers() as $role => $members) {
-            foreach ($members as $name) {
-                $r[] = Members::get($name, true);
-            }
-        }
-        return $r;
-    }
+		}
+		return $ret;
+	}
 
-    /*
-     * ----------------------------------------------------------
-     * DATA
-     * ----------------------------------------------------------
-     */
+	/**
+	 * @return Member[]
+	 */
+	public function getMembers(): array
+	{
+		$r = [];
+		foreach ($this->getRawMembers() as $role => $members) {
+			foreach ($members as $name) {
+				$r[] = Members::get($name, true);
+			}
+		}
+		return $r;
+	}
 
-    /**
-     * Check if faction is special
-     */
-    public function isSpecial(): bool
-    {
-        return in_array($this->getId(), [self::NONE, self::WARZONE, self::SAFEZONE], true);
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * DATA
+		     * ----------------------------------------------------------
+	*/
 
-    public function isPermanent(): bool {
-        return $this->getFlag(Flag::PERMANENT);
-    }
+	/**
+	 * Check if faction is special
+	 */
+	public function isSpecial(): bool {
+		return in_array($this->getId(), [self::NONE, self::WARZONE, self::SAFEZONE], true);
+	}
 
-    public function disband($reason = self::DISBAND_REASON_UNKNOWN, $delete = true)
-    {
-        if ($this->isPermanent()) {
-            throw new \LogicException("can not disband permanent faction $this ({$this->getId()})");
-        }
-        foreach ($this->getOnlineMembers() as $member) {
-            $event = new MembershipChangeEvent($member, Factions::getById(Faction::NONE), MembershipChangeEvent::REASON_DISBAND);
-            FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
-            // This event cannot be cancelled
-        }
-        if (Gameplay::get("log.faction-disband", true)) {
-            $args = [
-                "id" => $this->getId(),
-                "name" => $this->getName()
-            ];
-            $msg = Localizer::trans('log.faction-disband-reason-unknown', $args);
-            switch ($reason) {
-                case self::DISBAND_REASON_EMPTY_FACTION:
-                    $msg = Localizer::trans('log.faction-disband-reason-empty', $args);
-                    break;
-                case self::DISBAND_REASON_PURGE:
-                    $msg = Localizer::trans("log.faction-disband-reason-purge", $args);
-                    break;
-                default:
-                    break;
-            }
-            FactionsPE::get()->getLogger()->notice($msg);
-        }
-        Factions::detach($this);
-        if ($delete)
-            FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
-    }
+	public function isPermanent(): bool {
+		return $this->getFlag(Flag::PERMANENT);
+	}
 
-    /*
-     * ----------------------------------------------------------
-     * HOME
-     * ----------------------------------------------------------
-     */
+	public function disband($reason = self::DISBAND_REASON_UNKNOWN, $delete = true) {
+		if ($this->isPermanent()) {
+			throw new \LogicException("can not disband permanent faction $this ({$this->getId()})");
+		}
+		foreach ($this->getOnlineMembers() as $member) {
+			$event = new MembershipChangeEvent($member, Factions::getById(Faction::NONE), MembershipChangeEvent::REASON_DISBAND);
+			FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+			// This event cannot be cancelled
+		}
+		if (Gameplay::get("log.faction-disband", true)) {
+			$args = [
+				"id"   => $this->getId(),
+				"name" => $this->getName(),
+			];
+			$msg = Localizer::trans('log.faction-disband-reason-unknown', $args);
+			switch ($reason) {
+			case self::DISBAND_REASON_EMPTY_FACTION:
+				$msg = Localizer::trans('log.faction-disband-reason-empty', $args);
+				break;
+			case self::DISBAND_REASON_PURGE:
+				$msg = Localizer::trans("log.faction-disband-reason-purge", $args);
+				break;
+			default:
+				break;
+			}
+			FactionsPE::get()->getLogger()->notice($msg);
+		}
+		Factions::detach($this);
+		if ($delete) {
+			FactionsPE::get()->getDataProvider()->deleteFaction($this->getId());
+		}
 
-    public function getFlag(string $id): bool
-    {
-        $ret = isset($this->flags[$id]) ? $this->flags[$id] : null;
-        if ($ret !== null) return $ret;
-        $flag = Flags::getById($id);
-        if ($flag === null) throw new \Exception("undefined flag '$id'");
-        return $flag->isStandard();
-    }
+	}
 
-    /**
-     * @return Member[]
-     */
-    public function getOnlineMembers(): array
-    {
-        $ret = [];
-        foreach ($this->getMembers() as $member) {
-            if ($member->isOnline()) $ret[] = $member;
-        }
-        return $ret;
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * HOME
+		     * ----------------------------------------------------------
+	*/
 
-    /**
-     * @return OfflineMember[]
-     */
-    public function getOfflineMembers(): array
-    {
-        $ret = [];
-        foreach ($this->getMembers() as $member) {
-            if (!$member->isOnline()) $ret[] = $member;
-        }
-        return $ret;
-    }
+	public function getFlag(string $id): bool{
+		$ret = isset($this->flags[$id]) ? $this->flags[$id] : null;
+		if ($ret !== null) {
+			return $ret;
+		}
 
+		$flag = Flags::getById($id);
+		if ($flag === null) {
+			throw new \Exception("undefined flag '$id'");
+		}
 
-    /*
-     * ----------------------------------------------------------
-     * MEMBERS
-     * ----------------------------------------------------------
-     */
+		return $flag->isStandard();
+	}
 
-    public static function createId(): string
-    {
-        do { // Dangerous?
-            $id = implode("-", array_values(array_map(function ($el) {
-                return implode("", $el);
-            }, array_chunk(str_split(md5(mt_rand(0, PHP_INT_MAX)) . md5(mt_rand(0, PHP_INT_MAX))), 4))));
-        } while (Factions::getById($id));
-        return substr($id, 0, 4 * 4 + 3);
-    }
+	/**
+	 * @return Member[]
+	 */
+	public function getOnlineMembers(): array
+	{
+		$ret = [];
+		foreach ($this->getMembers() as $member) {
+			if ($member->isOnline()) {
+				$ret[] = $member;
+			}
 
-    /**
-     * @param string $name
-     * @return Translatable[]
-     */
-    public static function validateName(string $name): array
-    {
-        $errors = [];
-        if (Factions::getByName($name)) {
-            $errors[] = Localizer::translatable('faction-name-taken', [$name]);
-        }
-        if (($l = strlen($name)) > ($m = Gameplay::get('faction-name.max-length', 12))) {
-            $errors[] = Localizer::translatable('faction-name-too-long', [$name, $l, "max" => $m]);
-        }
-        if ($l < ($mi = Gameplay::get('faction-name.min-length', 3))) {
-            $errors[] = Localizer::translatable('faction-name-too-short', [$name, $l, "min" => $mi]);
-        }
-        if (!ctype_alpha($name)) {
-            $errors[] = Localizer::translatable('faction-name-not-alpha', [$name, $l]);
-        }
-        return $errors;
-    }
+		}
+		return $ret;
+	}
 
-    public function getMotdMessages(): array
-    {
-        $ret = [];
+	/**
+	 * @return OfflineMember[]
+	 */
+	public function getOfflineMembers(): array
+	{
+		$ret = [];
+		foreach ($this->getMembers() as $member) {
+			if (!$member->isOnline()) {
+				$ret[] = $member;
+			}
 
-        $ret[] = Text::titleize($this->getName() . " - Message of the Day");
-        $ret[] = Text::parse("@i" . $this->getMotd() ?? " ~");
-        $ret[] = "";
+		}
+		return $ret;
+	}
 
-        return $ret;
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * MEMBERS
+		     * ----------------------------------------------------------
+	*/
 
-    public function getLastOnline(): int
-    {
-        $t = 0;
-        foreach ($this->getMembers() as $member) {
-            if (($l = $member->getLastPlayed()) > $t) $t = $l;
-        }
-        return $t;
-    }
+	public static function createId(): string {
+		do {
+			// Dangerous?
+			$id = implode("-", array_values(array_map(function ($el) {
+				return implode("", $el);
+			}, array_chunk(str_split(md5(mt_rand(0, PHP_INT_MAX)) . md5(mt_rand(0, PHP_INT_MAX))), 4))));
+		} while (Factions::getById($id));
+		return substr($id, 0, 4 * 4 + 3);
+	}
 
-    /**
-     * Check if the faction home is in valid position and doesn't
-     * flout the Gameplay settings
-     */
-    public function verifyHome()
-    {
-        if ($this->home === null) return;
-        if ($this->isValidHome($this->home)) return;
-        $this->home = null;
-        $this->save();
-        $this->sendMessage(Localizer::translatable("home-out-of-bounds"));
-    }
+	/**
+	 * @param string $name
+	 * @return Translatable[]
+	 */
+	public static function validateName(string $name): array
+	{
+		$errors = [];
+		if (Factions::getByName($name)) {
+			$errors[] = Localizer::translatable('faction-name-taken', [$name]);
+		}
+		if (($l = strlen($name)) > ($m = Gameplay::get('faction-name.max-length', 12))) {
+			$errors[] = Localizer::translatable('faction-name-too-long', [$name, $l, "max" => $m]);
+		}
+		if ($l < ($mi = Gameplay::get('faction-name.min-length', 3))) {
+			$errors[] = Localizer::translatable('faction-name-too-short', [$name, $l, "min" => $mi]);
+		}
+		if (!ctype_alpha($name)) {
+			$errors[] = Localizer::translatable('faction-name-not-alpha', [$name, $l]);
+		}
+		return $errors;
+	}
 
-    public function hasHome(): bool {
-        $this->verifyHome();
-        return $this->home instanceof Position;
-    }
+	public function getMotdMessages(): array
+	{
+		$ret = [];
 
-    public function isValidHome(Position $home): bool
-    {
-        if (!Gameplay::get("home.must-be-in-claimed-territories", true)) return true;
-        if (Plots::getFactionAt($home) === $this) return true;
-        return false;
-    }
+		$ret[] = Text::titleize($this->getName() . " - Message of the Day");
+		$ret[] = Text::parse("@i" . $this->getMotd() ?? " ~");
+		$ret[] = "";
 
-    public function sendMessage($message)
-    {
-        if($this->isSpecial()) {
-            Members::get("CONSOLE")->sendMessage($this->getName().": ".$message);
-        } else {
-            foreach ($this->getOnlineMembers() as $player) {
-                $player->sendMessage($message);
-            }
-        }
-    }
+		return $ret;
+	}
 
-    public function setRole(IMember $member, string $rank): bool
-    {
-        if (!$this->isMember($member)) return false;
+	public function getLastOnline(): int{
+		$t = 0;
+		foreach ($this->getMembers() as $member) {
+			if (($l = $member->getLastPlayed()) > $t) {
+				$t = $l;
+			}
 
-        $name = strtolower(trim($member->getName()));
-        $members = $this->getRawMembers();
+		}
+		return $t;
+	}
 
-        // No change
-        $currentRank = $this->getRole($member);
-        if ($rank === $currentRank) return false;
+	/**
+	 * Check if the faction home is in valid position and doesn't
+	 * flout the Gameplay settings
+	 */
+	public function verifyHome() {
+		if ($this->home === null) {
+			return;
+		}
 
-        // Remove from old role
-        unset($members[$currentRank][array_search($name, $members[$currentRank])]);
+		if ($this->isValidHome($this->home)) {
+			return;
+		}
 
-        // Move into new
-        $members[$rank][] = $name;
+		$this->home = null;
+		$this->save();
+		$this->sendMessage(Localizer::translatable("home-out-of-bounds"));
+	}
 
-        // Apply
-        $this->setRawMembers($members);
+	public function hasHome(): bool{
+		$this->verifyHome();
+		return $this->home instanceof Position;
+	}
 
-        return $this->getRole($member) === $rank;
-    }
+	public function isValidHome(Position $home): bool {
+		if (!Gameplay::get("home.must-be-in-claimed-territories", true)) {
+			return true;
+		}
 
-    public function isMember(IMember $member): bool
-    {
-        $member = strtolower(trim($member->getName()));
-        foreach ($this->members as $members) {
-            if (in_array($member, $members)) return true;
-        }
-        return false;
-    }
+		if (Plots::getFactionAt($home) === $this) {
+			return true;
+		}
 
-    public function getRole(IMember $member): string
-    {
-        $member = strtolower(trim($member->getName()));
-        foreach ($this->members as $role => $members) {
-            if (in_array($member, $members)) return $role;
-        }
-        return Relation::RECRUIT;
-    }
+		return false;
+	}
 
-    /**
-     * Will add $member to members list, only few additional checks will be performed
-     * use {@link self::join(IMember $member)} instead
-     * @param IMember $member
-     * @param string $role valid faction rank
-     * @return bool
-     */
-    public function addMember(IMember $member, string $role): bool
-    {
-        if ($this->isSpecial()) {
-            throw new \LogicException("special faction can't have members in it");
-        }
-        if ($this->isMember($member)) return false;
-        if (($f = Factions::getForMember($member))) {
-            throw new \InvalidStateException("Can not add new member to faction
+	public function sendMessage($message) {
+		if ($this->isSpecial()) {
+			Members::get("CONSOLE")->sendMessage($this->getName() . ": " . $message);
+		} else {
+			foreach ($this->getOnlineMembers() as $player) {
+				$player->sendMessage($message);
+			}
+		}
+	}
+
+	public function setRole(IMember $member, string $rank): bool {
+		if (!$this->isMember($member)) {
+			return false;
+		}
+
+		$name    = strtolower(trim($member->getName()));
+		$members = $this->getRawMembers();
+
+		// No change
+		$currentRank = $this->getRole($member);
+		if ($rank === $currentRank) {
+			return false;
+		}
+
+		// Remove from old role
+		unset($members[$currentRank][array_search($name, $members[$currentRank])]);
+
+		// Move into new
+		$members[$rank][] = $name;
+
+		// Apply
+		$this->setRawMembers($members);
+
+		return $this->getRole($member) === $rank;
+	}
+
+	public function isMember(IMember $member): bool{
+		$member = strtolower(trim($member->getName()));
+		foreach ($this->members as $members) {
+			if (in_array($member, $members)) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public function getRole(IMember $member): string{
+		$member = strtolower(trim($member->getName()));
+		foreach ($this->members as $role => $members) {
+			if (in_array($member, $members)) {
+				return $role;
+			}
+
+		}
+		return Relation::RECRUIT;
+	}
+
+	/**
+	 * Will add $member to members list, only few additional checks will be performed
+	 * use {@link self::join(IMember $member)} instead
+	 * @param IMember $member
+	 * @param string $role valid faction rank
+	 * @return bool
+	 */
+	public function addMember(IMember $member, string $role): bool {
+		if ($this->isSpecial()) {
+			throw new \LogicException("special faction can't have members in it");
+		}
+		if ($this->isMember($member)) {
+			return false;
+		}
+
+		if (($f = Factions::getForMember($member))) {
+			throw new \InvalidStateException("Can not add new member to faction
 				'{$this->getName()}'. Member '{$member->getName()}' is member of faction '{$f->getName()}'");
-        }
-        // TODO: Check for player limit
-        if ($role === Relation::LEADER) {
-            // Promoting new leader, but at first this member must be in this faction
-            $this->members[Relation::RECRUIT][] = strtolower(trim($member->getName()));
-            $this->promoteNewLeader($member);
-        } else {
-            if (!Relation::isRankValid($role)) {
-                throw new \InvalidArgumentException("\$role[=$role] must be valid faction rank");
-            }
-            $this->members[$role][] = strtolower(trim($member->getName()));
-        }
-        return true;
-    }
-
-    /**
-     * Try to promote new leader or disband if failed
-     * @param IMember $leader = null
-     */
-    public function promoteNewLeader(IMember $leader = null)
-    {
-        if ($this->isNone()) return;
-        if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) return;
-        if ($leader && !$leader->hasFaction() or $leader && $leader->getFactionId() !== $this->getId()) return;
-        $oldLeader = $this->getLeader();
-        // get list of officers, or list of normal members if there are no officers
-        $replacements = $leader instanceof Member ? [$leader] : $this->getMembersWhereRole(Relation::OFFICER);
-        if (empty($replacements)) {
-            $replacements = $this->getMembersWhereRole(Relation::MEMBER);
-        }
-        if (empty($replacements)) {
-            // faction leader is the only member; one-man faction
-            if ($this->getFlag(Flag::PERMANENT)) {
-                if ($oldLeader != null) {
-                    // TODO: Where is the logic in this? Why MEMBER? Why not LEADER again? And why not OFFICER or RECRUIT?
-                    $oldLeader->setRole(Relation::MEMBER);
-                }
-                return;
-            }
-            // no members left and faction isn't permanent, so disband it
-            $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
-        } else {
-            // promote new faction leader
-            if ($oldLeader != null) {
-                $oldLeader->setRole(Relation::MEMBER);
-            }
-            $replacements[0]->setRole(Relation::LEADER);
-            $this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
-            if (Gameplay::get('log.faction-new-leader', true)) {
-                FactionsPE::get()->getLogger()->info(Localizer::trans('log.new-leader', [
-                    $this->getName(), $this->getId(), $replacements[0]->getName()
-                ]));
-            }
-        }
-    }
-
-    /**
-     * Check if faction is wilderness
-     */
-    public function isNone(): bool
-    {
-        return $this->getId() === self::NONE;
-    }
-
-    public function join(IMember $member, $role = Relation::RECRUIT): bool
-    {
+		}
+		// TODO: Check for player limit
+		if ($role === Relation::LEADER) {
+			// Promoting new leader, but at first this member must be in this faction
+			$this->members[Relation::RECRUIT][] = strtolower(trim($member->getName()));
+			$this->promoteNewLeader($member);
+		} else {
+			if (!Relation::isRankValid($role)) {
+				throw new \InvalidArgumentException("\$role[=$role] must be valid faction rank");
+			}
+			$this->members[$role][] = strtolower(trim($member->getName()));
+		}
 		return true;
-    }
+	}
 
-    public function leave(IMember $member): bool
-    {
-        if (!$this->isMember($member)) {
-            throw new \InvalidArgumentException("\$member[={$member->getName()}] is not member of this faction[=$this]");
-        }
-        $permanent = $this->getFlag(Flag::PERMANENT);
-        if (count($this->getMembers()) > 1) {
-            if (!$permanent && $member->getRole() === Relation::LEADER) {
-                $member->sendMessage(Localizer::translatable('faction-leave-as-leader'));
-                return false;
-            }
-            if (!Gameplay::get("can-leave-with-negative-power", false) && $this->getPower() < 0) {
-                $member->sendMessage(Localizer::translatable('faction-leave-with-negative-power'));
-                return false;
-            }
-        }
-        // Event
-        $event = new MembershipChangeEvent($member, $this, MembershipChangeEvent::REASON_LEAVE);
-        FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
-        if ($event->isCancelled()) return false;
+	/**
+	 * Try to promote new leader or disband if failed
+	 * @param IMember $leader = null
+	 */
+	public function promoteNewLeader(IMember $leader = null) {
+		if ($this->isNone()) {
+			return;
+		}
 
-        // Lets remove player from faction before announcing it, to avoid :facepalm:
-        try {
+		if ($this->getFlag(Flag::PERMANENT) && Gameplay::get("faction.disable-permanent-leader-promotion", true)) {
+			return;
+		}
 
-            if (!$this->removeMember($member)) {
-                throw new \Exception("failed to remove member from faction for unknown reason");
-            }
-            $member->resetFactionData();
+		if ($leader && !$leader->hasFaction() or $leader && $leader->getFactionId() !== $this->getId()) {
+			return;
+		}
 
-        } catch (\Exception $e) {
-            $member->sendMessage(Localizer::translatable('faction-leave-exception', [$e->getMessage()]));
-            return false;
-        }
+		$oldLeader = $this->getLeader();
+		// get list of officers, or list of normal members if there are no officers
+		$replacements = $leader instanceof Member ? [$leader] : $this->getMembersWhereRole(Relation::OFFICER);
+		if (empty($replacements)) {
+			$replacements = $this->getMembersWhereRole(Relation::MEMBER);
+		}
+		if (empty($replacements)) {
+			// faction leader is the only member; one-man faction
+			if ($this->getFlag(Flag::PERMANENT)) {
+				if ($oldLeader != null) {
+					// TODO: Where is the logic in this? Why MEMBER? Why not LEADER again? And why not OFFICER or RECRUIT?
+					$oldLeader->setRole(Relation::MEMBER);
+				}
+				return;
+			}
+			// no members left and faction isn't permanent, so disband it
+			$this->disband(self::DISBAND_REASON_EMPTY_FACTION);
+		} else {
+			// promote new faction leader
+			if ($oldLeader != null) {
+				$oldLeader->setRole(Relation::MEMBER);
+			}
+			$replacements[0]->setRole(Relation::LEADER);
+			$this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
+			if (Gameplay::get('log.faction-new-leader', true)) {
+				FactionsPE::get()->getLogger()->info(Localizer::trans('log.new-leader', [
+					$this->getName(), $this->getId(), $replacements[0]->getName(),
+				]));
+			}
+		}
+	}
 
-        // Now we can announce
-        if ($this->isNormal()) {
-            foreach ($this->getOnlineMembers() as $player) {
-                $player->sendMessage(Localizer::translatable("member-left-faction", [$member->getDisplayName()]));
-            }
-            if (Gameplay::get('log.member-leave')) {
-                FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-leave', [$member->getName(), $this->getName()]));
-            }
-        }
+	/**
+	 * Check if faction is wilderness
+	 */
+	public function isNone(): bool {
+		return $this->getId() === self::NONE;
+	}
 
-        // Disband the faction if necessary
-        if ($this->isNormal() && !$permanent && empty($this->getRawMembers())) {
-            $this->disband(Faction::DISBAND_REASON_EMPTY_FACTION);
-        }
-        return true;
-    }
+	public function join(IMember $member, $role = Relation::RECRUIT): bool {
+		return true;
+	}
 
-    public function getPower(bool $limit = true): int
-    {
-        if ($this->getFlag(Flag::INFINITY_POWER)) return PHP_INT_MAX;
-        $ret = 0;
-        foreach ($this->getMembers() as $fplayer) {
-            $ret += $fplayer->getPower($limit);
-        }
-        $ret += $this->getPowerBoost();
-        $max = Gameplay::get('max-faction-power', null); # TODO
-        if ($max && $max > 0) $ret = min($ret, $max);
-        return $ret;
-    }
+	public function leave(IMember $member): bool {
+		if (!$this->isMember($member)) {
+			throw new \InvalidArgumentException("\$member[={$member->getName()}] is not member of this faction[=$this]");
+		}
+		$permanent = $this->getFlag(Flag::PERMANENT);
+		if (count($this->getMembers()) > 1) {
+			if (!$permanent && $member->getRole() === Relation::LEADER) {
+				$member->sendMessage(Localizer::translatable('faction-leave-as-leader'));
+				return false;
+			}
+			if (!Gameplay::get("can-leave-with-negative-power", false) && $this->getPower() < 0) {
+				$member->sendMessage(Localizer::translatable('faction-leave-with-negative-power'));
+				return false;
+			}
+		}
+		// Event
+		$event = new MembershipChangeEvent($member, $this, MembershipChangeEvent::REASON_LEAVE);
+		FactionsPE::get()->getServer()->getPluginManager()->callEvent($event);
+		if ($event->isCancelled()) {
+			return false;
+		}
 
-    /**
-     * Member::leave() should be called first if not then call Member::resetFactionData() yourself
-     * @param IMember $member
-     * @return bool
-     */
-    public function removeMember(IMember $member): bool
-    {
-        if (!$this->isMember($member)) return false;
-        $members = $this->members;
-        $mir = $members[$this->getRole($member)];
-        foreach ($mir as $key => $m) {
-            if ($m === strtolower(trim($member->getName()))) {
-                unset($mir[$key]);
-            }
-        }
-        if(!empty($mir)) {
-          $members[$this->getRole($member)] = $mir;
-        } else {
-          unset($members[$this->getRole($member)]);
-        }
-        $this->members = $members;
-        return !$this->isMember($member);
-    }
+		// Lets remove player from faction before announcing it, to avoid :facepalm:
+		try {
 
-    /**
-     * Check if faction is not one of the default ones
-     */
-    public function isNormal(): bool
-    {
-        return !$this->isSpecial();
-    }
+			if (!$this->removeMember($member)) {
+				throw new \Exception("failed to remove member from faction for unknown reason");
+			}
+			$member->resetFactionData();
 
-    /*
-     * ----------------------------------------------------------
-     * INVITATION
-     * ----------------------------------------------------------
-     */
+		} catch (\Exception $e) {
+			$member->sendMessage(Localizer::translatable('faction-leave-exception', [$e->getMessage()]));
+			return false;
+		}
 
-    public function isAnyMemberOnline(): bool
-    {
-        return !$this->isAllMembersOffline();
-    }
+		// Now we can announce
+		if ($this->isNormal()) {
+			foreach ($this->getOnlineMembers() as $player) {
+				$player->sendMessage(Localizer::translatable("member-left-faction", [$member->getDisplayName()]));
+			}
+			if (Gameplay::get('log.member-leave')) {
+				FactionsPE::get()->getLogger()->info(Localizer::trans('log.member-leave', [$member->getName(), $this->getName()]));
+			}
+		}
 
-    public function isAllMembersOffline(): bool
-    {
-        return empty($this->getOnlineMembers());
-    }
+		// Disband the faction if necessary
+		if ($this->isNormal() && !$permanent && empty($this->getRawMembers())) {
+			$this->disband(Faction::DISBAND_REASON_EMPTY_FACTION);
+		}
+		return true;
+	}
 
-    /**
-     * @param IMember|string
-     * @return bool
-     */
-    public function isInvited($member): bool
-    {
-        $member = $member instanceof IMember ? $member->getName() : $member;
-        return in_array(strtolower(trim($member)), $this->invitedPlayers, true);
-    }
+	public function getPower(bool $limit = true): int {
+		if ($this->getFlag(Flag::INFINITY_POWER)) {
+			return PHP_INT_MAX;
+		}
 
-    /**
-     * @return string[]
-     */
-    public function getInvitedMembers(): array
-    {
-        $r = [];
-        foreach ($this->getInvitedPlayers() as $name) {
-            $r[] = Members::get($name, true);
-        }
-        return $r;
-    }
+		$ret = 0;
+		foreach ($this->getMembers() as $fplayer) {
+			$ret += $fplayer->getPower($limit);
+		}
+		$ret += $this->getPowerBoost();
+		$max = Gameplay::get('max-faction-power', null); # TODO
+		if ($max && $max > 0) {
+			$ret = min($ret, $max);
+		}
 
-    public function setInvitedMembers(array $members)
-    {
-        foreach ($members as $member) {
-            $this->invitedPlayers[] = strtolower(trim($member->getName()));
-        }
-    }
+		return $ret;
+	}
 
-    /*
-     * ----------------------------------------------------------
-     * FLAGS
-     * ----------------------------------------------------------
-     */
+	/**
+	 * Member::leave() should be called first if not then call Member::resetFactionData() yourself
+	 * @param IMember $member
+	 * @return bool
+	 */
+	public function removeMember(IMember $member): bool {
+		if (!$this->isMember($member)) {
+			return false;
+		}
 
-    /**
-     * @param IMember|string $player
-     * @param bool $invited
-     */
-    public function setInvited($player, bool $invited)
-    {
-        if (!$invited)
-            unset($this->invitedPlayers[array_search(strtolower(trim($player instanceof IMember ? $player->getName() : $player)), $this->invitedPlayers)]);
-        else
-            $this->invitedPlayers[] = strtolower(trim($player instanceof IMember ? $player->getName() : $player));
-    }
+		$members = $this->members;
+		$mir     = $members[$this->getRole($member)];
+		foreach ($mir as $key => $m) {
+			if ($m === strtolower(trim($member->getName()))) {
+				unset($mir[$key]);
+			}
+		}
+		if (!empty($mir)) {
+			$members[$this->getRole($member)] = $mir;
+		} else {
+			unset($members[$this->getRole($member)]);
+		}
+		$this->members = $members;
+		return !$this->isMember($member);
+	}
 
-    /**
-     * @return IMember[]
-     */
-    public function getOnlineInvitedMembers(): array
-    {
-        $r = [];
-        foreach ($this->getInvitedPlayers() as $name) {
-            $m = Members::get($name, false);
-            if (!$m || !$m->isOnline()) continue;
-            $r[] = $m;
-        }
-        return $r;
-    }
+	/**
+	 * Check if faction is not one of the default ones
+	 */
+	public function isNormal(): bool {
+		return !$this->isSpecial();
+	}
 
-    public function setPermissionId(array $target)
-    {
-        // Detect Nochange
-        if ($this->perms === $target) return;
-        // Apply
-        $this->perms = $target;
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * INVITATION
+		     * ----------------------------------------------------------
+	*/
 
-    public function isDefaultOpen(): bool
-    {
-        return Flags::getById(Flag::OPEN)->isStandard();
-    }
+	public function isAnyMemberOnline(): bool {
+		return !$this->isAllMembersOffline();
+	}
 
-    public function isOpen(): bool
-    {
-        return $this->getFlag(Flag::OPEN);
-    }
+	public function isAllMembersOffline(): bool {
+		return empty($this->getOnlineMembers());
+	}
 
-    public function setOpen(bool $open)
-    {
-        $this->setFlag(Flag::OPEN, $open);
-    }
+	/**
+	 * @param IMember|string
+	 * @return bool
+	 */
+	public function isInvited($member): bool{
+		$member = $member instanceof IMember ? $member->getName() : $member;
+		return in_array(strtolower(trim($member)), $this->invitedPlayers, true);
+	}
 
-    public function setFlag(string $id, bool $value)
-    {
-        $this->setFlagId([$id => $value]);
-    }
+	/**
+	 * @return string[]
+	 */
+	public function getInvitedMembers(): array
+	{
+		$r = [];
+		foreach ($this->getInvitedPlayers() as $name) {
+			$r[] = Members::get($name, true);
+		}
+		return $r;
+	}
 
-    public function setFlagId(array $target)
-    {
-        // Detect Nochange
-        if ($this->flags === $target) return;
-        // Apply
-        $this->flags = $target;
-    }
+	public function setInvitedMembers(array $members) {
+		foreach ($members as $member) {
+			$this->invitedPlayers[] = strtolower(trim($member->getName()));
+		}
+	}
 
-    /**
-     * @param array string => bool
-     */
-    public function getFlags(): array
-    {
-        return $this->flags;
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * FLAGS
+		     * ----------------------------------------------------------
+	*/
 
-    /**
-     * @param Flag []
-     */
-    public function setFlags(array $flags)
-    {
-        $flagIds = [];
-        foreach ($flags as $flag) {
-            $flagIds[$flag->getId()] = $flag->isStandard();
-        }
-        $this->flags = array_merge($flagIds, $this->flags);
-    }
+	/**
+	 * @param IMember|string $player
+	 * @param bool $invited
+	 */
+	public function setInvited($player, bool $invited) {
+		if (!$invited) {
+			unset($this->invitedPlayers[array_search(strtolower(trim($player instanceof IMember ? $player->getName() : $player)), $this->invitedPlayers)]);
+		} else {
+			$this->invitedPlayers[] = strtolower(trim($player instanceof IMember ? $player->getName() : $player));
+		}
 
-    /*
-     * ----------------------------------------------------------
-     * PERMISSIONS
-     * ----------------------------------------------------------
-     */
+	}
 
-    /**
-     * Returns true if explosion can occur on this Faction's land
-     * @return bool
-     */
-    public function isExplosionsAllowed(): bool
-    {
-        $explosions = $this->getFlag(Flag::EXPLOSIONS);
-        $offlineexplosions = $this->getFlag(Flag::OFFLINE_EXPLOSIONS);
-        if ($explosions && $offlineexplosions) return true;
-        if (!$explosions && !$offlineexplosions) return false;
-        $online = $this->isConsideredOnline();
-        return ($online && $explosions) || (!$online && $offlineexplosions);
-    }
+	/**
+	 * @return IMember[]
+	 */
+	public function getOnlineInvitedMembers(): array
+	{
+		$r = [];
+		foreach ($this->getInvitedPlayers() as $name) {
+			$m = Members::get($name, false);
+			if (!$m || !$m->isOnline()) {
+				continue;
+			}
 
-    public function isConsideredOnline(): bool
-    {
-        return !$this->isConsideredOffline();
-    }
+			$r[] = $m;
+		}
+		return $r;
+	}
 
-    public function isConsideredOffline(): bool
-    {
-        return $this->isAllMembersOffline();
-    }
+	public function setPermissionId(array $target) {
+		// Detect Nochange
+		if ($this->perms === $target) {
+			return;
+		}
 
-    public function setRelationPermitted(Permission $perm, string $rel, bool $permitted)
-    {
-        $perms = $this->getPermissions();
-        $relations = $this->getPermitted($perm);
-        if ($permitted and !$this->isPermitted($perm, $rel)) {
-            $relations[] = $rel;
-        } else {
-            unset($relations[array_search($rel, $relations, true)]);
-        }
-        $perms[$perm->getId()] = $relations;
-        $this->setPermissions($perms);
-    }
+		// Apply
+		$this->perms = $target;
+	}
 
-    public function getPermissions(): array
-    {
-        $r = [];
-        foreach (Permissions::getAll() as $perm) {
-            $r[$perm->getId()] = $this->perms[$perm->getId()] ?? $perm->getStandard();
-        }
-        return $r;
-    }
+	public function isDefaultOpen(): bool {
+		return Flags::getById(Flag::OPEN)->isStandard();
+	}
 
-    /**
-     * Get array of relations that has Permission
-     * @param Permission|string
-     * @return array
-     */
-    public function getPermitted($perm): array
-    {
-        $id = $perm instanceof Permission ? $perm->getId() : $perm;
-        return $this->getPermissions()[$id] ?? [];
-    }
+	public function isOpen(): bool {
+		return $this->getFlag(Flag::OPEN);
+	}
 
-    /*
-     * ----------------------------------------------------------
-     * RELATIONS
-     * ----------------------------------------------------------
-     */
+	public function setOpen(bool $open) {
+		$this->setFlag(Flag::OPEN, $open);
+	}
 
-    /**
-     * @param string $rel relation id
-     * @param Permission|string $perm
-     * @return bool
-     */
-    public function isPermitted($rel, $perm): bool
-    {
-        return in_array($rel, $this->getPermitted($perm), true);
-    }
+	public function setFlag(string $id, bool $value) {
+		$this->setFlagId([$id => $value]);
+	}
 
-    public function setPermissions(array $perms)
-    {
-        foreach ($perms as $key => $relations) {
-            $this->perms[$key] = $relations;
-        }
-    }
+	public function setFlagId(array $target) {
+		// Detect Nochange
+		if ($this->flags === $target) {
+			return;
+		}
 
-    public function setPermittedRelations(Permission $perm, array $rels)
-    {
-        $this->setPermissions([$perm->getId() => $rels]);
-    }
+		// Apply
+		$this->flags = $target;
+	}
 
-    /**
-     * Returns list of Factions where relations with this faction is equal to $rel
-     * @param string $rel
-     * @return Faction[]
-     */
-    public function getFactionsWhereRelation(string $rel): array
-    {
-        $r = [];
-        foreach (Factions::getAll() as $f) {
-            if ($f === $this) continue;
-            if ($f->getRelationTo($this) === $rel) $r[] = $f;
-        }
-        return $r;
-    }
+	/**
+	 * @param array string => bool
+	 */
+	public function getFlags(): array
+	{
+		return $this->flags;
+	}
 
-    public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false): string
-    {
-        return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
-    }
+	/**
+	 * @param Flag []
+	 */
+	public function setFlags(array $flags) {
+		$flagIds = [];
+		foreach ($flags as $flag) {
+			$flagIds[$flag->getId()] = $flag->isStandard();
+		}
+		$this->flags = array_merge($flagIds, $this->flags);
+	}
 
-    /**
-     * @param Faction|string $faction
-     * @return string relation id
-     * @internal param string $rel
-     */
-    public function getRelationWish($faction): string
-    {
-        $fid = $faction instanceof Faction ? $faction->getId() : $faction;
-        return $this->relationWishes[$fid] ?? Relation::NEUTRAL;
-    }
+	/*
+		     * ----------------------------------------------------------
+		     * PERMISSIONS
+		     * ----------------------------------------------------------
+	*/
 
-    /**
-     * @param Faction|string $faction
-     * @param string $rel
-     *
-     */
-    public function setRelationWish($faction, string $rel)
-    {
-        $fid = $faction instanceof Faction ? $faction->getId() : $faction;
-        if (!$rel || $rel === Relation::NEUTRAL) {
-            unset($this->relationWishes[array_search($fid, $this->relationWishes)]);
-        } else {
-            $this->relationWishes[$fid] = $rel;
-        }
-    }
+	/**
+	 * Returns true if explosion can occur on this Faction's land
+	 * @return bool
+	 */
+	public function isExplosionsAllowed(): bool{
+		$explosions        = $this->getFlag(Flag::EXPLOSIONS);
+		$offlineexplosions = $this->getFlag(Flag::OFFLINE_EXPLOSIONS);
+		if ($explosions && $offlineexplosions) {
+			return true;
+		}
 
-    /**
-     * @return array string => string (faction id => relation id)
-     */
-    public function getRelationWishes(): array
-    {
-        return $this->relationWishes;
-    }
+		if (!$explosions && !$offlineexplosions) {
+			return false;
+		}
 
-    /*
-     * ----------------------------------------------------------
-     * PLOTS
-     * ----------------------------------------------------------
-     */
+		$online = $this->isConsideredOnline();
+		return ($online && $explosions) || (!$online && $offlineexplosions);
+	}
 
-    public function isFriend(RelationParticipator $observer): bool
-    {
-        return Relation::isFriend($this->getRelationTo($observer));
-    }
+	public function isConsideredOnline(): bool {
+		return !$this->isConsideredOffline();
+	}
 
-    public function isEnemy(RelationParticipator $observer): bool
-    {
-        return Relation::isEnemy($this->getRelationTo($observer));
-    }
+	public function isConsideredOffline(): bool {
+		return $this->isAllMembersOffline();
+	}
 
-    public function getColorTo(RelationParticipator $observer): string
-    {
-        return Relation::getColorOfThatToMe($this, $observer);
-    }
+	public function setRelationPermitted(Permission $perm, string $rel, bool $permitted) {
+		$perms     = $this->getPermissions();
+		$relations = $this->getPermitted($perm);
+		if ($permitted and !$this->isPermitted($perm, $rel)) {
+			$relations[] = $rel;
+		} else {
+			unset($relations[array_search($rel, $relations, true)]);
+		}
+		$perms[$perm->getId()] = $relations;
+		$this->setPermissions($perms);
+	}
 
-    public function getPlotsCountInLevel(Level $level): int
-    {
-        return count($this->getPlotsInLevel($level));
-    }
+	public function getPermissions(): array
+	{
+		$r = [];
+		foreach (Permissions::getAll() as $perm) {
+			$r[$perm->getId()] = $this->perms[$perm->getId()] ?? $perm->getStandard();
+		}
+		return $r;
+	}
 
-    public function getPlotsInLevel(Level $level): array
-    {
-        return Plots::getFactionPlotsInLevel($this, $level);
-    }
+	/**
+	 * Get array of relations that has Permission
+	 * @param Permission|string
+	 * @return array
+	 */
+	public function getPermitted($perm): array
+	{
+		$id = $perm instanceof Permission ? $perm->getId() : $perm;
+		return $this->getPermissions()[$id] ?? [];
+	}
 
-    /*
-     * ----------------------------------------------------------
-     * POWER
-     * ----------------------------------------------------------
-     */
+	/*
+		     * ----------------------------------------------------------
+		     * RELATIONS
+		     * ----------------------------------------------------------
+	*/
 
-    public function hasLandInflation(): bool
-    {
-        return ($this->getLandCount() * Gameplay::get("power.per-claim", 5)) > $this->getPower();
-    }
+	/**
+	 * @param string $rel relation id
+	 * @param Permission|string $perm
+	 * @return bool
+	 */
+	public function isPermitted($rel, $perm): bool {
+		return in_array($rel, $this->getPermitted($perm), true);
+	}
 
-    public function getLandCount(): int
-    {
-        return count($this->getAllPlots());
-    }
+	public function setPermissions(array $perms) {
+		foreach ($perms as $key => $relations) {
+			$this->perms[$key] = $relations;
+		}
+	}
 
-    public function getAllPlots(): array
-    {
-        return Plots::getFactionPlots($this);
-    }
+	public function setPermittedRelations(Permission $perm, array $rels) {
+		$this->setPermissions([$perm->getId() => $rels]);
+	}
 
-    public function getPowerMax(): int
-    {
-        if ($this->getFlag(Flag::INFINITY_POWER)) return $this->getPower();
-        $ret = 0;
-        foreach ($this->getMembers() as $member) {
-            $ret += $member->getPowerMax();
-        }
-        return $ret;
-    }
+	/**
+	 * Returns list of Factions where relations with this faction is equal to $rel
+	 * @param string $rel
+	 * @return Faction[]
+	 */
+	public function getFactionsWhereRelation(string $rel): array
+	{
+		$r = [];
+		foreach (Factions::getAll() as $f) {
+			if ($f === $this) {
+				continue;
+			}
 
-    public function __toString(): string
-    {
-        return $this->getName() . " (" . $this->getId() . ")";
-    }
+			if ($f->getRelationTo($this) === $rel) {
+				$r[] = $f;
+			}
+
+		}
+		return $r;
+	}
+
+	public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false): string {
+		return Relation::getRelationOfThatToMe($this, $observer, $ignorePeaceful);
+	}
+
+	/**
+	 * @param Faction|string $faction
+	 * @return string relation id
+	 * @internal param string $rel
+	 */
+	public function getRelationWish($faction): string{
+		$fid = $faction instanceof Faction ? $faction->getId() : $faction;
+		return $this->relationWishes[$fid] ?? Relation::NEUTRAL;
+	}
+
+	/**
+	 * @param Faction|string $faction
+	 * @param string $rel
+	 *
+	 */
+	public function setRelationWish($faction, string $rel) {
+		$fid = $faction instanceof Faction ? $faction->getId() : $faction;
+		if (!$rel || $rel === Relation::NEUTRAL) {
+			unset($this->relationWishes[array_search($fid, $this->relationWishes)]);
+		} else {
+			$this->relationWishes[$fid] = $rel;
+		}
+	}
+
+	/**
+	 * @return array string => string (faction id => relation id)
+	 */
+	public function getRelationWishes(): array
+	{
+		return $this->relationWishes;
+	}
+
+	/*
+		     * ----------------------------------------------------------
+		     * PLOTS
+		     * ----------------------------------------------------------
+	*/
+
+	public function isFriend(RelationParticipator $observer): bool {
+		return Relation::isFriend($this->getRelationTo($observer));
+	}
+
+	public function isEnemy(RelationParticipator $observer): bool {
+		return Relation::isEnemy($this->getRelationTo($observer));
+	}
+
+	public function getColorTo(RelationParticipator $observer): string {
+		return Relation::getColorOfThatToMe($this, $observer);
+	}
+
+	public function getPlotsCountInLevel(Level $level): int {
+		return count($this->getPlotsInLevel($level));
+	}
+
+	public function getPlotsInLevel(Level $level): array
+	{
+		return Plots::getFactionPlotsInLevel($this, $level);
+	}
+
+	public function hasLandInflation(): bool {
+		return ($this->getLandCount() * Gameplay::get("power.per-claim", 5)) > $this->getPower();
+	}
+
+	public function getLandCount(): int {
+		return count($this->getAllPlots());
+	}
+
+	public function getAllPlots(): array
+	{
+		return Plots::getFactionPlots($this);
+	}
+
+	public function getPowerMax(): int {
+		if ($this->getFlag(Flag::INFINITY_POWER)) {
+			return $this->getPower();
+		}
+
+		$ret = 0;
+		foreach ($this->getMembers() as $member) {
+			$ret += $member->getPowerMax();
+		}
+		return $ret;
+	}
+
+	public function __toString(): string {
+		return $this->getName() . " (" . $this->getId() . ")";
+	}
 
 }

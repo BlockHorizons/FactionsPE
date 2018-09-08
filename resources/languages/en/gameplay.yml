@@ -2,6 +2,8 @@
 command-usage: "<i>Command usage: <aqua>:usage<reset>"
 faction-command-tip: "<i>To see available faction commands execute <aqua>:help<reset>"
 
+infinity: "INFINITY"
+
 home-out-of-bounds: "<i>Your faction home has been un-set since it is no longer in your territory."
 
 faction-disbanded-due-empty: ":0 <i>was disbanded since you were the last player."

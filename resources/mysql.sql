@@ -13,6 +13,7 @@ CREATE TABLE factions (
   motd TEXT,
   powerBoost INT,
   bank INT,
+  timeOnline INT,
   # Here we go lazy version: using TEXT strings instead of separated tables
   perms TEXT,
   flags TEXT,

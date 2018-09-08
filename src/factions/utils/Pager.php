@@ -47,7 +47,7 @@ class Pager {
 		return $this->title;
 	}
 
-	public function sendTitle(CommandSender $sender, array $params = [], bool $titleize = false) {
+	public function sendTitle(CommandSender $sender, array $params = [], bool $titleize = true) {
 		if ($this->title !== null) {
 			$params = array_merge([
 				"page" => $this->getPage(),

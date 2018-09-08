@@ -92,8 +92,12 @@ class MainEngine extends Engine {
 	const EDIT_TOOLS = [];
 
 	public function onPlayerPrelogin(PlayerPreLoginEvent $event) {
-		Members::get($event->getPlayer(), true);
-
+		$m = Members::get($event->getPlayer(), true);
+		if ($m->hasFaction()) {
+			if ($m->getFaction()->isConsideredOffline()) {
+				$m->getFaction()->startCountingOnlineTime();
+			}
+		}
 	}
 
 	public function onPlayerQuit(PlayerQuitEvent $event) {
