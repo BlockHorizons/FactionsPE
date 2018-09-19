@@ -32,38 +32,35 @@ class Top extends Command {
 
 		if ($sortBy === "power") {
 			foreach ($factions as $faction) {
-				if ($faction->getFlag(Flag::INFINITY_POWER) || $faction->isNone() or $faction->isSpecial()) {
+				if ($faction->getFlag(Flag::INFINITY_POWER) || $faction->isNone() || $faction->isSpecial()) {
 					continue;
 				}
 				$order[$faction->getName()] = $faction->getPower();
-				$keys[]                     = $faction->getName();
-			}
-			arsort($order);
-			foreach ($order as $key => $power) {
-				$book[$key] = [$key, $power];
 			}
 		} elseif ($sortBy === "online") {
 			foreach ($factions as $faction) {
 				if ($faction->getTimeJoined() === null) {
 					continue;
 				}
-
 				$order[$faction->getName()] = $faction->getOnlineTime();
-				$keys[]                     = $faction->getName();
-			}
-			arsort($order);
-			foreach ($order as $key => $time) {
-				$book[$key] = [$key, $time];
 			}
 		} else {
-			return ["unknown-sort-by", ['sort' => $sortBy]];
+			$sender->sendMessage(Localizer::translatable("unknown-sort-by", ['sort' => $sortBy]));
+			return "sort-by-tip";
+		}
+
+		// Sort
+		asort($order);
+		$book = array_reverse($order);
+		foreach ($book as $key => $value) {
+			$book[$key] = [$key, $value];
 		}
 
 		if (empty($book)) {
 			$sender->sendMessage(Localizer::translatable("top-empty"));
 			return true;
 		}
-		$page = $this->getArgument(0);
+		$page = $this->getArgument(1);
 
 		$pager = new Pager("top-header", $page, $height, $book, $sender, function (array $d, int $i, CommandSender $sender) use ($height, $page, $sortBy) {
 			$value = $sortBy === "power" ? $d[1] : Text::time_elapsed($d[1], true);

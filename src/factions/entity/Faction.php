@@ -70,7 +70,7 @@ class Faction extends FactionData implements RelationParticipator {
 			$this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
 		}
 
-		if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial()) {
+		if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial() && !$this->isPermanent()) {
 			if ($this->isEmpty()) {
 				$this->disband(self::DISBAND_REASON_EMPTY_FACTION);
 			}

@@ -93,8 +93,12 @@ class MainEngine extends Engine {
 
 	public function onPlayerPrelogin(PlayerPreLoginEvent $event) {
 		$m = Members::get($event->getPlayer(), true);
+	}
+
+	public function onPlayerJoin(PlayerJoinEvent $event) {
+		$m = Members::get($event->getPlayer(), true);
 		if ($m->hasFaction()) {
-			if ($m->getFaction()->isConsideredOffline()) {
+			if (!$m->getFaction()->getTimeJoined()) {
 				$m->getFaction()->startCountingOnlineTime();
 			}
 		}
@@ -115,7 +119,7 @@ class MainEngine extends Engine {
 			# Player moved from plot to plot
 			$member->chunkPos = [$cx, $cz];
 			# Call event
-			$event = new MemberTraceEvent($member, new PLot($event->getFrom()), new Plot($event->getTo()));
+			$event = new MemberTraceEvent($member, new Plot($event->getFrom()), new Plot($event->getTo()));
 			$this->getMain()->getServer()->getPluginManager()->callEvent($event);
 		}
 	}

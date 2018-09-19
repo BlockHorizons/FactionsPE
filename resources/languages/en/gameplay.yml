@@ -122,6 +122,8 @@ faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with
 top-header: "Faction Top :0/:1 sorted by <h>:sort-by"
 top-line: ":0: :1 (:2)"
 top-empty: "<b>No factions have been created yet."
+unknown-sort-by: "<b>No idea how to sort by \":0\""
+sort-by-tip: "<i>Try sort by <aqua>online<i> time or <aqua>power<i> levels"
 
 player-power-boost: "<a>Power Boost: <v>:0 <i>(a manually granted :1)"
 player-power: "<a>Power: <v>:0 / :1"
