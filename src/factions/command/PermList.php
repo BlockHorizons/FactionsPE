@@ -60,7 +60,7 @@ class PermList extends Command {
 
 		$pager->sendTitle($sender);
 
-		$sender->sendMessage(Text::titleize(Localizer::translatable($pager->getHeader(), [$pager->getPage(), $pager->getMax()])));
+		$sender->sendMessage(Text::titleize(Localizer::translatable($pager->getTitle(), [$pager->getPage(), $pager->getMax()])));
 		foreach ($pager->getOutput() as $line) {
 			$sender->sendMessage($line);
 		}

@@ -80,7 +80,7 @@ class InviteList extends Command
         $pager->stringify();
 
         // Pager Message
-        $sender->sendMessage($pager->getHeader());
+        $sender->sendMessage($pager->getTitle());
         foreach ($pager->getOutput() as $l) $sender->sendMessage($l);
 
         return true;
