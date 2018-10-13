@@ -53,7 +53,7 @@ class PermShow extends Command
         });
         $pager->stringify();
 
-        $sender->sendMessage(Text::titleize(Localizer::translatable($pager->getHeader(), [$pager->getPage(), $pager->getMax(), $faction->getName()])));
+        $pager->sendTitle($sender, ["faction" => $faction->getName()]);
 
         $sender->sendMessage(Permission::getStateHeaders());
         foreach ($pager->getOutput() as $line) $sender->sendMessage($line);

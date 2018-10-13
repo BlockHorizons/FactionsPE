@@ -287,6 +287,9 @@ class FactionsPE extends PluginBase {
 				$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
 					"plugin" => "PureChat",
 				]));
+				$pc->loadFactionsPlugin();
+			} else {
+				var_dump($pc);
 			}
 		} else {
 			$this->getLogger()->info(Localizer::trans("chat-formatter-set", [

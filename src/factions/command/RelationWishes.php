@@ -66,11 +66,9 @@ class RelationWishes extends Command
             return Rel::getColor($item["relation"]) . $item["relation"] . RelationList::SEPERATOR . $item["faction"];
         });
         $pager->stringify();
-        $sender->sendMessage(Localizer::translatable($pager->getHeader(), [
-            "faction" => $faction->getName(),
-            "page" => $pager->getPage(),
-            "max" => $pager->getMax()
-        ]));
+        
+        $pager->sendTitle($sender, ["faction" => $faction->getName()]);
+
         foreach ($pager->getOutput() as $line) {
             $sender->sendMessage($line);
         }

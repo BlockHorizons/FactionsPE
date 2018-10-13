@@ -40,6 +40,7 @@ new-member-join-inform-faction: "<i>:0 <i>joined <lime>your faction<i>."
 new-member-join-inform-self: "<i>You <i>joined <lime>:0<white> faction"
 new-member-join-inform-other: "<i>:0 <i>successfully joined :1<i>."
 member-tried-join-inform-faction: ":0 tried to join your faction."
+cant-join-special-faction: "<c>Can not join special faction"
 
 faction-already-closed: "Your faction is already closed silly, perhaps you want to open it again? If so try <i>/f open<white>"
 faction-closed: "Faction has been closed. Now players have to be invited to join."
@@ -122,6 +123,8 @@ faction-chat-disabled-due-empty: "<i>There is no one in the faction to chat with
 top-header: "Faction Top :0/:1 sorted by <h>:sort-by"
 top-line: ":0: :1 (:2)"
 top-empty: "<b>No factions have been created yet."
+unknown-sort-by: "<b>No idea how to sort by \":0\""
+sort-by-tip: "<i>Try sort by <aqua>online<i> time or <aqua>power<i> levels"
 
 player-power-boost: "<a>Power Boost: <v>:0 <i>(a manually granted :1)"
 player-power: "<a>Power: <v>:0 / :1"

@@ -87,7 +87,7 @@ class Status extends Command
         $pager->stringify();
 
 
-        $sender->sendMessage(Text::titleize(Localizer::trans($pager->getHeader(), ["page" => $pager->getPage(), "max" => $pager->getMax(), "faction" => $faction->getName()])));
+        $pager->sendTitle($sender, ["faction" => $faction->getName()]);
         foreach ($pager->getOutput() as $m) $sender->sendMessage($m);
         return true;
     }

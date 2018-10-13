@@ -45,6 +45,10 @@ class Join extends Command
         $samePlayer = ($msender === $mplayer);
         $faction = $this->getArgument(0);
 
+        if($faction->isSpecial()) {
+        	return "cant-join-special-faction";
+        }
+
         if (($ml = Gameplay::get("faction.member-limit", 10)) > 0 && count($faction->getMembers()) >= $ml) {
             $sender->sendMessage(Localizer::translatable("faction-member-limit-exceeded", [$faction->getName(), $ml, $mplayer->getDisplayName()]));
             return true;
