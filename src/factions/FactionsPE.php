@@ -289,9 +289,11 @@ class FactionsPE extends PluginBase {
 				]));
 				$pc->loadFactionsPlugin();
 			} else {
-				var_dump($pc);
+				$this->getLogger()->warning("PureChat not found! Safe fallback to built-in formatter");
+				goto fallback_formatter;
 			}
 		} else {
+			fallback_formatter:
 			$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
 				"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in'),
 			]));

@@ -41,8 +41,8 @@ class CombatEngine extends Engine
         if($event->getPlayer()->getLastDamageCause() instanceof EntityDamageByEntityEvent) {
             $attacker = $event->getPlayer()->getLastDamageCause()->getDamager();
             if($attacker instanceof Player) {
-                $fplayer = Member::get($event->getPlayer());
-                $fattacker = Member::get($attacker);
+                $fplayer = Members::get($event->getPlayer());
+                $fattacker = Members::get($attacker);
 
                 // Inform friendly fire
                 if($ff = (Relation::sameFaction($fattacker, $fplayer) || Relation::isAlly($fattacker, $fplayer))) {
@@ -153,11 +153,11 @@ class CombatEngine extends Engine
             } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
                 return true;
             // Can't attack players if they are faction-less
-            } elseif (Gameplay::get("disable-pvp-for-factionless-players", true)) {
+            } elseif (Gameplay::get("can-member-attack-factionless", true)) {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-factionless"));
                 return false;
             }
-        } elseif ($attackFaction->isNone() && !Gameplay::get("enable-pvp-for-factionless-players", true)) {
+        } elseif ($attackFaction->isNone() && !Gameplay::get("can-hurt-while-factionless", true)) {
             $attacker->sendMessage(Localizer::translatable("cant-hurt-while-factionless"));
             return false;
         }

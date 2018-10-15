@@ -150,14 +150,16 @@ gameplay:
   allow-ally-kill-bonus: false
   # Super-users list here
   players-who-bypass-all-protection: []
+  # Can players with faction attack other faction-less players ? 
+  can-member-attack-factionless: true
   # Can players with no faction deal no damage to others ?
-  enable-pvp-for-factionless-players: false
+  can-hurt-while-factionless: false
   # Can members of faction kill faction-less player if he is in their territory ?
   enable-pvp-against-factionless-in-attackers-land: true
   # Can faction-less players attack each other?
   enable-pvp-between-factionless-players: true
   # Broadcast friendly fire (teammate killed teammate) (Options: all, faction, off or false)
-  broadcast-friendly-fire: 'false'
+  broadcast-friendly-fire: 'faction'
   # Should blocks break even tho TNT exploded in water ?
   handle-exploit-tnt-water-log: true
   # Show faction's motd when member joins

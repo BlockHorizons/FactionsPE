@@ -117,6 +117,13 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	}
 
 	/**
+	 * Whenever parent or childs have changed
+	 */
+	public function chainUpdate() {
+
+	}
+
+	/**
 	 * Add requirements, permissions and parameters here
 	 */
 	public function setup() {}
@@ -209,6 +216,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 		$this->childs[($index ?? count($this->childs))] = $command;
 		$command->setParent($this);
+		$this->chainUpdate();
 	}
 
 	/**
@@ -266,6 +274,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 		// TODO: other logic checks
 		$this->parent = $command;
+		$this->chainUpdate();
 	}
 
 	/*
