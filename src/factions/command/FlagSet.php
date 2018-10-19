@@ -55,19 +55,18 @@ class FlagSet extends Command {
 
 		// Inform
 		$stateInfo = $flag->getStateDesc($faction->getFlag(flag), true, false, true, true, true);
-		if ($msender->getFaction() != $faction)
-		{
+		if ($msender->getFaction() != $faction) {
 			// Send message to sender
 			$msender->sendMessage(Localizer::translatable("<h>%s <i>set a flag for <h>%s<i>.", [
 				$msender->getDisplayName(),
 				$faction->describeTo($msender, true)
-			]);
+			]));
 			$msender->sendMessage($stateInfo);
 		}
 		$faction->sendMessage(Localizer::trans("<h>%s <i>set a flag for <h>%s<i>.", [
 			$msender->getDisplayName(),
 		    $faction->getName()
-		]);
+		]));
 		$faction->sendMessage($stateInfo);
 
 		return true;
