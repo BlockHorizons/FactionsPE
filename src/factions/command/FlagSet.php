@@ -31,14 +31,13 @@ class FlagSet extends Command {
             'perm_desc' => $p->getDescription(), 'faction' => $faction->getName()]];
 		}
 
-		if (!msender.isOverriding() && ! flag.isEditable()) {
-			msg("<b>The flag <h>%s <b>is not editable.", flag.getName());
-			return;
+		if (!$msender->isOverriding() && ! $flag->isEditable()) {
+			return ["<b>The flag <h>%s <b>is not editable.", ["flag" => $flag->getName()]];
 		}
 
 		// Event
 		$event = new EventFactionsFlagChange(sender, faction, flag, value);
-		event.run();
+		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
 
 		if ($event->isCancelled()) return;
 
@@ -47,7 +46,7 @@ class FlagSet extends Command {
 
 		// No change 
 		if ($faction->getFlag($flag) === $value) {
-			return ["%s <i>already has %s <i>set to %s<i>.", [faction.describeTo(msender), flag.getStateDesc(value, false, true, true, false, true), flag.getStateDesc(value, true, true, false, false, false)]];
+			return ["%s <i>already has %s <i>set to %s<i>.", [$faction->getName(), $flag->getStateDesc(value, false, true, true, false, true), $flag->getStateDesc(value, true, true, false, false, false)]];
 		}
 
 		// Apply
@@ -56,14 +55,22 @@ class FlagSet extends Command {
 
 		// Inform
 		$stateInfo = $flag->getStateDesc($faction->getFlag(flag), true, false, true, true, true);
-		if (msender.getFaction() != faction)
+		if ($msender->getFaction() != $faction)
 		{
 			// Send message to sender
-			msg("<h>%s <i>set a flag for <h>%s<i>.", msender.describeTo(msender, true), faction.describeTo(msender, true));
-			message(stateInfo);
+			$msender->sendMessage(Localizer::translatable("<h>%s <i>set a flag for <h>%s<i>.", [
+				$msender->getDisplayName(),
+				$faction->describeTo($msender, true)
+			]));
+			$msender->sendMessage($stateInfo);
 		}
-		faction.msg("<h>%s <i>set a flag for <h>%s<i>.", msender.describeTo(faction, true), faction.describeTo(faction, true));
-		faction.sendMessage(stateInfo);
+		$faction->sendMessage(Localizer::trans("<h>%s <i>set a flag for <h>%s<i>.", [
+			$msender->getDisplayName(),
+		    $faction->getName()
+		]);
+		$faction->sendMessage($stateInfo);
+
+		return true;
 	}
 
 }
