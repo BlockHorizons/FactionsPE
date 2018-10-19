@@ -15,7 +15,7 @@ class FlagSet extends Command {
 	public function setup() {
 		$this->addParameter(new FlagParameter("flag"));
 		$this->addParameter(new Parameter("value"));
-		$this->addParameter(new FactionParameter("faction")->setDefaultValue("me"));
+		$this->addParameter((new FactionParameter("faction"))->setDefaultValue("me"));
 	}
 
 	public function perform(CommandSender $sender, $label, array $args) {
@@ -61,7 +61,7 @@ class FlagSet extends Command {
 			$msender->sendMessage(Localizer::translatable("<h>%s <i>set a flag for <h>%s<i>.", [
 				$msender->getDisplayName(),
 				$faction->describeTo($msender, true)
-			]));
+			]);
 			$msender->sendMessage($stateInfo);
 		}
 		$faction->sendMessage(Localizer::trans("<h>%s <i>set a flag for <h>%s<i>.", [
