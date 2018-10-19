@@ -462,7 +462,7 @@ class Faction extends FactionData implements RelationParticipator {
 			$this->sendMessage(Localizer::translatable("faction-new-leader", [$oldLeader == null ? "" : $oldLeader->getName(), $replacements[0]->getName()]));
 			if (Gameplay::get('log.faction-new-leader', true)) {
 				FactionsPE::get()->getLogger()->info(Localizer::trans('log.new-leader', [
-					$this->getName(), $this->getId(), $replacements[0]->getName(),
+$this->getName(), $this->getId(), $replacements[0]->getName(),
 				]));
 			}
 		}

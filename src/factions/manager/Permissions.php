@@ -46,6 +46,7 @@ final class Permissions
     const CLAIM_ALL = "factions.claim.all";
     const CLOSE = "factions.close";
     const CREATE = "factions.create";
+    const DEMOTE = "factions.rank.demote";
     const DESCRIPTION = "factions.description";
     const DISBAND = "factions.disband";
     const EXPANSIONS = "factions.expansions";
@@ -85,6 +86,7 @@ final class Permissions
     const PERM_LIST = "factions.perm.list";
     const PERM_SET = "factions.perm.set";
     const PERM_SHOW = "factions.perm.show";
+    const PROMOTE = "factions.rank.promote";
     const PLAYER = "factions.player";
     const POWERBOOST = "factions.powerboost";
     const RANK = "factions.rank";

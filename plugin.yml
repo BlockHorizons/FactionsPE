@@ -19,7 +19,7 @@ authors:
 - Sandertv (@Sandertv)
 api: [3.0.0, 4.0.0]
 main: factions\FactionsPE
-version: 1.2.0
+version: 1.2.4
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PureChat, PurePerms, FormAPI]
 
 permissions:
@@ -44,6 +44,7 @@ permissions:
       factions.close: {description: close faction to require invitations, default: true}
       factions.create: {description: create new faction, default: true}
       factions.description: {description: change faction description, default: true}
+      factions.rank.demote: {description: demote member to lower rank, default: true}
       factions.disband: {description: disband faction, default: true}
       factions.expansions: {description: list expansions, default: true}
       factions.faction: {description: show faction information, default: true}
@@ -79,6 +80,7 @@ permissions:
       factions.perm.list: {description: list perms, default: true}
       factions.perm.set: {description: set perms, default: true}
       factions.perm.show: {description: show perms, default: true}
+      factions.rank.promote: {description: promote player to higher rank, default: true}
       factions.player: {description: show player information, default: op}
       factions.powerboost: {description: set powerboost, default: op}
       factions.rank: {description: manage/show ranks, default: true}

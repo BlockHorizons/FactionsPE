@@ -48,7 +48,7 @@ abstract class Data
     {
         $this->save();
         $this->lastSaved = microtime(true);
-        $this->hash = md5(json_decode($this->__toArray()));
+        $this->hash = md5(json_encode($this->__toArray()));
     }
 
 

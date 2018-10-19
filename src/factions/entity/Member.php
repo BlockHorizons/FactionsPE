@@ -123,8 +123,6 @@ class Member extends OfflineMember
         if ($this->mapAutoUpdating === $mapAutoUpdating) return;
         // Apply
         $this->mapAutoUpdating = $mapAutoUpdating;
-        // Mark as changed
-        $this->changed();
     }
 
     /*

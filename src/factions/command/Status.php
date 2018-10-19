@@ -78,7 +78,7 @@ class Status extends Command
             elseif ($percent > 0.25) $color = TextFormat::RED;
             else $color = TextFormat::DARK_RED;
 
-            $power = Text::parse("<art>Power: " . $color . $power . "/<gray>" . $maxPower . "<white>");
+            $power = Text::parse("<art>Power: " . $color . $power . "<gray>/" . $maxPower . "<white>");
             $lastActive = ($player->isOnline() ? "<lime>Online right now." : "<i>Last played: " . Text::ago($player->getLastPlayed()));
 
             return Text::parse("$displayName{$space} $power $lastActive", $displayName, $space, $power, $lastActive);

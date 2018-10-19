@@ -21,6 +21,7 @@ namespace factions;
 
 use economizer\Economizer;
 use economizer\Transistor;
+use dominate\Command;
 use factions\command\FactionCommand;
 use factions\data\provider\DataProvider;
 use factions\data\provider\JSONDataProvider;
@@ -171,6 +172,8 @@ class FactionsPE extends PluginBase {
 			$this->runTests();
 		}
 
+		$this->generateCommandsInfoData();
+
 		$this->getLogger()->info(Localizer::trans("plugin.enabled"));
 		return;
 		stop:
@@ -289,9 +292,11 @@ class FactionsPE extends PluginBase {
 				]));
 				$pc->loadFactionsPlugin();
 			} else {
-				var_dump($pc);
+				$this->getLogger()->warning("PureChat not found! Safe fallback to built-in formatter");
+				goto fallback_formatter;
 			}
 		} else {
+			fallback_formatter:
 			$this->getLogger()->info(Localizer::trans("chat-formatter-set", [
 				"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in'),
 			]));
@@ -356,6 +361,41 @@ class FactionsPE extends PluginBase {
 			}
 		}
 
+	}
+
+	/**
+	 * Generates a commands usage data list for Poggit
+	 * @internal
+	 */
+	private function generateCommandsInfoData(string $file = null, bool $overwrite = false) {
+		$file = $file ?? $this->getDataFolder() . "commands-usage.md";
+
+		// Check if we can write this data to file
+		if(file_exists($file) && !$overwrite) return;
+
+		// Now lets generate that data
+		$data = [];
+		$fc = $this->getServer()->getCommandMap()->getCommand("faction");
+		if(!$fc) return;
+
+		$data = array_reverse($this->generateCommandInfoData($fc));
+		$save = "```".PHP_EOL;
+		foreach($data as $line) {
+			$save .= $line . PHP_EOL;
+		}
+		$save .= "```";
+		file_put_contents($file, $save);
+	}
+
+	private function generateCommandInfoData(Command $cmd) : array {
+		$usage = [];
+		if($cmd->isParent()) {
+			foreach($cmd->getChilds() as $child) {
+				$usage = array_merge($this->generateCommandInfoData($child), $usage);
+			}
+		}
+		$usage[] = $cmd->getUsage();
+		return $usage;
 	}
 
 	public function onDisable() {

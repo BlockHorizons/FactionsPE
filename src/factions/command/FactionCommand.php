@@ -71,6 +71,8 @@ class FactionCommand extends Command {
 			new Description($plugin, "description", "Set faction's description", Permissions::DESCRIPTION),
 			new SeeChunk($plugin, "seechunk", "See chunk borders", Permissions::SEECHUNK, ["sc", "border"]),
 			new FlagCommand($plugin, "flag", "Manage faction flags", Permissions::FLAG),
+			new RankQuickset($plugin, "promote", "Promote member to higher rank", Permissions::PROMOTE, ["+"]),
+			new RankQuickset($plugin, "demote", "Demote member to lower rank", Permissions::DEMOTE, ["-"])
 		];
 
 		if ($plugin->economyEnabled()) {

@@ -77,7 +77,7 @@ class Collections
                 $home = $hereFaction->getHome();
                 $contains = in_array($hereFaction, $fList, true);
 
-                if ($home && $m->getFaction() === $hereFaction || $m->isOverriding()) {
+                if ($home instanceof Position && $m->getFaction() === $hereFaction || $m->isOverriding()) {
                     if ($home->x >> 4 === $herePs->x && $home->z >> 4 === $herePs->z) {
                         $row .= $hereFaction->getColorTo($m) . self::MAP_KEY_HOME;
                     } else {

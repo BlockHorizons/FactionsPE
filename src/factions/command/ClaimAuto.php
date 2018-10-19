@@ -52,7 +52,7 @@ class ClaimAuto extends ClaimOne
         }
 
         // Permission Preemptive Check
-        if (!$this->requirement->hasMet($member, false)) {
+        if (!$this->requirement->hasMet($sender, false)) {
             return true;
         }
 
