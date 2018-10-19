@@ -8,4 +8,5 @@ projects:
     path: ""
     model: default
     libs: []
+    icon: fpe-logo.png
 ...
