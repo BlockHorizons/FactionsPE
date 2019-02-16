@@ -16,17 +16,22 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace factions\relation;
+
 use factions\entity\Faction;
 use factions\entity\IMember;
 use factions\flag\Flag;
 use factions\utils\Gameplay;
 use factions\utils\Text;
 use pocketmine\utils\TextFormat;
+
 final class Relation
 {
+
     const NONE = "none";
     const LEADER = "leader";
+
     // ID's has to be human readable for configurations
     const OFFICER = "officer";
     const MEMBER = "member";
@@ -47,13 +52,16 @@ final class Relation
         self::TRUCE => 7000,
         self::ENEMY => 8000
     );
+
     private function __construct()
     {
     }
+
     public static function isValid(string $rel): bool
     {
         return in_array(self::fromString($rel), self::getAll(), true);
     }
+
     public static function fromString(string $rel)
     {
         $found = null;
@@ -72,24 +80,29 @@ final class Relation
         }
         return $found;
     }
+
     public static function getAll(): array
     {
         return [self::RECRUIT, self::MEMBER, self::OFFICER, self::LEADER, self::ALLY, self::TRUCE, self::NEUTRAL, self::ENEMY];
     }
+
     public static function isFriend(string $relation): bool
     {
         return $relation === self::ALLY || self::isRankValid($relation);
     }
+
     public static function isRankValid($rank): bool
     {
         #return self::isLowerThan(self::fromString($rank), self::ALLY);
         if (!$rank) return false;
         return in_array(self::fromString($rank), [self::LEADER, self::OFFICER, self::MEMBER, self::RECRUIT], true);
     }
+
     public static function isEnemy(string $relation): bool
     {
         return $relation === self::ENEMY;
     }
+
     public static function getRelationOfThatToMe(RelationParticipator $me, RelationParticipator $that, bool $ignorePeaceful = false): string
     {
         $ret = self::NEUTRAL;
@@ -115,6 +128,7 @@ final class Relation
         }
         return $ret;
     }
+
     public static function getFaction(RelationParticipator $object)
     {
         if ($object instanceof Faction) {
@@ -129,16 +143,19 @@ final class Relation
         # Error
         return null;
     }
+
     public static function isLowerThan($relA, $relB): bool
     {
         $lA = self::$relLevels[$relA] ?? 0;
         $lB = self::$relLevels[$relB] ?? 0;
         return $lA < $lB;
     }
+
     public static function getColorOfThatToMe(RelationParticipator $me, RelationParticipator $that): string
     {
         return self::getColor($me->getRelationTo($that));
     }
+
     public static function getColor($rel): string
     {
         $rel = self::fromString($rel);
@@ -163,6 +180,7 @@ final class Relation
                 return TextFormat::WHITE;
         }
     }
+
     /**
      * Returns 1 if A is Higher than B
      * Returns 0 If A is Equal to B
@@ -176,18 +194,21 @@ final class Relation
         if (self::isLowerThan($relA, $relB)) return -1;
         return 2; # ERROR
     }
+
     public static function isHigherThan($relA, $relB): bool
     {
         $lA = self::$relLevels[$relA] ?? 0;
         $lB = self::$relLevels[$relB] ?? 0;
         return $lA > $lB;
     }
+
     public static function isAtLeast($relA, $relB): bool
     {
         $lA = self::$relLevels[$relA] ?? 0;
         $lB = self::$relLevels[$relB] ?? 0;
         return $lA >= $lB;
     }
+
     public static function getNext($rel)
     {
         switch ($rel) {
@@ -201,6 +222,7 @@ final class Relation
                 return null;
         }
     }
+
     public static function getPrevious($rel)
     {
         switch ($rel) {
@@ -214,6 +236,8 @@ final class Relation
                 return null;
         }
     }
+
+
     /**
      * @param IMember $playerA
      * @param IMember $playerB
@@ -223,6 +247,7 @@ final class Relation
     {
         return $playerA->getFactionId() === $playerB->getFactionId();
     }
+    
     /**
      * @param IMember $playerA
      * @param IMember $playerB
@@ -232,7 +257,7 @@ final class Relation
     {
         $factionA = $playerA->getFaction();
         $factionB = $playerB->getFaction();
-		$relation = $factionA->getRelationTo($factionB);
-        return $relation === self::ENEMY;
+	$relation = $factionA->getRelationTo($factionB);
+        return $relation === self::ALLY;
     }
 }
