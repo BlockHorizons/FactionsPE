@@ -247,5 +247,17 @@ final class Relation
     {
         return $playerA->getFactionId() === $playerB->getFactionId();
     }
-
+    
+    /**
+     * @param IMember $playerA
+     * @param IMember $playerB
+     * @return bool
+     */
+    public static function isAlly(IMember $playerA, IMember $playerB): bool 
+    {
+        $factionA = $playerA->getFaction();
+        $factionB = $playerB->getFaction();
+	$relation = $factionA->getRelationTo($factionB);
+        return $relation === self::ALLY;
+    }
 }
