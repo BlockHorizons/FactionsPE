@@ -78,7 +78,7 @@ class CombatEngine extends Engine
                 $fattacker->sendMessage(Localizer::translatable('power-gained-from-kill', [
                     $bonus,
                     'rel-color' => Relation::getColorOfThatToMe($fattacker, $fplayer),
-                    $player->getDisplayName()
+                    $fplayer->getDisplayName()
                 ]));                
             }
         }
