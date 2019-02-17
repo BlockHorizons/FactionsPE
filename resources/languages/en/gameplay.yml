@@ -101,6 +101,7 @@ must-start-claim-at-border: "<b>You must start claiming land at the border of th
 no-perm-to-claim-for: "<b>You don't have permission to claim land for <h>:0<b>."
 painbuild-warning: "<b>It is painful to build in the territory of :0<b>."
 
+no-powergain-due-to-world: "<i>You didn't gain any power due to the world you are in."
 no-powerloss-due-to-faction: "<i>You didn't lose any power since the territory you died in works that way."
 no-powerloss-due-to-world: "<i>You didn't lose any power due to the world you died in."
 power-level-inform-on-death: "<i>Your power is now <h>:0 / :1"
