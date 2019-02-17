@@ -70,7 +70,13 @@ class CombatEngine extends Engine
                     $fattacker->sendMessage(Localizer::translatable('ally-kill-no-bonus'));
                     return;
                 }
-
+                
+                // Is powergain enabled in this world?
+                if (!in_array($fattacker->getLevel()->getName(), Gameplay::get("world-power-gain-enabled", []), true)) {
+                    $fattacker->sendMessage(Localizer::translatable("no-powergain-due-to-world"));
+                    return;
+                }
+                
                 // Calculate power gain
                 $bonus = Gameplay::get('power-per-kill', 10);
                 $fattacker->addPower($bonus);
