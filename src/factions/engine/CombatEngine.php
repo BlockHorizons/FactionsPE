@@ -72,7 +72,7 @@ class CombatEngine extends Engine
                 }
                 
                 // Is powergain enabled in this world?
-                if (!in_array($fattacker->getLevel()->getName(), Gameplay::get("world-power-gain-enabled", []), true)) {
+                if (!in_array($fattacker->getLevel()->getFolderName(), Gameplay::get("world-power-gain-enabled", []), true)) {
                     $fattacker->sendMessage(Localizer::translatable("no-powergain-due-to-world"));
                     return;
                 }
