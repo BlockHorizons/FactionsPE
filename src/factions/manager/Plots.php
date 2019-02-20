@@ -264,13 +264,14 @@ class Plots
     public static function isBorderPlot(Plot $plot): bool
     {
         $faction = $plot->getOwnerFaction();
-        $nearby = new Plot($plot->x + 1, $plot->z, $plot);
+        $level = $plot->getLevel();
+        $nearby = new Plot($plot->x + 1, $plot->z, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x - 1, $plot->z, $plot);
+        $nearby = new Plot($plot->x - 1, $plot->z, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z + 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z + 1, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z - 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z - 1, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
         return false;
     }
