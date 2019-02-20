@@ -76,7 +76,7 @@ class Plots
     public static function hash(Position $pos): string 
     {
         //if(!$pos->level) return md5(microtime(true));
-        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
+        return $pos->x . ":" . $pos->z . ":" . $pos->level->getFolderName();
     }
 
 
