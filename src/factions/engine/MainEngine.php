@@ -204,8 +204,8 @@ class MainEngine extends Engine {
 				$world = $plot->getLevel();
 
 				// Can't claim a plot in this level (not specified in config)
-				if (!in_array($world->getName(), Gameplay::get("worlds-claiming-enabled", []), true)) {
-					$worldName = $world->getName();
+				if (!in_array($world->getFolderName(), Gameplay::get("worlds-claiming-enabled", []), true)) {
+					$worldName = $world->getFolderName();
 					$player->sendMessage(Localizer::translatable("claiming-disabled-in-world", [$worldName]));
 					return false;
 				}
