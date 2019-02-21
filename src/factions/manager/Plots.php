@@ -186,11 +186,11 @@ class Plots
      */
     public static function unclaim(Plot $plot, IMember $player = null, $silent = false): bool
     {
+        if (!$player) $player = $faction->getLeader();
         if (($id = $plot->getOwnerId()) !== Faction::NONE) {
             if (($faction = Factions::getById($id)) instanceof Faction) {
                 if (!$silent) {
-                    $leader = $faction->getLeader();
-                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $leader, $plot, LandChangeEvent::UNCLAIM));
+                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::UNCLAIM));
                     if ($e->isCancelled()) return false;
                     unset(self::$plots[$plot->hash()]);
                     FactionsPE::get()->getDataProvider()->deletePlot($plot);
