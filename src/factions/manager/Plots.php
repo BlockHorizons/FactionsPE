@@ -76,7 +76,7 @@ class Plots
     public static function hash(Position $pos): string 
     {
         //if(!$pos->level) return md5(microtime(true));
-        return $pos->x . ":" . $pos->z . ":" . $pos->level->getName();
+        return $pos->x . ":" . $pos->z . ":" . $pos->level->getFolderName();
     }
 
 
@@ -186,11 +186,11 @@ class Plots
      */
     public static function unclaim(Plot $plot, IMember $player = null, $silent = false): bool
     {
+        if (!$player) $player = $faction->getLeader();
         if (($id = $plot->getOwnerId()) !== Faction::NONE) {
             if (($faction = Factions::getById($id)) instanceof Faction) {
                 if (!$silent) {
-                    $leader = $faction->getLeader();
-                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $leader, $plot, LandChangeEvent::UNCLAIM));
+                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::UNCLAIM));
                     if ($e->isCancelled()) return false;
                     unset(self::$plots[$plot->hash()]);
                     FactionsPE::get()->getDataProvider()->deletePlot($plot);
@@ -264,13 +264,14 @@ class Plots
     public static function isBorderPlot(Plot $plot): bool
     {
         $faction = $plot->getOwnerFaction();
-        $nearby = new Plot($plot->x + 1, $plot->z, $plot);
+        $level = $plot->getLevel();
+        $nearby = new Plot($plot->x + 1, $plot->z, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x - 1, $plot->z, $plot);
+        $nearby = new Plot($plot->x - 1, $plot->z, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z + 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z + 1, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
-        $nearby = new Plot($plot->x, $plot->z - 1, $plot);
+        $nearby = new Plot($plot->x, $plot->z - 1, $level);
         if ($faction !== $nearby->getOwnerFaction()) return true;
         return false;
     }
