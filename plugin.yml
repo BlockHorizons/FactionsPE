@@ -20,7 +20,7 @@ authors:
 api: [3.0.0, 4.0.0]
 main: factions\FactionsPE
 version: 1.2.4
-softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PureChat, PurePerms, FormAPI]
+softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PurePerms, FormAPI]
 
 permissions:
   factions.*:
