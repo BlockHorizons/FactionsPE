@@ -52,7 +52,7 @@ class CombatEngine extends Engine
                     switch(strtolower(Gameplay::get('broadcast-friendly-fire', 'faction'))) {
                         case 'faction':
                             $fplayer->getFaction()->sendMessage($ffMessage);
-                            if($fplayer->getFaction !== $fattacker->getFaction()) {
+                            if($fplayer->getFaction() !== $fattacker->getFaction()) {
                                 $fattacker->getFaction()->sendMessage($ffMessage);
                             }
                             break;
@@ -72,7 +72,7 @@ class CombatEngine extends Engine
                 }
                 
                 // Is powergain enabled in this world?
-                if (!in_array($fattacker->getLevel()->getFolderName(), Gameplay::get("world-power-gain-enabled", []), true)) {
+                if (!in_array($attacker->getLevel()->getFolderName(), Gameplay::get("world-power-gain-enabled", []), true)) {
                     $fattacker->sendMessage(Localizer::translatable("no-powergain-due-to-world"));
                     return;
                 }
