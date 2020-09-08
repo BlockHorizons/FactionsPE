@@ -1,9 +1,0 @@
-parameters:
-    level: 6
-    paths:
-        - src
-    scanDirectories:
-        - /home/chris/PM/source/src
-        - /home/chris/PM/source/SPL/src
-        - /home/chris/PM/source/Math/src
-        - /home/chris/PM/source/NBT/src
