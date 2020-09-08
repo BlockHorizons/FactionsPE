@@ -59,7 +59,6 @@ final class Text
 
     public static function getRelationColor(string $rel): string
     {
-        var_dump($rel);
         switch (strtolower($rel)) {
             case "neutral":
                 return TextFormat::GREEN;

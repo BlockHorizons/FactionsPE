@@ -51,7 +51,6 @@ class LeaveFaction extends Command {
 
 		$fapi = $this->getPlugin()->getFormAPI();
 		$form = $fapi->createModalForm(function (Player $player,  ? bool $result = null) {
-			var_dump($result);
 			if ($result !== null) {
 				if ($result) {
 					$this->perform($player, "", []);

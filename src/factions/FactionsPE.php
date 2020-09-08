@@ -50,7 +50,7 @@ use jojoe77777\FormAPI\FormAPI;
 use localizer\Localizer;
 use pocketmine\plugin\PluginBase;
 
-define("IN_DEV", true);
+define("IN_DEV", file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".dev"));
 
 class FactionsPE extends PluginBase {
 
