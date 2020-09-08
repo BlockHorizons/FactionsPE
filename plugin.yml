@@ -18,8 +18,8 @@ authors:
 - Chris-Prime (@PrimusLV, @flipkris)
 - Sandertv (@Sandertv)
 api: [3.0.0, 4.0.0]
-main: factions\FactionsPE
-version: 1.2.4
+main: "factions\\FactionsPE"
+version: 1.2.5
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PurePerms, FormAPI]
 
 permissions:
@@ -109,4 +109,3 @@ permissions:
       factions.unsethome: {description: unset faction home, default: true}
       factions.unstuck: {description: teleport to nearest wilderness, default: true}
       factions.version: {description: see plugin version, default: true}
-      factions.help: {description: see list of avaliable sub-commands, default: true}
