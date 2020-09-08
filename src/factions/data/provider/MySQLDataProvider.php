@@ -263,7 +263,7 @@ class MySQLDataProvider extends DataProvider {
 		$d  = $this->getMain()->getConfig()->getNested("data-provider.mysql");
 
 		$this->connection = @new \mysqli($d["host"], $d["user"], $d["password"], "", $d["port"]);
-		$this->getMain()->getServer()->getScheduler()->scheduleRepeatingTask(new MySQLPinger($this->connection), 600);
+		$this->getMain()->getScheduler()->scheduleRepeatingTask(new MySQLPinger($this->connection), 600);
 		$this->connection_time = microtime(true) - $st;
 
 		if ($this->connection->connect_error) {
