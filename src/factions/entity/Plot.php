@@ -20,7 +20,6 @@
 namespace factions\entity;
 
 use factions\FactionsPE;
-use factions\interfaces\IFPlayer;
 use factions\manager\Plots;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
@@ -38,9 +37,11 @@ class Plot extends Position
      */
     public function __construct($x, $z = 0, Level $level = null)
     {
+        parent::__construct($x);
+
         if ($x instanceof Position) {
-            $this->x = $x->x >> 4;
-            $this->z = $x->z >> 4;
+            $this->x = $x->x >> Plots::CHUNK_SIZE;
+            $this->z = $x->z >> Plots::CHUNK_SIZE;
             $this->level = $x->level;
         } else {
             $this->x = $x;
@@ -87,7 +88,7 @@ class Plot extends Position
 
     public function getPosition(): Position
     {
-        return new Position($this->x << 4, 0, $this->z << 4, $this->level);
+        return new Position($this->x << Plots::CHUNK_SIZE, 0, $this->z << Plots::CHUNK_SIZE, $this->level);
     }
 
     public function hash(): string

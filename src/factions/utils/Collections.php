@@ -21,6 +21,8 @@ namespace factions\utils;
 
 use factions\entity\Plot;
 use factions\manager\Members;
+use factions\manager\Plots;
+use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
@@ -78,7 +80,7 @@ class Collections
                 $contains = in_array($hereFaction, $fList, true);
 
                 if ($home instanceof Position && $m->getFaction() === $hereFaction || $m->isOverriding()) {
-                    if ($home->x >> 4 === $herePs->x && $home->z >> 4 === $herePs->z) {
+                    if ($home->x >> Plots::CHUNK_SIZE === $herePs->x && $home->z >> Plots::CHUNK_SIZE === $herePs->z) {
                         $row .= $hereFaction->getColorTo($m) . self::MAP_KEY_HOME;
                     } else {
                         goto draw_char;

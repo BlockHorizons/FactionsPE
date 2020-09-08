@@ -2,11 +2,14 @@
 
 namespace factions\engine;
 
+use factions\manager\Plots;
+use InvalidArgumentException;
+use LogicException;
 use pocketmine\level\Level;
-use pocketmine\level\format\Chunk;
 use pocketmine\level\particle\Particle;
 use pocketmine\level\particle\RedstoneParticle;
 use pocketmine\level\particle\DustParticle;
+use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 
 use localizer\Localizer;
@@ -65,27 +68,30 @@ class SeeChunkEngine extends Engine {
     	$member = $event->getMember();
     	if($member->isSeeingChunk()) {
     		$this->removeChunk($member);
-    		$this->setChunk($member, $event->getTo()->getChunk(), $event->getTo()->getLevel());
+    		$this->setChunk($member, new Vector2(
+                $event->getTo()->getChunk()->getX(),
+                $event->getTo()->getChunk()->getZ()
+            ), $event->getTo()->getLevel());
     	}
     }
 
     /**
      * Creates particles which will be used to show edges of chunk
-     * @param Chunk $chunk
-     * @param float $step Must divide 16 with no remain
+     * @param Vector2 $origin
      * @param string $particle class name
      * @param float $y Usually player's y if there is no blocks around
-     * @param Member $player = null
+     * @param float $step Must divide 16 with no remain
+     * @param Member|null $player = null
      *
      * @return Particle[]
      */
-    public function createBrush(Chunk $chunk, string $particle, float $y, float $step = 2, Member $player = null): array {
-    	if(16 % $step) throw new \InvalidArgumentException("invalid step(=$step) for chunk {$chunk->getX()}:{$chunk->getZ()} remainder: " . 16 % $step);
+    public function createBrush(Vector2 $origin, string $particle, float $y, float $step = 2, Member $player = null): array {
+    	if(16 % $step) throw new InvalidArgumentException("invalid step(=$step) for chunk {$origin->getX()}:{$origin->getY()} remainder: " . 16 % $step);
     	$particles = [];
-    	$minX = $chunk->getX() << 4;
-    	$minZ = $chunk->getZ() << 4;
-  		$endX = $minX + 16;
-  		$endZ = $minZ + 16;
+    	$minX = $origin->getX() << Plots::CHUNK_SIZE;
+    	$minZ = $origin->getY() << Plots::CHUNK_SIZE;
+  		$endX = $minX + (1 << Plots::CHUNK_SIZE);
+  		$endZ = $minZ + (1 << Plots::CHUNK_SIZE);
     	for($x = $minX; $x <= $endX; $x += $step) {
     		# Side 1
     		$particles[] = $this->makeParticleFor($x, $y, $minZ, $particle, $player);
@@ -130,11 +136,11 @@ class SeeChunkEngine extends Engine {
     /**
      * Set the chunk player sees. Only one chunk per player
      * @param Member $player
-     * @param Chunk $chunk
+     * @param Vector2 $chunk
      * @param Level $level
      * @throws \Exception
      */
-    public function setChunk(Member $player, Chunk $chunk, Level $level): void {
+    public function setChunk(Member $player, Vector2 $chunk, Level $level): void {
         $this->chunks[strtolower($player->getName())] = [
             self::PLAYER => $player,
             self::CHUNK => $chunk,
@@ -146,6 +152,7 @@ class SeeChunkEngine extends Engine {
 
     /**
      * @param $player
+     * @throws \Exception
      */
     public function removeChunk($player) {
         $player = $player instanceof Member ? strtolower($player->getName()) : strtolower($player);
@@ -154,13 +161,13 @@ class SeeChunkEngine extends Engine {
     }
 
     public function isSeeingChunk(Member $player, bool $test = true): ?bool {
-        /** @var Chunk|null $c */
+        /** @var Vector2|null $c */
         $c = $this->chunks[strtolower($player->getName())][self::CHUNK] ?? null;
         if($sc = $player->isSeeingChunk()) {
             return $c !== null;
         // Drawing this chunk without request (seechunk disabled, without telling the Engine)
         } elseif ($test && !$sc && $c !== null) {
-            throw new \LogicException("player '{$player->getName()}' is seeing chunk {$c->getX()}:{$c->getZ()} with invalid request");
+            throw new LogicException("player '{$player->getName()}' is seeing chunk {$c->getX()}:{$c->getY()} with invalid request");
         }
         return false;
     }
