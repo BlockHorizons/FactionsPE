@@ -19,10 +19,9 @@
 
 namespace factions\command;
 
-use factions\entity\Perm;
+use factions\command\requirement\FactionRequirement;
 use factions\manager\Members;
 use factions\manager\Permissions;
-use factions\objs\Plots;
 use factions\permission\Permission;
 use factions\utils\Text;
 use localizer\Localizer;
@@ -53,6 +52,11 @@ class ClaimAuto extends ClaimOne
 
         // Permission Preemptive Check
         if (!$this->requirement->hasMet($sender, false)) {
+            return true;
+        }
+
+        if($faction === null) {
+            $member->sendMessage(Text::parse("<red>Invalid faction!"));
             return true;
         }
 
