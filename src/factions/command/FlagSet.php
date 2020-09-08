@@ -7,7 +7,10 @@ use factions\command\parameter\FactionParameter;
 use factions\flag\Flag;
 use factions\manager\Flags;
 use factions\manager\Members;
+use factions\manager\Permissions;
+use factions\permission\Permission;
 use factions\utils\Pager;
+use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class FlagSet extends Command {
@@ -24,9 +27,10 @@ class FlagSet extends Command {
 		$flag = $this->getArgument(0);
 		$value = $this->getArgument(1);
 		$faction = $this->getArgument(2);
+		$msender = Members::get($sender);
 
 		// Do the sender have the right to change flags for this faction?
-		if (!($p = Permissions::getById(Permission::FLAGS))->has($member, $faction)) {
+		if (!($p = Permissions::getById(Permission::FLAGS))->has($msender, $faction)) {
 			return ["requirement.faction-permission-error", [
             'perm_desc' => $p->getDescription(), 'faction' => $faction->getName()]];
 		}
@@ -36,10 +40,10 @@ class FlagSet extends Command {
 		}
 
 		// Event
-		$event = new EventFactionsFlagChange(sender, faction, flag, value);
+		$event = new EventFactionsFlagChange($sender, $faction, $flag, $value);
 		$this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
 
-		if ($event->isCancelled()) return;
+		if ($event->isCancelled()) return true;
 
 		$value = $event->getNewValue();
 		
@@ -54,7 +58,7 @@ class FlagSet extends Command {
 
 
 		// Inform
-		$stateInfo = $flag->getStateDesc($faction->getFlag(flag), true, false, true, true, true);
+		$stateInfo = $flag->getStateDesc($faction->getFlag($flag), true, false, true, true, true);
 		if ($msender->getFaction() != $faction) {
 			// Send message to sender
 			$msender->sendMessage(Localizer::translatable("<h>%s <i>set a flag for <h>%s<i>.", [
