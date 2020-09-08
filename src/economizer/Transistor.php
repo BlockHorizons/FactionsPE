@@ -57,7 +57,7 @@ abstract class Transistor {
 	public abstract function addMoney($player, $money, array $params = []);
 
 	/**
-	 * @param Player|string
+	 * @param Player|string $player
 	 * @param int|float $money
 	 * @param array $params = [] in case of other settings
 	 */
@@ -73,9 +73,8 @@ abstract class Transistor {
 
     /**
      * Return symbol of the money
-     * @return mixed
+     * @return string
      */
-	public function getMoneyUnit(){
-        return $this->getAPI()->getMoneyUnit();
-    }
+	public abstract function getMoneyUnit() : string;
+
 }

@@ -14,3 +14,6 @@ factions-pe.sublime-workspace
 
 # ApiGen
 apigen.neon
+
+# PhpStan
+phpstan.neon

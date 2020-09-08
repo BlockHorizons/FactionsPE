@@ -75,7 +75,7 @@ class Parameter {
     protected $permission;
 
     /** @var bool */
-    protected $optional = false;
+    protected $optional;
 
     /**
      * If this parameter doesn't resolve into necessary value, then we will try this parameter
@@ -87,6 +87,7 @@ class Parameter {
         $this->type = $type ?? $this->type;
         $this->name = $name;
         $this->index = $index ?? $this->index;
+        $this->optional = $optional ?? false;
         if(is_bool($index)) { // Variable $index was used to carry $optional
             $this->optional = $index;
         }
@@ -304,7 +305,7 @@ class Parameter {
     }
 
     /**
-     * @param $input
+     * @param mixed $input
      * @param CommandSender|null $sender
      * @return bool
      */

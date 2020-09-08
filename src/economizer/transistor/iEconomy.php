@@ -60,7 +60,7 @@ class iEconomy extends Transistor
         $this->getAPI()->getAccount($player)->takeMoney($money);
     }
 
-    public function getMoneyUnit()
+    public function getMoneyUnit() : string
     {
         return $this->getAPI()->getConfig()->get("currency-symbol", "$");
     }

@@ -81,7 +81,7 @@ class EconomyAPI extends Transistor {
 		return false;
 	}
 
-	public function getMoneyUnit(){
+	public function getMoneyUnit() : string {
         return $this->getAPI()->getMonetaryUnit();
     }
 }

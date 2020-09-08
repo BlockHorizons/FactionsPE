@@ -65,7 +65,7 @@ class Economizer {
 	 * @return bool
 	 */
 	public function ready() : bool {
-		if(!$this->transistor) return false;
+		if($this->transistor === null) return false;
 		return $this->transistor->ready();
 	}
 
@@ -85,7 +85,7 @@ class Economizer {
 	 */
 	public function __call($method, $arguments) {
 		if(!method_exists($this, $method)) {
-			if(!$this->transistor) return null;
+			if($this->transistor === null) return null;
 			if(method_exists($this->transistor, $method)) {
 				return call_user_func_array([$this->transistor, $method], $arguments);
 			}

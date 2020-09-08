@@ -93,7 +93,12 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	/** @var Plugin */
 	protected $plugin;
 
-	/**
+    /**
+     * @var string
+     */
+    private $usage;
+
+    /**
 	 * @param Plugin|Command $owner
 	 * @param string $name
 	 * @param string $description = ""
@@ -374,7 +379,6 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		$usage  = "/";
 		// add chain
 		$chain = $this->getChain();
-		array_reverse($chain);
 		foreach ($chain as $cmd) {
 			$usage .= $cmd->getName() . " ";
 		}
@@ -405,9 +409,9 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	}
 
 	/*
-		 * ----------------------------------------------------------
-		 * EXECUTION
-		 * ----------------------------------------------------------
+     * ----------------------------------------------------------
+     * EXECUTION
+     * ----------------------------------------------------------
 	*/
 
 	/**

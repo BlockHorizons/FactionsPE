@@ -47,6 +47,8 @@ class Link extends Command {
 		foreach($this->pairs as $local => $ext) {
 		    $cmd .= " ".$this->getParameterAt($ext)->getTemplate($sender);
         }
+
+		return $cmd;
 	}
 
 	public function execute(CommandSender $sender, $label, array $args) {

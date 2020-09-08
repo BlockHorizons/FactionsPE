@@ -18,26 +18,28 @@
  */
 namespace dominate;
 
+use Exception;
 use localizer\Translatable;
 use localizer\Localizer;
 
-class ThrowableMessage extends \Exception {
+class ThrowableMessage extends Exception {
 
 	/** @var string|Translatable */
 	public $message;
 
     /**
-     * @param string $message
-     * @internal param $ string|Translatable
+     * @param string|Translatable $message
      */
 	public function __construct($message) {
-		if(!$message instanceof Translatable) {
-			if(($nm = Localizer::translatable($message))->getText() !== $message) {
-				$message = $nm;
-			}
-		}
-		$this->message = $message;
-	}
+        if(!$message instanceof Translatable) {
+            if(($nm = Localizer::translatable($message))->getText() !== $message) {
+                $message = $nm;
+            }
+        }
+        $this->message = $message;
+
+        parent::__construct($message);
+    }
 
 	public function getText() {
 		return $this->message;

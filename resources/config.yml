@@ -92,6 +92,7 @@ gameplay:
     # How many members can one faction hold?
     member-limit: 10
     # Idk what this means :D. (I still don't know - 2018 August)
+    # No idea ( - 2020 September)
     disable-permanent-leader-promotion: true
   faction-name:
     # Maxmimum name length
