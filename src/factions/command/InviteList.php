@@ -27,7 +27,6 @@ use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\permission\Permission;
 use factions\relation\Relation;
-use factions\relation\RelationParticipator;
 use factions\utils\Pager;
 use factions\utils\Text;
 use localizer\Localizer;
@@ -52,7 +51,7 @@ class InviteList extends Command
         $faction = $this->getArgument(1);
 
         // If sender wants to view other faction invites but lacks permission, stop here
-        if ($faction !== $fsender->getFaction() && !$sender->hasPermission(Permissions::INVITE_LIST_OTHER)) return false;
+        if ($faction !== $msender->getFaction() && !$sender->hasPermission(Permissions::INVITE_LIST_OTHER)) return false;
 
         // Check permission
         if (($perm = Permissions::getById(Permission::INVITE)) && !$perm->has($msender, $faction)) {
@@ -62,7 +61,7 @@ class InviteList extends Command
 
         // Pager Create
         $players = $faction->getInvitedPlayers();
-        $pager = new Pager(Text::titleize("Invited Players List"), $page, 5, $players, $stringifier = function ($player, int $index, CommandSender $sender) {
+        $pager = new Pager(Text::titleize("Invited Players List"), $page, 5, $players, $sender, $stringifier = function ($player, int $index, CommandSender $sender) {
             if (($target = Members::get($player, false))) {
                 $targetName = $target->getDisplayName();
                 $isAre = "is";
@@ -76,7 +75,7 @@ class InviteList extends Command
             } else {
                 return Text::parse($player);
             }
-        }, $sender);
+        });
         $pager->stringify();
 
         // Pager Message

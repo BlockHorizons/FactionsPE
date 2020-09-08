@@ -30,6 +30,11 @@ class FactionRole extends Requirement
     /** @var string */
     protected $role;
 
+    /**
+     * @var string
+     */
+    protected $type;
+
     public function __construct(string $role)
     {
         $this->role = $role;

@@ -63,6 +63,8 @@ abstract class Engine extends Task implements Listener
 
     /**
      * Starts a loop. If no params given default interval, one second, is used.
+     * @param int $interval
+     * @throws \Exception
      */
     public function startLoop(int $interval = 20) 
     {

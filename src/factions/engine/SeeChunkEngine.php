@@ -110,7 +110,7 @@ class SeeChunkEngine extends Engine {
      * @param float $y
      * @param float $z
      * @param string $particle class name
-     * @param Member $player some particles may require Member object
+     * @param Member|null $player some particles may require Member object
      *
      * @return Particle
      */
@@ -146,7 +146,6 @@ class SeeChunkEngine extends Engine {
 
     /**
      * @param $player
-     * @throws \Exception
      */
     public function removeChunk($player) {
         $player = $player instanceof Member ? strtolower($player->getName()) : strtolower($player);

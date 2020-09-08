@@ -4,6 +4,7 @@ namespace factions\command;
 
 use dominate\Command;
 use dominate\requirement\SimpleRequirement;
+use Exception;
 use factions\command\parameter\FactionParameter;
 use factions\command\parameter\MemberParameter;
 use factions\command\requirement\FactionRequirement;
@@ -34,8 +35,8 @@ class Join extends Command
     /**
      * @param CommandSender $sender
      * @param array $args
-     * @return BOOL
-     * @throws \Exception
+     * @return mixed
+     * @throws Exception
      */
     public function perform(CommandSender $sender, $label, array $args)
     {

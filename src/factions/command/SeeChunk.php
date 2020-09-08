@@ -4,6 +4,7 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
+use factions\engine\SeeChunkEngine;
 use pocketmine\command\CommandSender;
 use factions\manager\Members;
 use localizer\Localizer;
@@ -31,6 +32,8 @@ class SeeChunk extends Command {
 			$member->setSeeChunk($target);
 		}
 
+		/** @var SeeChunkEngine $engine */
+        /** @var \pocketmine\Player $sender */
 		$engine = $this->getPlugin()->getEngine("SeeChunkEngine");
 		if($target) {
 			$chunk = $sender->getLevel()->getChunk($sender->getX() >> 4, $sender->getZ() >> 4);

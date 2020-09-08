@@ -20,6 +20,7 @@
 namespace factions\entity;
 
 use factions\permission\Permission;
+use factions\relation\RelationParticipator;
 use pocketmine\Player;
 
 interface IMember
@@ -80,6 +81,7 @@ interface IMember
 
     public function getRole(): string;
 
+    public function getRelationTo(RelationParticipator $observer, bool $ignorePeaceful = false): string;
 
     /*
      * ----------------------------------------------------------

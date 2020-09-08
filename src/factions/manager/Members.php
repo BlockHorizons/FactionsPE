@@ -24,6 +24,8 @@ use factions\entity\Member;
 use factions\entity\OfflineMember;
 use factions\FactionsPE;
 use factions\utils\Text;
+use InvalidArgumentException;
+use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\IPlayer;
 use pocketmine\Player;
@@ -39,12 +41,13 @@ class Members
     /**
      * Get instanceof IMember by player identifier
      * @param $player string|IPlayer|IMember|CommandSender
+     * @param bool $create
      * @return IMember|Member|OfflineMember|null
      */
     public static function get($player, bool $create = true)
     {
         if (!$player) {
-            throw new \InvalidArgumentException("argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be IMember, IPlayer, CommandSender or string, " . Text::toString($player, false) . " given");
+            throw new InvalidArgumentException("argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be IMember, IPlayer, CommandSender or string, " . Text::toString($player, false) . " given");
         }
         if ($player instanceof ConsoleCommandSender) {
             return self::get("console");
@@ -134,9 +137,11 @@ class Members
      * Returns a OfflinePlayer instance for player with $name
      * @param string $name
      * @param bool $attach should this instance be saved
+     * @return OfflineMember
      */
     public static function createOffline(string $name, bool $attach = true): OfflineMember
     {
+        /** @var OfflineMember $ret */
         if (($ret = self::getByName($name)) !== NULL) return $ret;
         $m = new OfflineMember($name);
         if($attach) {
