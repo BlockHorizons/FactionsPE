@@ -96,18 +96,21 @@ class Permission
 
     /**
      * True if permission is related to territory
+     * @var bool
      */
-    private $territory = false;
+    private $territory;
 
     /**
      * Can Permission be edited
+     * @var bool
      */
-    private $editable = false;
+    private $editable;
 
     /**
      * Is permission visible
+     * @var bool
      */
-    private $visible = true;
+    private $visible;
 
     public function __construct(string $id, int $priority, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible)
     {
@@ -190,7 +193,7 @@ class Permission
         return $this;
     }
 
-    public function has(IMember $player, Faction $faction = null): bool
+    public function has(IMember $player, Faction $faction = null, bool $notify = false): bool
     {
         $faction = !$faction ? $player->getFaction() : $faction;
         if (!$faction) return false;
