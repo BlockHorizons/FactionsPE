@@ -145,7 +145,7 @@ class MainEngine extends Engine {
 	public function showMotdOnJoin(PlayerJoinEvent $event) {
 		if (!Gameplay::get("show-motd-on-join", true)) {
 			$member  = Members::get($event->getPlayer());
-			$faction = $fplayer->getFaction();
+			$faction = $member->getFaction();
 			// ... if there is a motd ...
 			if (!$faction->hasMotd()) {
 				return;
@@ -154,7 +154,7 @@ class MainEngine extends Engine {
 			// ... then prepare the message ...
 			$message = $faction->getMotd();
 			// ... and send to the player.
-			$player->sendMessage($message);
+			$member->sendMessage($message);
 		}
 	}
 
@@ -578,11 +578,8 @@ class MainEngine extends Engine {
 
 		$id          = $block->getId();
 		$factionHere = Plots::getFactionAt($block);
-		// CONSTANTS Are fille with necessary ids, but they should be editable. #TODO
-		//        if (in_array($id, Gameplay::get("materials-edit-on-interact", self::TOUCH_SENSITIVE), true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) return false;
-		//        if (in_array($id, Gameplay::get("materials-container", self::CONTAINERS), true) && !Permissions::getById(Permission::CONTAINER)->has($me, $factionHere)) return false;
-		//        if (in_array($id, Gameplay::get("materials-doors", self::DOORS), true) && !Permissions::getById(Permission::DOOR)->has($me, $factionHere)) return false;
-		if (in_array($id, self::TOUCH_SENSITIVE, true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) {
+
+        if (in_array($id, self::TOUCH_SENSITIVE, true) && !Permissions::getById(Permission::BUILD)->has($me, $factionHere)) {
 			return false;
 		}
 
