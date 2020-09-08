@@ -81,10 +81,6 @@ abstract class ClaimX extends Command
         return $this->factionArgIndex;
     }
 
-    // -------------------------------------------- //
-    // CONSTRUCT
-    // -------------------------------------------- //
-
     public function setFactionArgIndex(int $factionArgIndex)
     {
         $this->factionArgIndex = $factionArgIndex;

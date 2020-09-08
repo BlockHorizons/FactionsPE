@@ -156,7 +156,7 @@ class Plots
         $oldFaction = $plot->getOwnerFaction();
         if ($oldFaction !== $faction) {
             if (!$silent) {
-                FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::CLAIM));
+                FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent(LandChangeEvent::CLAIM, $plot, $faction, $player));
                 if ($e->isCancelled()) return false;
             }
         } else {
@@ -186,11 +186,12 @@ class Plots
      */
     public static function unclaim(Plot $plot, IMember $player = null, $silent = false): bool
     {
+        $faction = $plot->getOwnerFaction();
         if (!$player) $player = $faction->getLeader();
         if (($id = $plot->getOwnerId()) !== Faction::NONE) {
             if (($faction = Factions::getById($id)) instanceof Faction) {
                 if (!$silent) {
-                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent($faction, $player, $plot, LandChangeEvent::UNCLAIM));
+                    FactionsPE::get()->getServer()->getPluginManager()->callEvent($e = new LandChangeEvent(LandChangeEvent::UNCLAIM, $plot, $faction, $player));
                     if ($e->isCancelled()) return false;
                     unset(self::$plots[$plot->hash()]);
                     FactionsPE::get()->getDataProvider()->deletePlot($plot);

@@ -166,7 +166,7 @@ class MainEngine extends Engine {
 	public function onChunksChange(LandChangeEvent $event) {
 		// For security reasons we block the chunk change on any error since an error might block security checks from happening.
 		try {
-			if (!$this->canPlotBeClaimed($event)) {
+			if (!$this->canPlotOwnershipChange($event)) {
 				$event->setCancelled(true);
 			}
 		} catch (\Exception $throwable) {
@@ -176,16 +176,16 @@ class MainEngine extends Engine {
 	}
 
 	/**
-	 * @todo This actually can be event listener itself
-	 *
+     * @throws \InvalidArgumentException
 	 */
-	public function canPlotBeClaimed($event) {
+	public function canPlotOwnershipChange($event) : bool {
 		if (!$event instanceof LandChangeEvent) {
 			throw new \InvalidArgumentException("Argument 1 passed to " . __CLASS__ . "::" . __METHOD__ . " must be instanceof " . LandChangeEvent::class . ", '" . Text::toString($event) . "' given");
 		}
 
 		// Args
 		$player = $event->getPlayer();
+        if(!$player) return true;
 
 		// If player is in Overriding mode then ignore all logics below
 		if ($player->isOverriding()) {
@@ -255,7 +255,7 @@ class MainEngine extends Engine {
 			// Old faction..
 			// ... that is an actual faction ...
 			if (!$currentFaction->isNone()) {
-				// ... for which the mplayer lacks permission ...
+				// ... for which the player lacks permission ...
 				if (!Permissions::getById(Permission::TERRITORY)->has($player, $currentFaction)) {
 					// ... consider all reasons to forbid "overclaiming/warclaiming" ...
 					// ... claiming from others may be forbidden ...
@@ -283,7 +283,14 @@ class MainEngine extends Engine {
 					}
 				}
 			}
-		}
+		} elseif ($event->getChangeType() === LandChangeEvent::UNCLAIM) {
+            // ... ensure we have permission to alter the territory of the new faction ...
+            if (!Permissions::getById(Permission::TERRITORY)->has($player, $currentFaction)) {
+                // NOTE: No need to send a message. We send message from the permission check itself.
+                $player->sendMessage(Localizer::translatable("no-perm-to-claim-for", [$newFaction->getName()]));
+                return false;
+            }
+        }
 		return true; // You can claim!
 	}
 

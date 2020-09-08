@@ -38,7 +38,7 @@ class LandChangeEvent extends Event implements Cancellable
 
     /** @var Faction */
     private $faction;
-    /** @var IFaction|null */
+    /** @var IMember|null */
     private $player;
     /** @var int */
     private $changeType;
@@ -48,12 +48,12 @@ class LandChangeEvent extends Event implements Cancellable
     /**
      * LandChangeEvent constructor.
      *
-     * @param Faction $faction new owner
-     * @param IFPlayer|null $player
-     * @param Plot $plot
      * @param int $changeType
+     * @param Plot $plot
+     * @param Faction $faction new owner
+     * @param IMember|null $player
      */
-    public function __construct(Faction $faction, IMember $player = null, Plot $plot, int $changeType)
+    public function __construct(int $changeType, Plot $plot, Faction $faction, IMember $player = null)
     {
         $this->faction = $faction;
         $this->changeType = $changeType;
@@ -76,7 +76,7 @@ class LandChangeEvent extends Event implements Cancellable
 
     public function getOldFaction(): Faction
     {
-        return $this->plot->getOwner();
+        return $this->plot->getOwnerFaction();
     }
 
     public function getFactionId(): string
