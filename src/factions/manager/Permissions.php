@@ -229,6 +229,18 @@ final class Permissions
         }
     }
 
+    /**
+     * @param int $priority
+     * @param string $id
+     * @param string $name
+     * @param Translatable $desc
+     * @param array $standard
+     * @param bool $territory
+     * @param bool $editable
+     * @param bool $visible
+     * @return Permission
+     * @throws \Exception
+     */
     public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible): Permission
     {
         if (self::getById($id) instanceof Permission) {
@@ -240,6 +252,7 @@ final class Permissions
     }
 
     /**
+     * @param string $id
      * @return Permission|null
      */
     public static function getById(string $id)
@@ -259,7 +272,13 @@ final class Permissions
 
     public static function saveAll()
     {
-        FactionsPE::get()->getDataProvider()->savePermissions(self::getAll());
+        $dataProvider = FactionsPE::get()->getDataProvider();
+        if($dataProvider === null) {
+            FactionsPE::get()->getLogger()->critical("Failed to save Permissions to specified data provider. Saving to backup file...");
+            yaml_emit_file(FactionsPE::get()->getDataFolder() . "permissions_backup.yml", self::getAll());
+        } else {
+            $dataProvider->savePermissions(self::getAll());
+        }
     }
 
     /**
