@@ -60,10 +60,15 @@ class InviteAdd extends Command
 
         $faction->setInvited($member, true);
         $sender->sendMessage(Localizer::translatable('invite-add-success', [$member->getDisplayName()]));
-        if ($member->isOnline()) $member->sendMessage(Localizer::trans('invite-add-inform-target', [
-            "player" => $sender->getDisplayName(),
-            "faction" => $faction->getName()
-        ]));
+        if ($member->isOnline()) {
+            $member->sendMessage(Localizer::trans('invite-add-inform-target', [
+                "player" => $sender->getDisplayName(),
+                "faction" => $faction->getName()
+            ]));
+            $member->sendMessage(Localizer::trans('invite-add-inform-target-suggestion', [
+                "command" => "/" . $this->getRoot()->getChild("join")->getName() . " " . $faction->getName()
+            ]));
+        }
         return true;
     }
 

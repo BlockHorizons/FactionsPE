@@ -75,7 +75,9 @@ class Plots
      */
     public static function hash(Position $pos): string 
     {
-        //if(!$pos->level) return md5(microtime(true));
+        if($pos->getLevelNonNull() === null) {
+            throw new \InvalidArgumentException("given position($pos) has no valid level attached. Perhaps level not loaded?");
+        }
         return $pos->x . ":" . $pos->z . ":" . $pos->level->getFolderName();
     }
 
