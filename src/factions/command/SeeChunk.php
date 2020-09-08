@@ -4,10 +4,14 @@ namespace factions\command;
 use dominate\Command;
 use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
+use Exception;
 use factions\engine\SeeChunkEngine;
+use factions\manager\Plots;
+use factions\utils\Text;
 use pocketmine\command\CommandSender;
 use factions\manager\Members;
 use localizer\Localizer;
+use pocketmine\math\Vector2;
 
 class SeeChunk extends Command {
 
@@ -35,12 +39,21 @@ class SeeChunk extends Command {
 		/** @var SeeChunkEngine $engine */
         /** @var \pocketmine\Player $sender */
 		$engine = $this->getPlugin()->getEngine("SeeChunkEngine");
-		if($target) {
-			$chunk = $sender->getLevel()->getChunk($sender->getX() >> 4, $sender->getZ() >> 4);
-			$engine->setChunk($member, $chunk, $sender->getLevel());
-		} else {
-			$engine->removeChunk($member);
-		}
+		try {
+            if ($target) {
+
+                $engine->setChunk($member, new Vector2(
+                    $sender->getX() >> Plots::CHUNK_SIZE,
+                    $sender->getZ() >> Plots::CHUNK_SIZE
+                ), $sender->getLevel());
+
+            } else {
+                $engine->removeChunk($member);
+            }
+        } catch (Exception $e) {
+		    $member->sendMessage(Text::parse("<red>Internal error!"));
+		    return true;
+        }
 
 		$member->sendMessage(Localizer::translatable('seeing-chunk-' . ($target ? 'activated' : 'deactivated')));
 		return true;

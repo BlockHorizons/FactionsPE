@@ -24,13 +24,17 @@ use factions\entity\IMember;
 use factions\entity\Plot;
 use factions\event\LandChangeEvent;
 use factions\FactionsPE;
-use factions\relation\RelationParticipator;
 use localizer\Localizer;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 
 class Plots
 {
+    /**
+     * 2 ^ CHUNK_SIZE
+     * @var int
+     */
+    const CHUNK_SIZE = 5;
 
     /** @var string[] hash => faction */
     private static $plots = [];
@@ -134,7 +138,7 @@ class Plots
     {
         if ($newFaction->isNone()) {
             foreach ($plots as $plot) {
-                $plot->unclaim($newFaction, $player);
+                $plot->unclaim($player, false);
             }
         } else {
             foreach ($plots as $plot) {
@@ -182,7 +186,7 @@ class Plots
     /**
      * Remove owner Faction from plot in given position
      * @param Plot $plot
-     * @param IMember|RelationParticipator $player
+     * @param IMember|null $player
      * @param bool $silent = false, set to true if you don't want to call any event
      * @return bool
      */
