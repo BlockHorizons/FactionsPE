@@ -47,6 +47,7 @@ class MemberParameter extends Parameter
 
     /**
      * @param string $input
+     * @param CommandSender|null $sender
      * @return mixed
      */
     public function read(string $input, CommandSender $sender = null)
@@ -66,7 +67,7 @@ class MemberParameter extends Parameter
             case self::ONLINE_MEMBER:
                 return $value instanceof Member && $value->isOnline();
             case self::OFFLINE_MEMBER:
-                return $value instanceof OfflineMember;
+                return $value instanceof OfflineMember && $value->isOnline() === false;
             case self::CONSOLE_MEMBER:
                 return $value instanceof FConsole;
             case self::ANY_MEMBER:

@@ -28,6 +28,7 @@ use factions\form\FactionForm;
 use factions\manager\Members;
 use factions\manager\Permissions;
 use factions\relation\Relation as Rel;
+use factions\utils\Gameplay;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
@@ -78,6 +79,9 @@ class FactionCommand extends Command {
 		if ($plugin->economyEnabled()) {
 			$childs[] = new Money($plugin, "money", "Manage faction bank account", Permissions::MONEY, ["bank", "cash"]);
 		}
+		if(Gameplay::get("fly", false)) {
+		    $childs[] = new Fly($plugin, "fly", "Be able to fly inside claimed territory", Permissions::FLY);
+        }
 
 		foreach ($childs as $child) {
 			$this->addChild($child);

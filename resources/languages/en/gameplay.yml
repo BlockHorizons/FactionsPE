@@ -64,6 +64,9 @@ no-help-for-command: "<red>No help for command: :command"
 overriding-enabled: "You <green>enabled<white> overriding mode"
 overriding-disabled: "You <red>disabled<white> overriding mode"
 
+# Fly
+faction-fly-status: "<i>Ability to fly in faction territory has been :status"
+
 command-child-none: "<i>The sub command <aqua>:token <i>couldn't be found."
 command-too-ambiguous: "<i>The token :token <i>is ambiguous."
 command-suggestion-header: "<i>No sub command by token <aqua>:token<i> was found, did you meant:"
@@ -100,6 +103,10 @@ cant-claim-owner-too-strong: ":0<i> owns this land and is strong enough to keep 
 must-start-claim-at-border: "<b>You must start claiming land at the border of the territory."
 no-perm-to-claim-for: "<b>You don't have permission to alter territory for <h>:0<b>."
 painbuild-warning: "<b>It is painful to build in the territory of :0<b>."
+
+# Fly
+no-perm-to-fly: "<b>You don't have the permission to fly in <h>:faction's<b> territory."
+cant-fly-here: "<b>You can't fly in territory that belongs to <h>:faction<b>."
 
 no-powergain-due-to-world: "<i>You didn't gain any power due to the world you are in."
 no-powerloss-due-to-faction: "<i>You didn't lose any power since the territory you died in works that way."

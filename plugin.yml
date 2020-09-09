@@ -52,6 +52,7 @@ permissions:
       factions.flag.list: {description: list flags, default: true}
       factions.flag.set: {description: set flags, default: true}
       factions.flag.show: {description: show flags, default: true}
+      factions.fly: {description: fly in faction territory, default: true}
       factions.home: {description: teleport to faction home, default: true}
       factions.hud: {description: toggle hud, default: true}
       factions.invite: {description: manage invites, default: true}

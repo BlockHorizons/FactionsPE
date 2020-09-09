@@ -23,6 +23,7 @@ use factions\entity\Faction;
 use factions\entity\IMember;
 use factions\manager\Permissions;
 use factions\relation\Relation;
+use factions\relation\RelationParticipator;
 use factions\utils\Text;
 use localizer\Translatable;
 
@@ -51,6 +52,7 @@ class Permission
     const RELATION = "relation";
     const DISBAND = "disband";
     const FLAGS = "flags";
+    const FLY = "fly";
     const PERMS = "perms";
     const STATUS = "status";
 
@@ -78,6 +80,7 @@ class Permission
     const PRIORITY_FLAGS = 22000;
     const PRIORITY_PERMS = 23000;
     const PRIORITY_STATUS = 24000;
+    const PRIORITY_FLY = 25000;
 
     protected $priority = 0;
 
@@ -197,6 +200,7 @@ class Permission
     {
         $faction = !$faction ? $player->getFaction() : $faction;
         if (!$faction) return false;
+        /** @var RelationParticipator $player */
         $Relation = $faction->getRelationTo($player);
         $ret = $player->isOverriding() ? true : $faction->isPermitted($Relation, $this);
         return $ret;

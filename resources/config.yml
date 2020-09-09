@@ -52,6 +52,8 @@ purge-after: 604800
 
 # Gameplay settings
 gameplay:
+  # Enable the ability for players to fly in their claimed lands (/f fly)
+  fly: false
   hud:
     enabled: true
     popup: "》 Power: &6{POWER}&f/&6{MAXPOWER} &8|&f Money: &6{MU}{MONEY} &8|&f Faction: &6{FACTION} &8|&f Faction power: &6{F-POWER}&f/&6{MAXF-POWER}&f 《"

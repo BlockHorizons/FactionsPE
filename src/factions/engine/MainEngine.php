@@ -19,6 +19,7 @@
 
 namespace factions\engine;
 
+use factions\entity\Member;
 use factions\entity\Plot;
 use factions\event\LandChangeEvent;
 use factions\event\member\MemberPowerChangeEvent;
@@ -125,6 +126,7 @@ class MainEngine extends Engine {
 	}
 
 	public function onPlayerTrace(MemberTraceEvent $event) {
+	    /** @var Member $member */
 		$member = $event->getMember();
 		if (!$event->sameOwner() && Gameplay::get("send-plot-faction-description", true)) {
 			$faction = $event->getTo()->getOwnerFaction();
@@ -133,6 +135,15 @@ class MainEngine extends Engine {
 				"faction"     => $faction->getName(),
 				"description" => $faction->hasDescription() ? $faction->getDescription() : "~",
 			]));
+
+			if($member->isFlying() && !$member->isOverriding()) {
+			    if(!$event->membersLand()) {
+                    $member->setFlying(false);
+                } else {
+                    $member->setFlying(true);
+                }
+            }
+
 		}
 		if ($member->isAutoClaiming()) {
 			$af = $member->getAutoClaimFaction();
@@ -442,7 +453,7 @@ class MainEngine extends Engine {
 			$hostFaction = Plots::getFactionAt($pos);
 			$player->sendMessage(Localizer::translatable("painbuild-warning", [$hostFaction->getName()]));
 			$damage = Gameplay::get("action-denied-pain-amount", 1);
-			$player->attack($damage, new EntityDamageEvent($player, EntityDamageEvent::CAUSE_CUSTOM, $damage));
+			$player->attack(new EntityDamageEvent($player, EntityDamageEvent::CAUSE_CUSTOM, $damage));
 			return true;
 		}
 		$factionHere = Plots::getFactionAt($pos);

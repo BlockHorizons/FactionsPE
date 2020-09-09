@@ -19,6 +19,7 @@
 
 namespace factions\manager;
 
+use Exception;
 use factions\FactionsPE;
 use factions\permission\Permission;
 use factions\relation\Relation;
@@ -55,6 +56,7 @@ final class Permissions
     const FLAG_LIST = "factions.flag.list";
     const FLAG_SET = "factions.flag.set";
     const FLAG_SHOW = "factions.flag.show";
+    const FLY = "factions.fly";
     const HELP = "factions.help";
     const HUD = "factions.hud"; # alphabet order -.-
     const HOME = "factions.home";
@@ -218,6 +220,9 @@ final class Permissions
             ],
             Permission::FLAGS => [
                 Permission::PRIORITY_FLAGS, [Relation::LEADER], false, true, true
+            ],
+            Permission::FLY => [
+                Permission::PRIORITY_FLY, [Relation::LEADER, Relation::OFFICER, Relation::MEMBER], false, true, true
             ]
         ];
         foreach ($perms as $perm => $data) {
@@ -239,12 +244,12 @@ final class Permissions
      * @param bool $editable
      * @param bool $visible
      * @return Permission
-     * @throws \Exception
+     * @throws Exception
      */
     public static function create(int $priority, string $id, string $name, Translatable $desc, array $standard, bool $territory, bool $editable, bool $visible): Permission
     {
         if (self::getById($id) instanceof Permission) {
-            throw new \Exception("Permission with id=$id has been already registered");
+            throw new Exception("Permission with id=$id has been already registered");
         }
         $ret = new Permission($id, $priority, $name, $desc, $standard, $territory, $editable, $visible);
         self::attach($ret);

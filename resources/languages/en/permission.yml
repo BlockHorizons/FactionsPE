@@ -23,5 +23,6 @@ relation: "change Relationations"
 disband: "disband the faction"
 perms: "manage permissions"
 flags: "manage flags"
+fly: "fly in faction territory"
 detailed-desc: " on land owned by <aqua>faction"
 ...

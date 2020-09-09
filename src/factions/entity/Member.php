@@ -187,7 +187,7 @@ class Member extends OfflineMember
 
     /*
      * ----------------------------------------------------------
-     * SHORTCUTS
+     * SEECHUNK
      * ----------------------------------------------------------
      */
 
@@ -199,6 +199,46 @@ class Member extends OfflineMember
     public function setSeeChunk(bool $value): void
     {
         $this->seeChunk = $value;
+    }
+
+    /*
+     * ----------------------------------------------------------
+     * FACTION-FLY
+     * ----------------------------------------------------------
+     */
+
+
+    /**
+     * Enabled players the ability to fly within faction claim
+     *
+     * @var bool
+     */
+    protected $fly = false;
+
+    public function updateFlying() : void {
+        if($this->fly) {
+            $this->player->setAllowFlight(true);
+            $this->player->setFlying(true);
+        } else {
+            if(!$this->overriding) {
+                $this->player->setFlying(false);
+                $this->player->setAllowFlight(false);
+            }
+        }
+    }
+
+    public function toggleFlying() : void {
+        $this->fly = !$this->fly;
+        $this->updateFlying();
+    }
+
+    public function setFlying(bool $value) : void {
+        $this->fly = $value;
+        $this->updateFlying();
+    }
+
+    public function isFlying() : bool {
+        return $this->fly === true;
     }
 
 }

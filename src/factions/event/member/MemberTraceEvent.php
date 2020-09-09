@@ -50,6 +50,11 @@ class MemberTraceEvent extends MemberEvent
         return $this->getFrom()->getOwnerFaction() === $this->getTo()->getOwnerFaction();
     }
 
+    public function membersLand() : bool
+    {
+        return $this->getTo()->getOwnerFaction() === $this->getMember()->getFaction();
+    }
+
     public function getFrom(): PLot
     {
         return $this->from;
