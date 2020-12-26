@@ -17,96 +17,96 @@ author: BlockHorizons
 authors:
 - Chris-Prime (@PrimusLV, @flipkris)
 - Sandertv (@Sandertv)
-api: [3.0.0, 4.0.0]
-main: "factions\\FactionsPE"
+api: [3.0.0]
+main: "fpe\\FactionsPE"
 version: 1.2.5
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, PurePerms, FormAPI]
 
 permissions:
-  factions.*:
+  factionspe.*:
     default: false
     description: grant all faction permissions
     children:
-      factions.help: {description: see help page, default: true}
-      factions.access: {description: manage access, with the proper fperm, default: true}
-      factions.access.faction: {description: grant faction access, with the proper fperm, default: true}
-      factions.access.player: {description: grant player access, with the proper fperm, default: true}
-      factions.access.view: {description: view access, default: true}
-      factions.override: {description: enable override mode, default: op}
-      factions.chat: {description: chat with your faction members, default: true}
-      factions.claim: {description: claim faction territory, default: true}
-      factions.claim.one: {description: claim a single chunk, default: true}
-      factions.claim.auto: {description: claim as you walk around, default: true}
-      factions.claim.fill: {description: claim by filling, default: true}
-      factions.claim.square: {description: claim by square and radius, default: true}
-      factions.claim.circle: {description: claim by circle and radius, default: true}
-      factions.claim.all: {description: claim all faction land, default: true}
-      factions.close: {description: close faction to require invitations, default: true}
-      factions.create: {description: create new faction, default: true}
-      factions.description: {description: change faction description, default: true}
-      factions.rank.demote: {description: demote member to lower rank, default: true}
-      factions.disband: {description: disband faction, default: true}
-      factions.expansions: {description: list expansions, default: true}
-      factions.faction: {description: show faction information, default: true}
-      factions.flag: {description: manage faction flags, default: true}
-      factions.flag.list: {description: list flags, default: true}
-      factions.flag.set: {description: set flags, default: true}
-      factions.flag.show: {description: show flags, default: true}
-      factions.fly: {description: fly in faction territory, default: true}
-      factions.home: {description: teleport to faction home, default: true}
-      factions.hud: {description: toggle hud, default: true}
-      factions.invite: {description: manage invites, default: true}
-      factions.invite.list: {description: list invited players, default: true}
-      factions.invite.list.other: {description: list invited players of another factions, default: op}
-      factions.invite.add: {description: invite player, default: true}
-      factions.invite.remove: {description: revoke an invite, default: true}
-      factions.join: {description: join faction, default: true}
-      factions.join.others: {description: have another player join faction, default: op}
-      factions.kick: {description: kick player from faction, default: true}
-      factions.leave: {description: leave your faction, default: true}
-      factions.list: {description: list all factions, default: true}
-      factions.main: {description: access main faction command, default: true}
-      factions.map: {description: show territory map, default: true}
-      factions.money: {description: manage faction money, default: true}
-      factions.money.balance: {description: show faction money, default: true}
-      factions.money.balance.any: {description: show another factions money, default: op}
-      factions.money.deposit: {description: deposit to faction, default: true}
-      factions.money.f2f: {description: transfer f --> f, default: true}
-      factions.money.f2p: {description: transfer f --> p, default: true}
-      factions.money.p2f: {description: transfer p --> f, default: true}
-      factions.money.withdraw: {description: withdraw from faction, default: true}
-      factions.motd: {description: faction motd, default: true}
-      factions.open: {description: set if invitation is required to join, default: true}
-      factions.perm: {description: change faction permissions, default: true}
-      factions.perm.list: {description: list perms, default: true}
-      factions.perm.set: {description: set perms, default: true}
-      factions.perm.show: {description: show perms, default: true}
-      factions.rank.promote: {description: promote player to higher rank, default: true}
-      factions.player: {description: show player information, default: op}
-      factions.powerboost: {description: set powerboost, default: op}
-      factions.rank: {description: manage/show ranks, default: true}
-      factions.rank.show: {description: show rank, default: true}
-      factions.rank.action: {description: change rank, default: true}
-      factions.relation: {description: manage faction relations, default: true}
-      factions.relation.list: {description: list all factions with certain relation, default: true}
-      factions.relation.set: {description: set relation wish to another faction, default: true}
-      factions.relation.wishes: {description: list the relation wishes, default: true}
-      factions.seechunk: {description: see the chunk you stand in, default: true}
-      factions.sethome: {description: set the faction home, default: true}
-      factions.setpower: {description: set power, default: op}
-      factions.status: {description: show status, default: true}
-      factions.name: {description: set faction name, default: true}
-      factions.title: {description: set player title, default: op}
-      factions.title.color: {description: set player title with color, default: true}
-      factions.top: {description: see most powerful factions, default: true}
-      factions.territorytitles: {description: toggle territory titles, default: true}
-      factions.unclaim: {description: unclaim faction territory, default: true}
-      factions.unclaim.one: {description: unclaim a single chunk, default: true}
-      factions.unclaim.auto: {description: unclaim as you walk around, default: true}
-      factions.unclaim.fill: {description: unclaim by filling, default: true}
-      factions.unclaim.square: {description: unclaim by square and radius, default: true}
-      factions.unclaim.circle: {description: unclaim by circle and radius, default: true}
-      factions.unclaim.all: {description: unclaim all faction land, default: true}
-      factions.unsethome: {description: unset faction home, default: true}
-      factions.unstuck: {description: teleport to nearest wilderness, default: true}
-      factions.version: {description: see plugin version, default: true}
+      factionspe.help: {description: see help page, default: true}
+      factionspe.access: {description: manage access, with the proper fperm, default: true}
+      factionspe.access.faction: {description: grant faction access, with the proper fperm, default: true}
+      factionspe.access.player: {description: grant player access, with the proper fperm, default: true}
+      factionspe.access.view: {description: view access, default: true}
+      factionspe.override: {description: enable override mode, default: op}
+      factionspe.chat: {description: chat with your faction members, default: true}
+      factionspe.claim: {description: claim faction territory, default: true}
+      factionspe.claim.one: {description: claim a single chunk, default: true}
+      factionspe.claim.auto: {description: claim as you walk around, default: true}
+      factionspe.claim.fill: {description: claim by filling, default: true}
+      factionspe.claim.square: {description: claim by square and radius, default: true}
+      factionspe.claim.circle: {description: claim by circle and radius, default: true}
+      factionspe.claim.all: {description: claim all faction land, default: true}
+      factionspe.close: {description: close faction to require invitations, default: true}
+      factionspe.create: {description: create new faction, default: true}
+      factionspe.description: {description: change faction description, default: true}
+      factionspe.rank.demote: {description: demote member to lower rank, default: true}
+      factionspe.disband: {description: disband faction, default: true}
+      factionspe.expansions: {description: list expansions, default: true}
+      factionspe.faction: {description: show faction information, default: true}
+      factionspe.flag: {description: manage faction flags, default: true}
+      factionspe.flag.list: {description: list flags, default: true}
+      factionspe.flag.set: {description: set flags, default: true}
+      factionspe.flag.show: {description: show flags, default: true}
+      factionspe.fly: {description: fly in faction territory, default: true}
+      factionspe.home: {description: teleport to faction home, default: true}
+      factionspe.hud: {description: toggle hud, default: true}
+      factionspe.invite: {description: manage invites, default: true}
+      factionspe.invite.list: {description: list invited players, default: true}
+      factionspe.invite.list.other: {description: list invited players of another factions, default: op}
+      factionspe.invite.add: {description: invite player, default: true}
+      factionspe.invite.remove: {description: revoke an invite, default: true}
+      factionspe.join: {description: join faction, default: true}
+      factionspe.join.others: {description: have another player join faction, default: op}
+      factionspe.kick: {description: kick player from faction, default: true}
+      factionspe.leave: {description: leave your faction, default: true}
+      factionspe.list: {description: list all factions, default: true}
+      factionspe.main: {description: access main faction command, default: true}
+      factionspe.map: {description: show territory map, default: true}
+      factionspe.money: {description: manage faction money, default: true}
+      factionspe.money.balance: {description: show faction money, default: true}
+      factionspe.money.balance.any: {description: show another factions money, default: op}
+      factionspe.money.deposit: {description: deposit to faction, default: true}
+      factionspe.money.f2f: {description: transfer f --> f, default: true}
+      factionspe.money.f2p: {description: transfer f --> p, default: true}
+      factionspe.money.p2f: {description: transfer p --> f, default: true}
+      factionspe.money.withdraw: {description: withdraw from faction, default: true}
+      factionspe.motd: {description: faction motd, default: true}
+      factionspe.open: {description: set if invitation is required to join, default: true}
+      factionspe.perm: {description: change faction permissions, default: true}
+      factionspe.perm.list: {description: list perms, default: true}
+      factionspe.perm.set: {description: set perms, default: true}
+      factionspe.perm.show: {description: show perms, default: true}
+      factionspe.rank.promote: {description: promote player to higher rank, default: true}
+      factionspe.player: {description: show player information, default: op}
+      factionspe.powerboost: {description: set powerboost, default: op}
+      factionspe.rank: {description: manage/show ranks, default: true}
+      factionspe.rank.show: {description: show rank, default: true}
+      factionspe.rank.action: {description: change rank, default: true}
+      factionspe.relation: {description: manage faction relations, default: true}
+      factionspe.relation.list: {description: list all factions with certain relation, default: true}
+      factionspe.relation.set: {description: set relation wish to another faction, default: true}
+      factionspe.relation.wishes: {description: list the relation wishes, default: true}
+      factionspe.seechunk: {description: see the chunk you stand in, default: true}
+      factionspe.sethome: {description: set the faction home, default: true}
+      factionspe.setpower: {description: set power, default: op}
+      factionspe.status: {description: show status, default: true}
+      factionspe.name: {description: set faction name, default: true}
+      factionspe.title: {description: set player title, default: op}
+      factionspe.title.color: {description: set player title with color, default: true}
+      factionspe.top: {description: see most powerful factions, default: true}
+      factionspe.territorytitles: {description: toggle territory titles, default: true}
+      factionspe.unclaim: {description: unclaim faction territory, default: true}
+      factionspe.unclaim.one: {description: unclaim a single chunk, default: true}
+      factionspe.unclaim.auto: {description: unclaim as you walk around, default: true}
+      factionspe.unclaim.fill: {description: unclaim by filling, default: true}
+      factionspe.unclaim.square: {description: unclaim by square and radius, default: true}
+      factionspe.unclaim.circle: {description: unclaim by circle and radius, default: true}
+      factionspe.unclaim.all: {description: unclaim all faction land, default: true}
+      factionspe.unsethome: {description: unset faction home, default: true}
+      factionspe.unstuck: {description: teleport to nearest wilderness, default: true}
+      factionspe.version: {description: see plugin version, default: true}

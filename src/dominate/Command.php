@@ -20,7 +20,7 @@ namespace dominate;
 
 use dominate\parameter\Parameter;
 use dominate\requirement\Requirement;
-use factions\FactionsPE;
+use fpe\FactionsPE;
 use localizer\Localizer;
 use Message;
 use pocketmine\command\Command as PocketMineCommand;
