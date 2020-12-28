@@ -8,7 +8,7 @@
 
 namespace fpe\command;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use fpe\command\parameter\FactionParameter;
 use pocketmine\command\CommandSender;
 

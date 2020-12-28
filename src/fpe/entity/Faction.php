@@ -20,8 +20,8 @@ use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use localizer\Localizer;
-use localizer\Translatable;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 

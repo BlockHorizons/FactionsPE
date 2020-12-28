@@ -7,8 +7,8 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\command\Player as PlayerCommand;
 use fpe\FactionsPE;
 use fpe\form\FactionForm;
@@ -16,7 +16,7 @@ use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\relation\Relation as Rel;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

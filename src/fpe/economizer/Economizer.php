@@ -17,15 +17,15 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace economizer;
+ namespace fpe\economizer;
  
-use economizer\transistor\iEconomy;
+use fpe\economizer\transistor\iEconomy;
 use pocketmine\plugin\Plugin;
 
-use economizer\transistor\EconomyAPI;
-use economizer\transistor\PocketMoney;
-use economizer\transistor\MassiveEconomy;
-use economizer\transistor\EssentialsPE;
+use fpe\economizer\transistor\EconomyAPI;
+use fpe\economizer\transistor\PocketMoney;
+use fpe\economizer\transistor\MassiveEconomy;
+use fpe\economizer\transistor\EssentialsPE;
 
 class Economizer {
 

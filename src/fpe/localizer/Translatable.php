@@ -1,5 +1,5 @@
 <?php
-namespace localizer;
+namespace fpe\localizer;
 
 use pocketmine\lang\TextContainer;
 

@@ -16,23 +16,33 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace dominate\requirement;
+namespace fpe\dominate;
 
-use pocketmine\command\CommandSender;
-use localizer\Translatable;
+use Exception;
+use fpe\localizer\Translatable;
+use fpe\localizer\Localizer;
 
-abstract class Requirement {
+class ThrowableMessage extends Exception {
 
-	/*
-	 * ----------------------------------------------------------
-	 * ABSTRACT
-	 * ----------------------------------------------------------
-	 */
+	/** @var string|Translatable */
+	public $message;
 
-	public abstract function hasMet(CommandSender $sender, $silent = false) : bool;
+    /**
+     * @param string|Translatable $message
+     */
+	public function __construct($message) {
+        if(!$message instanceof Translatable) {
+            if(($nm = Localizer::translatable($message))->getText() !== $message) {
+                $message = $nm;
+            }
+        }
+        $this->message = $message;
 
-	public function createErrorMessage(CommandSender $sender) : Translatable {
-		return new Translatable("requirement.generic-error");
+        parent::__construct($message);
+    }
+
+	public function getText() {
+		return $this->message;
 	}
 
 }

@@ -14,7 +14,7 @@ use fpe\permission\Permission;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\Player;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator

@@ -6,8 +6,8 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\command\subcommand\childs\PermListChild;
 use fpe\command\subcommand\childs\PermSetChild;
 use fpe\command\subcommand\childs\PermShowChild;

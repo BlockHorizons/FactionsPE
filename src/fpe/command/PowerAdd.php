@@ -9,7 +9,7 @@
 namespace fpe\command;
 
 
-use dominate\Command;
+use fpe\dominate\Command;
 
 class PowerAdd extends Command
 {

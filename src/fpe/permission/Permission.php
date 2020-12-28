@@ -12,7 +12,7 @@ use fpe\manager\Permissions;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Text;
-use localizer\Translatable;
+use fpe\localizer\Translatable;
 
 class Permission
 {

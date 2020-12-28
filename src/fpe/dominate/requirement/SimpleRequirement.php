@@ -16,12 +16,12 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace dominate\requirement;
+namespace fpe\dominate\requirement;
 
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Player;
-use localizer\Translatable;
+use fpe\localizer\Translatable;
 
 class SimpleRequirement extends Requirement {
 

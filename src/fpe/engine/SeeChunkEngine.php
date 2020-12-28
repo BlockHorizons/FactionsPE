@@ -9,7 +9,7 @@ use fpe\relation\Relation;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
 use InvalidArgumentException;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use LogicException;
 use pocketmine\level\Level;
 use pocketmine\level\particle\DustParticle;

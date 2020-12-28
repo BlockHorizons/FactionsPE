@@ -6,9 +6,9 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
-use dominate\parameter\Parmater;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
+use fpe\dominate\parameter\Parmater;
 use fpe\command\parameter\MemberParameter;
 use fpe\entity\IMember;
 use fpe\FactionsPE;

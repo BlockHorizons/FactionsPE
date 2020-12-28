@@ -33,7 +33,7 @@ use fpe\permission\Permission;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\block\Block;
 use pocketmine\block\BlockIds;
 use pocketmine\block\Liquid;

@@ -1,8 +1,8 @@
 <?php
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\manager\Permissions;
 
 class FlagCommand extends Command {

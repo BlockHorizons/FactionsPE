@@ -6,11 +6,11 @@
 
 namespace fpe\command;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use fpe\command\parameter\MemberParameter;
 use fpe\FactionsPE;
 use fpe\manager\Members;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class InviteRemove extends Command

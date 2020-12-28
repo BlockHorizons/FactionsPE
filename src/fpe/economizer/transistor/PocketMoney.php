@@ -17,11 +17,11 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-namespace economizer\transistor;
+namespace fpe\economizer\transistor;
 
 use pocketmine\Player;
 use PocketMoney\PocketMoney as PMAPI;
-use economizer\Transistor;
+use fpe\economizer\Transistor;
  
 class PocketMoney extends Transistor {
 

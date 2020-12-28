@@ -17,11 +17,11 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-namespace economizer\transistor;
+namespace fpe\economizer\transistor;
 
 use pocketmine\Player;
 use MassiveEconomy\MassiveEconomyAPI;
-use economizer\Transistor;
+use fpe\economizer\Transistor;
  
 class MassiveEconomy extends Transistor {
 

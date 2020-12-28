@@ -6,12 +6,12 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\manager\Factions;
 use fpe\manager\Members;
 use fpe\utils\Pager;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;

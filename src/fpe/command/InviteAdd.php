@@ -6,13 +6,13 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\Command;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\command\parameter\MemberParameter;
 use fpe\command\requirement\FactionRequirement;
 use fpe\FactionsPE;
 use fpe\manager\Members;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

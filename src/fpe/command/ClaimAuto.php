@@ -12,7 +12,7 @@ use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Text;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class ClaimAuto extends ClaimOne

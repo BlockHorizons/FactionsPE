@@ -16,12 +16,12 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace dominate;
+namespace fpe\dominate;
 
-use dominate\parameter\Parameter;
-use dominate\requirement\Requirement;
+use fpe\dominate\parameter\Parameter;
+use fpe\dominate\requirement\Requirement;
 use InvalidArgumentException;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use LogicException;
 use pocketmine\command\Command as PocketMineCommand;
 use pocketmine\command\CommandSender;

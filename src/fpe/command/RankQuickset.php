@@ -19,7 +19,7 @@
 
 namespace fpe\command;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use fpe\command\parameter\MemberParameter;
 use pocketmine\command\CommandSender;
 use pocketmine\Server;

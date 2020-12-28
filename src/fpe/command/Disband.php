@@ -6,7 +6,7 @@
 
 namespace fpe\command;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use fpe\command\parameter\FactionParameter;
 use fpe\entity\Faction;
 use fpe\event\faction\FactionDisbandEvent;
@@ -16,7 +16,7 @@ use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

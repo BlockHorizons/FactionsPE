@@ -11,7 +11,7 @@ use fpe\entity\IMember;
 use fpe\entity\Plot;
 use fpe\event\LandChangeEvent;
 use fpe\FactionsPE;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 

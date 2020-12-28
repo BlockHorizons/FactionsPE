@@ -13,7 +13,7 @@ use fpe\entity\Plot;
 use fpe\FactionsPE;
 use fpe\manager\Flags;
 use fpe\manager\Permissions;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 
 abstract class DataProvider
 {

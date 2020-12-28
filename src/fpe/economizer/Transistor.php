@@ -17,7 +17,7 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-namespace economizer;
+namespace fpe\economizer;
 
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;

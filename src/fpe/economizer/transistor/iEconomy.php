@@ -6,10 +6,10 @@
  * Time: 14:50
  */
 
-namespace economizer\transistor;
+namespace fpe\economizer\transistor;
 
 
-use economizer\Transistor;
+use fpe\economizer\Transistor;
 use pocketmine\Player;
 use economy\iEconomy as IE;
 

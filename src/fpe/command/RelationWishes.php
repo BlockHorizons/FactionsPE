@@ -9,13 +9,13 @@
 namespace fpe\command;
 
 
-use dominate\Command;
-use dominate\parameter\Parameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\command\parameter\FactionParameter;
 use fpe\entity\Faction;
 use fpe\manager\Factions;
 use fpe\utils\Pager;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use fpe\relation\Relation as Rel;

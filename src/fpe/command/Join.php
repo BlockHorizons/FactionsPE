@@ -3,8 +3,8 @@
 namespace fpe\command;
 
 
-use dominate\Command;
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\Command;
+use fpe\dominate\requirement\SimpleRequirement;
 use Exception;
 use fpe\command\parameter\FactionParameter;
 use fpe\command\parameter\MemberParameter;
@@ -15,7 +15,7 @@ use fpe\flag\Flag;
 use fpe\manager\Members;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

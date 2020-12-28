@@ -1,45 +1,33 @@
 #
 #   FactionsPE: PocketMine-MP Plugin
-#   Copyright (C) 2016  Chris Prime
+#   Copyright (C) 2020 BlockHorizons
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
+
 enabling: "Enabling..."
 disabling: "Disabling..."
 
 enabled: "Enabled"
 disabled: "Disabled"
 
-dataprovider-set: "Data provider: <gold>:0"
+dataprovider-set: "Data provider: :0"
 dataprovider-error: "Data provider error [:1]: :0"
 
 invalid-locale: "Locale code ':locale' is not valid ISO-639_1 language code"
 
-factions-loaded: "<gold>:0<white> faction(s) were loaded"
+factions-loaded: ":0 faction(s) were loaded"
 
-economy-plugin-not-found: "Economy plugin by name <gold>:name<white> was not found"
-economy-plugin-not-supported: "Plugin <gold>:name<white> is not supported economy provider"
-economy-plugin-selected: "Economy provider: <gold>:name"
-economy-not-ready: "Economy plugin <gold>:name<white> is not ready for use!"
+economy-plugin-not-found: "Economy plugin by name :name was not found"
+economy-plugin-not-supported: "Plugin :name is not supported economy provider"
+economy-plugin-selected: "Economy provider: :name"
+economy-not-ready: "Economy plugin :name is not ready for use!"
 
 power-update-enabled: "Power regeneration enabled"
 
-hud-enabled: "Built-In <gold>HUD<white> enabled"
+hud-enabled: "Built-In HUD enabled"
 
-chat-formatter-set: "Chat formatter: <gold>:plugin<reset>"
+chat-formatter-set: "Chat formatter: :plugin"
 built-in: 'built-in'
 
 form-support-enabled: "Form support: :0"
 
-plots-size: "Custom plot size: <gold>:size<white>x<gold>:size"
+plots-size: "Custom plot size: :size x :size"

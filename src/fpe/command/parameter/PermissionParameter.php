@@ -6,7 +6,7 @@
 
 namespace fpe\command\parameter;
 
-use dominate\parameter\Parameter;
+use fpe\dominate\parameter\Parameter;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;

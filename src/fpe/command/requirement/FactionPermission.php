@@ -6,10 +6,10 @@
 
 namespace fpe\command\requirement;
 
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\manager\Members;
 use fpe\permission\Permission;
-use localizer\Translatable;
+use fpe\localizer\Translatable;
 use pocketmine\command\CommandSender;
 
 class FactionPermission extends SimpleRequirement

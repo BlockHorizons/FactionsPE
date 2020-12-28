@@ -6,7 +6,7 @@
 
 namespace fpe\command\parameter;
 
-use dominate\parameter\Parameter;
+use fpe\dominate\parameter\Parameter;
 use fpe\relation\Relation;
 use pocketmine\command\CommandSender;
 

@@ -6,9 +6,9 @@
 
 namespace fpe;
 
-use economizer\Economizer;
-use economizer\Transistor;
-use dominate\Command;
+use fpe\economizer\Economizer;
+use fpe\economizer\Transistor;
+use fpe\dominate\Command;
 use fpe\command\FactionCommand;
 use fpe\data\provider\DataProvider;
 use fpe\data\provider\JSONDataProvider;
@@ -33,8 +33,7 @@ use fpe\task\HUD;
 use fpe\task\PowerUpdateTask;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use jojoe77777\FormAPI\FormAPI;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\plugin\PluginBase;
 
 define("IN_DEV", file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".dev"));
@@ -289,15 +288,15 @@ class FactionsPE extends PluginBase {
 				"plugin" => $this->getName() !== $this->getName() ?: Localizer::trans('built-in'),
 			]));
 		}
-		if ($this->getConfig()->get('enable-form-menus', true)) {
-			$fapi = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
-			if ($fapi && $fapi->isEnabled()) {
-				$this->formAPI = $fapi;
-			}
-			$this->getLogger()->debug(Localizer::trans("form-support-enabled", [
-				$this->isFormsEnabled() ? "<green>" . Localizer::trans("on") : "<gold>" . Localizer::trans("off"),
-			]));
-		}
+//		if ($this->getConfig()->get('enable-form-menus', true)) {
+//			$fapi = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+//			if ($fapi && $fapi->isEnabled()) {
+//				$this->formAPI = $fapi;
+//			}
+//			$this->getLogger()->debug(Localizer::trans("form-support-enabled", [
+//				$this->isFormsEnabled() ? Localizer::trans("on") : Localizer::trans("off"),
+//			]));
+//		}
 		end:
 		return !$stop;
 	}

@@ -2,8 +2,8 @@
 
 namespace fpe\utils;
 
-use localizer\Localizer;
-use localizer\Translatable;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 use pocketmine\command\CommandSender;
 
 class Pager

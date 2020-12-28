@@ -2,8 +2,8 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\Command;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\manager\Members;
 use fpe\utils\Text;
 use pocketmine\command\CommandSender;

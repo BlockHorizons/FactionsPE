@@ -6,10 +6,10 @@
 
 namespace fpe\command;
 
-use dominate\parameter\Parameter;
+use fpe\dominate\parameter\Parameter;
 use fpe\manager\Members;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 
 abstract class ClaimXRadius extends ClaimX
 {

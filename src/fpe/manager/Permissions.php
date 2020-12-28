@@ -10,8 +10,8 @@ use Exception;
 use fpe\FactionsPE;
 use fpe\permission\Permission;
 use fpe\relation\Relation;
-use localizer\Localizer;
-use localizer\Translatable;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 
 final class Permissions
 {

@@ -12,7 +12,7 @@ use fpe\FactionsPE;
 use fpe\flag\Flag;
 use fpe\manager\Factions;
 use fpe\permission\Permission;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\level\Position;
 
 class FactionData extends Data

@@ -16,14 +16,14 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace dominate\parameter;
+namespace fpe\dominate\parameter;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 
-use localizer\Translatable;
-use localizer\Localizer;
+use fpe\localizer\Translatable;
+use fpe\localizer\Localizer;
 
 class Parameter {
 

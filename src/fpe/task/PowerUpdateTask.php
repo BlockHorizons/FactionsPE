@@ -9,7 +9,7 @@ namespace fpe\task;
 use fpe\entity\Member;
 use fpe\manager\Members;
 use fpe\utils\Gameplay;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\scheduler\Task;
 
 class PowerUpdateTask extends Task

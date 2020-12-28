@@ -6,9 +6,9 @@
 
 namespace fpe\command;
 
-use dominate\Command;
-use dominate\parameter\Parameter;
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\command\requirement\FactionRequirement;
 use fpe\manager\Permissions;
 

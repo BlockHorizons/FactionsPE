@@ -6,7 +6,7 @@
 
 namespace fpe\command\requirement;
 
-use dominate\requirement\SimpleRequirement;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\manager\Members;
 use pocketmine\command\CommandSender;
 

@@ -1,5 +1,5 @@
 <?php
-namespace localizer;
+namespace fpe\localizer;
 /*
  *   Localizer: Easy to use locale controller
  *   Copyright (C) 2016  Chris Prime
@@ -18,7 +18,7 @@ namespace localizer;
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use localizer\iso\ISO_639_1;
+use fpe\localizer\iso\ISO_639_1;
 
 /**
  * Easy to use translate package

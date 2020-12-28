@@ -7,7 +7,7 @@
 namespace fpe\flag;
 
 use fpe\utils\Text;
-use localizer\Translatable;
+use fpe\localizer\Translatable;
 use pocketmine\utils\TextFormat;
 
 class Flag

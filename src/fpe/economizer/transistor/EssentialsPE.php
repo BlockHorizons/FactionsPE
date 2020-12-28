@@ -17,71 +17,72 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-namespace economizer\transistor;
-
+namespace fpe\economizer\transistor;
 use pocketmine\Player;
-
-use onebone\economyapi\EconomyAPI as EAPI;
-
-use economizer\Transistor;
+use EssentialsPE\Loader;
+use EssentialsPE\BaseFiles\BaseAPI;
+use fpe\economizer\Transistor;
  
-class EconomyAPI extends Transistor {
-
-	public function __construct(EAPI $api) {
+class EssentialsPE extends Transistor {
+  
+  /**
+   * @param Loader|BaseAPI
+   */
+	public function __construct($api) {
+    if($api instanceof BaseAPI) {
+      $api = $api->getEssentialsPEPlugin();
+    } elseif (!($api instanceof Loader)) {
+      throw new \InvalidArgumentException("Argument 1 passed to ".__CLASS__."::".__METHOD__." must be instanceof '".Loader::CLASS."' or '".BaseAPI::class."'");
+    }
 		parent::__construct($api);
 	}
-
+  
 	/**
 	 * Get player money
-	 * @param Player|string $player
+	 * @param Player $player
 	 * @return int
 	 */
 	public function balance($player) {
-		return $this->getAPI()->myMoney($player);
+		return BaseAPI::getInstance()->getPlayerBalance($player);
 	}
-
+  
 	/**
 	 * Set player money.
-	 * @param Player|string $player
+	 * @param Player $player
 	 * @param int $money
-	 * @param array $params = [], accepts "force" boolean and "issuer" Player|string
 	 */
 	public function setMoney($player, $money, array $params = []) {
-		$force = $params["force"] ?? false;
-		$issuer = $params["issuer"] ?? null;
-		return $this->getAPI()->setMoney($player, $money, $force, $issuer);
+		return BaseAPI::getInstance()->setPlayerBalance($player, $money);
 	}
-
+  
 	/**
 	 * Add money player current balance.
-	 * @param Player|string $player
+	 * @param Player $player
 	 * @param int $money
-	 * @param array $params = [], accepts "force" boolean and "issuer" Player|string
 	 */
 	public function addMoney($player, $money, array $params = []) {
-		$force = $params["force"] ?? false;
-		$issuer = $params["issuer"] ?? null;
-		return $this->getAPI()->addMoney($player, $money, $force, $issuer);
+		return BaseAPI::getInstance()->addToPlayerBalance($player, $money);
 	}
-
+  
 	/**
 	 * Take player money.
-	 * @param Player|string $player
+	 * @param Player $player
 	 * @param int $money
-	 * @param array $params = [], accepts "force" boolean and "issuer" Player|string
 	 */
 	public function takeMoney($player, $money, array $params = []) {
-		$force = $params["force"] ?? false;
-		$issuer = $params["issuer"] ?? null;
-		return $this->getAPI()->reduceMoney($player, $money, $force, $issuer);
+		return BaseAPI::getInstance()->addToPlayerBalance($player, -$money);
 	}
-
+  
 	public function ready() : bool {
-		if($this->getAPI() instanceof EAPI && $this->getAPI()->isEnabled()) return true;
+		if($this->getAPI() instanceof Loader && $this->getAPI()->isEnabled()) return true;
 		return false;
 	}
-
-	public function getMoneyUnit() : string {
-        return $this->getAPI()->getMonetaryUnit();
-    }
+  
+  /**
+   * @return string
+   */
+	public function getMoneyUnit(){
+        return BaseAPI::getInstance()->getCurrencySymbol();
+  }
+    
 }

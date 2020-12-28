@@ -6,12 +6,12 @@
 
 namespace fpe\command\parameter;
 
-use dominate\parameter\Parameter;
+use fpe\dominate\parameter\Parameter;
 use fpe\entity\Faction;
 use fpe\manager\Factions;
 use fpe\manager\Members;
-use localizer\Localizer;
-use localizer\Translatable;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 use pocketmine\command\CommandSender;
 
 class FactionParameter extends Parameter

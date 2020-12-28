@@ -8,8 +8,8 @@ namespace fpe\manager;
 
 use fpe\FactionsPE;
 use fpe\flag\Flag;
-use localizer\Localizer;
-use localizer\Translatable;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 
 class Flags
 {

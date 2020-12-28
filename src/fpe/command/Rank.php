@@ -19,14 +19,14 @@
 
 namespace fpe\command;
 
-use dominate\Command;
+use fpe\dominate\Command;
 use fpe\command\parameter\FactionParameter;
 use fpe\command\parameter\MemberParameter;
 use fpe\command\parameter\RankParameter;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\relation\Relation;
-use localizer\Localizer;
+use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class Rank extends Command
