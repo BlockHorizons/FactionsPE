@@ -37,7 +37,7 @@ class Name extends Command
         $faction = $this->getArgument(1);
         $msender = Members::get($sender);
 
-        if(!$msender->isOverriding()) {
+        if (!$msender->isOverriding()) {
             if (!$faction->isPermitted($msender->getRelationTo($faction), $p = Permissions::getById(Permission::NAME))) {
                 return ["faction-permission-error", ["perm_desc" => $p->getDescription()]];
             }

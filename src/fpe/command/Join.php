@@ -1,4 +1,5 @@
 <?php
+
 namespace fpe\command;
 
 
@@ -40,14 +41,14 @@ class Join extends Command
      */
     public function perform(CommandSender $sender, $label, array $args)
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         $msender = Members::get($sender);
         $mplayer = $this->getArgument(1);
         $samePlayer = ($msender === $mplayer);
         $faction = $this->getArgument(0);
 
-        if($faction->isSpecial()) {
-        	return "cant-join-special-faction";
+        if ($faction->isSpecial()) {
+            return "cant-join-special-faction";
         }
 
         if (($ml = Gameplay::get("faction.member-limit", 10)) > 0 && count($faction->getMembers()) >= $ml) {
@@ -73,7 +74,7 @@ class Join extends Command
         $event = new MembershipChangeEvent($mplayer, $faction, MembershipChangeEvent::REASON_JOIN);
         $this->getPlugin()->getServer()->getPluginManager()->callEvent($event);
         if ($event->isCancelled()) return true;
-        
+
         if (!$samePlayer) {
             $mplayer->sendMessage(Localizer::translatable("faction-joined-by-other", [$msender->getDisplayName(), $faction->getName()]));
         } else {

@@ -24,7 +24,7 @@ class Reload extends Command
         if (Gameplay::get("log.config-reload", true)) {
             $this->getPlugin()->getLogger()->notice(Localizer::trans("log.config-reloaded", [$sender->getName()]));
         }
-        
+
         # Reload language files
         Localizer::clean();
         Localizer::loadLanguages($this->getPlugin()->getDataFolder() . "languages");

@@ -31,7 +31,7 @@ class Kick extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         $target = $this->getArgument(0);
         $msender = Members::get($sender);
         $overriding = $msender->isOverriding();

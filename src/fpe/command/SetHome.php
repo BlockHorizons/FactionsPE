@@ -1,4 +1,5 @@
 <?php
+
 namespace fpe\command;
 
 use dominate\Command;
@@ -32,7 +33,7 @@ class SetHome extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         $member = Members::get($sender);
         $position = $sender->getPosition();
         if (count($args) === 1) {

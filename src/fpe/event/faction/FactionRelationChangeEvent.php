@@ -20,19 +20,16 @@ class FactionRelationChangeEvent extends FactionEvent implements Cancellable
     public static $handlerList = null;
     public static $eventPool = [];
     public static $nextEvent = 0;
-
+    /** @var CommandSender */
+    protected $issuer;
+    /** @var Faction */
+    protected $otherFaction;
     /** @var string */
     private $newRelation = Relation::NONE;
 
-    /** @var CommandSender */
-    protected $issuer;
-
-    /** @var Faction */
-    protected $otherFaction;
-
     public function __construct(CommandSender $sender, Faction $faction, Faction $otherFaction, string $newRelation)
     {
-        if($faction === $otherFaction) {
+        if ($faction === $otherFaction) {
             throw new \InvalidArgumentException("faction '{$faction->getName()}' cannot declare relation to itself");
         }
         parent::__construct($faction);
@@ -41,11 +38,13 @@ class FactionRelationChangeEvent extends FactionEvent implements Cancellable
         $this->issuer = $sender;
     }
 
-    public function getOtherFaction(): Faction {
+    public function getOtherFaction(): Faction
+    {
         return $this->otherFaction;
     }
 
-    public function getIssuer(): CommandSender {
+    public function getIssuer(): CommandSender
+    {
         return $this->issuer;
     }
 
@@ -56,7 +55,7 @@ class FactionRelationChangeEvent extends FactionEvent implements Cancellable
 
     public function setNewRelation(string $relation)
     {
-        if(!Relation::isValid($relation))
+        if (!Relation::isValid($relation))
             throw new \InvalidArgumentException("cannot set new relation '$relation' is invalid");
         $this->newRelation = $relation;
     }

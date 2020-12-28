@@ -30,7 +30,7 @@ abstract class Engine extends Task implements Listener
 
         $this->setup();
 
-        if($loop > 0) {
+        if ($loop > 0) {
             $this->startLoop($loop);
         }
     }
@@ -43,44 +43,46 @@ abstract class Engine extends Task implements Listener
         # Do nothing
     }
 
-    public function onRun(int $currentTick)
-    {
-        # Do nothing
-    }
-
     /**
      * Starts a loop. If no params given default interval, one second, is used.
      * @param int $interval
      * @throws \Exception
      */
-    public function startLoop(int $interval = 20) 
+    public function startLoop(int $interval = 20)
     {
-        if($this->task !== null && !$this->task->isCancelled()) {
+        if ($this->task !== null && !$this->task->isCancelled()) {
             throw new \Exception("Loop already running");
         }
         $this->task = $this->getMain()->getScheduler()->scheduleRepeatingTask($this, $interval);
     }
 
-    public function stopLoop() {
-        if(!$this->isLooping()) {
+    public function getMain(): FactionsPE
+    {
+        return $this->main;
+    }
+
+    public function onRun(int $currentTick)
+    {
+        # Do nothing
+    }
+
+    public function stopLoop()
+    {
+        if (!$this->isLooping()) {
             throw new \Exception("Loop is not running");
         }
         $this->getMain()->getScheduler()->cancelTask($this->getTaskId());
         $this->task = null;
     }
 
-    public function isLooping() : bool {
+    public function isLooping(): bool
+    {
         return $this->task !== null && !$this->task->isCancelled();
     }
 
     public function getLogger(): PluginLogger
     {
         return $this->getMain()->getLogger();
-    }
-
-    public function getMain(): FactionsPE
-    {
-        return $this->main;
     }
 
 }

@@ -3,6 +3,7 @@
  *   FactionsPE: PocketMine-MP Plugin
  *   Copyright (C) 2020 BlockHorizons
  */
+
 namespace fpe\command;
 
 use dominate\Command;
@@ -14,7 +15,6 @@ use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Pager;
 use fpe\utils\Text;
-use localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 

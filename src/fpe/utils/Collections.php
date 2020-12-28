@@ -17,15 +17,15 @@ class Collections
 {
 
     // ASCII Map
-    CONST MAP_WIDTH = 48;
-    CONST MAP_HEIGHT = 8;
-    CONST MAP_HEIGHT_FULL = 17;
-    CONST MAP_KEY_CHARS = "\\/#?ç¬£$%=&^ABCDEFGHJKLMNOPQRSTUVWXYZÄÖÜÆØÅ1234567890abcdeghjmnopqrsuvwxyÿzäöüæøåâêîûô";
-    CONST MAP_KEY_WILDERNESS = TextFormat::GRAY . "-";
-    CONST MAP_KEY_SEPARATOR = TextFormat::AQUA . "+";
-    CONST MAP_KEY_OVERFLOW = TextFormat::WHITE . "-" . TextFormat::WHITE; # ::MAGIC?
-    CONST MAP_OVERFLOW_MESSAGE = self::MAP_KEY_OVERFLOW . ": Too Many Factions (>" . 107 . ") on this Map.";
-    CONST MAP_KEY_HOME = "H";
+    const MAP_WIDTH = 48;
+    const MAP_HEIGHT = 8;
+    const MAP_HEIGHT_FULL = 17;
+    const MAP_KEY_CHARS = "\\/#?ç¬£$%=&^ABCDEFGHJKLMNOPQRSTUVWXYZÄÖÜÆØÅ1234567890abcdeghjmnopqrsuvwxyÿzäöüæøåâêîûô";
+    const MAP_KEY_WILDERNESS = TextFormat::GRAY . "-";
+    const MAP_KEY_SEPARATOR = TextFormat::AQUA . "+";
+    const MAP_KEY_OVERFLOW = TextFormat::WHITE . "-" . TextFormat::WHITE; # ::MAGIC?
+    const MAP_OVERFLOW_MESSAGE = self::MAP_KEY_OVERFLOW . ": Too Many Factions (>" . 107 . ") on this Map.";
+    const MAP_KEY_HOME = "H";
 
     public static function getMap(Player $observer, int $width, int $height, int $inDegrees)
     {

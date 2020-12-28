@@ -16,9 +16,11 @@ use fpe\command\parameter\MemberParameter;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
-class PowerSet extends Command {
+class PowerSet extends Command
+{
 
-    public function setup() {
+    public function setup()
+    {
         $fp = new FactionParameter("target");
         $mp = new MemberParameter("member|faction");
         $this->addParameter($mp->setNext($fp));

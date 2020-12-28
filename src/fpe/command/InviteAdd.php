@@ -29,9 +29,9 @@ class InviteAdd extends Command
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
     }
 
-    public function perform(CommandSender $sender, $label, array $args) : bool
+    public function perform(CommandSender $sender, $label, array $args): bool
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         $member = $this->getArgument(0);
         $msender = Members::get($sender);
         $faction = $msender->getFaction();

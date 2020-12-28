@@ -29,18 +29,20 @@ class Member extends OfflineMember
      * @var bool
      */
     protected $fchat = false;
-
-    /** @var Faction|null $autoClaimFaction */
-    private $autoClaimFaction;
-
-    /** @var bool $hud_visible */
-    private $hud_visible = true;
-
     /** @var string */
     protected $factionHereId;
-
     /** @var boolean */
     protected $seeChunk = false;
+    /**
+     * Enabled players the ability to fly within faction claim
+     *
+     * @var bool
+     */
+    protected $fly = false;
+    /** @var Faction|null $autoClaimFaction */
+    private $autoClaimFaction;
+    /** @var bool $hud_visible */
+    private $hud_visible = true;
 
     public function __construct(Player $player)
     {
@@ -103,6 +105,12 @@ class Member extends OfflineMember
         return true;
     }
 
+    /*
+     * ----------------------------------------------------------
+     * F-CHAT
+     * ----------------------------------------------------------
+     */
+
     public function setMapAutoUpdating(bool $mapAutoUpdating)
     {
         if ($this->mapAutoUpdating === $mapAutoUpdating) $target = null;
@@ -111,12 +119,6 @@ class Member extends OfflineMember
         // Apply
         $this->mapAutoUpdating = $mapAutoUpdating;
     }
-
-    /*
-     * ----------------------------------------------------------
-     * F-CHAT
-     * ----------------------------------------------------------
-     */
 
     public function isFactionChatOn(): bool
     {
@@ -128,16 +130,16 @@ class Member extends OfflineMember
         $this->fchat = !$this->fchat;
     }
 
-    public function setFactionChat(bool $value)
-    {
-        $this->fchat = $value;
-    }
-
     /*
      * ----------------------------------------------------------
      * SHORTCUTS
      * ----------------------------------------------------------
      */
+
+    public function setFactionChat(bool $value)
+    {
+        $this->fchat = $value;
+    }
 
     public function heal(int $hearts)
     {
@@ -155,7 +157,8 @@ class Member extends OfflineMember
         return $this->getRelationToPlot() === Relation::ENEMY;
     }
 
-    public function getRelationToPlot(): string {
+    public function getRelationToPlot(): string
+    {
         return Plots::getFactionAt($this->player)->getRelationTo($this);
     }
 
@@ -167,25 +170,20 @@ class Member extends OfflineMember
         return $this->player->getPosition();
     }
 
-    public function isAlive(): bool
-    {
-        return $this->getPlayer()->isAlive();
-    }
-
     /*
      * ----------------------------------------------------------
      * SEECHUNK
      * ----------------------------------------------------------
      */
 
+    public function isAlive(): bool
+    {
+        return $this->getPlayer()->isAlive();
+    }
+
     public function isSeeingChunk(): bool
     {
         return $this->seeChunk;
-    }
-
-    public function setSeeChunk(bool $value): void
-    {
-        $this->seeChunk = $value;
     }
 
     /*
@@ -194,37 +192,38 @@ class Member extends OfflineMember
      * ----------------------------------------------------------
      */
 
+    public function setSeeChunk(bool $value): void
+    {
+        $this->seeChunk = $value;
+    }
 
-    /**
-     * Enabled players the ability to fly within faction claim
-     *
-     * @var bool
-     */
-    protected $fly = false;
+    public function toggleFlying(): void
+    {
+        $this->fly = !$this->fly;
+        $this->updateFlying();
+    }
 
-    public function updateFlying() : void {
-        if($this->fly) {
+    public function updateFlying(): void
+    {
+        if ($this->fly) {
             $this->player->setAllowFlight(true);
             $this->player->setFlying(true);
         } else {
-            if(!$this->overriding) {
+            if (!$this->overriding) {
                 $this->player->setFlying(false);
                 $this->player->setAllowFlight(false);
             }
         }
     }
 
-    public function toggleFlying() : void {
-        $this->fly = !$this->fly;
-        $this->updateFlying();
-    }
-
-    public function setFlying(bool $value) : void {
+    public function setFlying(bool $value): void
+    {
         $this->fly = $value;
         $this->updateFlying();
     }
 
-    public function isFlying() : bool {
+    public function isFlying(): bool
+    {
         return $this->fly === true;
     }
 

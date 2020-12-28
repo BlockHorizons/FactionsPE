@@ -28,7 +28,7 @@ class Map extends Command
 
     public function perform(CommandSender $sender, $label, array $args)
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         if (isset($args[0])) {
             $val = $args[0];
             $fsender = Members::get($sender);

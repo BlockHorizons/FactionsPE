@@ -3,6 +3,7 @@
  *   FactionsPE: PocketMine-MP Plugin
  *   Copyright (C) 2020 BlockHorizons
  */
+
 namespace fpe\entity;
 
 use fpe\manager\Factions;
@@ -132,7 +133,7 @@ class FConsole implements IMember, RelationParticipator
         throw new \LogicException("invalid call on console object");
     }
 
-    public function addPower(int $power) 
+    public function addPower(int $power)
     {
         throw new \LogicException("invalid call on console object");
     }

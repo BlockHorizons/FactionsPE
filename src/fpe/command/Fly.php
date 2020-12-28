@@ -32,7 +32,8 @@ use pocketmine\command\CommandSender;
 class Fly extends Command
 {
 
-    public function setup() {
+    public function setup()
+    {
         $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
         $this->addRequirement(new FactionRequirement(FactionRequirement::IN_FACTION));
     }
@@ -44,15 +45,15 @@ class Fly extends Command
 
         /** @var \pocketmine\Player $sender */
         $factionHere = Plots::getFactionAt($sender);
-        if($factionHere->isNone() || $faction !== $factionHere && !$msender->isOverriding()) {
+        if ($factionHere->isNone() || $faction !== $factionHere && !$msender->isOverriding()) {
             return ["cant-fly-here", [
                 "faction" => $factionHere->getName()
             ]];
         }
 
-        if(!Permissions::getById(Permission::FLY)->has($msender)) {
+        if (!Permissions::getById(Permission::FLY)->has($msender)) {
             return ["no-perm-to-fly", [
-               "faction" => $faction->getName()
+                "faction" => $faction->getName()
             ]];
         }
 

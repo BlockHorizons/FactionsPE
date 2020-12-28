@@ -14,7 +14,8 @@ use dominate\Command;
 class PowerAdd extends Command
 {
 
-    public function setup() {
+    public function setup()
+    {
 
     }
 

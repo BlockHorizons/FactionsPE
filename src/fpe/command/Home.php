@@ -36,7 +36,7 @@ class Home extends Command
 
     public function perform(CommandSender $sender, $label, array $args): bool
     {
-    	if(!$sender instanceof Player) return false;
+        if (!$sender instanceof Player) return false;
         $member = Members::get($sender);
         if (!Gameplay::get("home.teleport-command-enabled", true)) {
             $sender->sendMessage(Localizer::translatable("home-teleport-command-disabled"));
@@ -79,7 +79,7 @@ class Home extends Command
             )
         ) {
             foreach (Members::getAllOnline() as $otherPlayer) {
-            	if(!$otherPlayer instanceof RelationParticipator) continue;
+                if (!$otherPlayer instanceof RelationParticipator) continue;
                 if ($member->getRelationTo($otherPlayer) !== Relation::ENEMY) continue;
 
                 if ($sender->distance($otherPlayer->getPlayer()) < $max) {

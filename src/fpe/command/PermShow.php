@@ -14,7 +14,6 @@ use fpe\manager\Pemrissions;
 use fpe\permission\Permission;
 use fpe\utils\Pager;
 use fpe\utils\Text;
-use localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class PermShow extends Command

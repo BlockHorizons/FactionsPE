@@ -11,10 +11,10 @@ use pocketmine\command\CommandSender;
 class HudSwitch extends Command
 {
 
-	public function setup() 
-	{
-		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
-	}
+    public function setup()
+    {
+        $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
+    }
 
     public function perform(CommandSender $sender, $label, array $args)
     {

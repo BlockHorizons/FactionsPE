@@ -3,6 +3,7 @@
  *   FactionsPE: PocketMine-MP Plugin
  *   Copyright (C) 2020 BlockHorizons
  */
+
 namespace fpe\utils;
 
 final class Gameplay

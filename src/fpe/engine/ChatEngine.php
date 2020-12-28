@@ -7,7 +7,6 @@
 namespace fpe\engine;
 
 use _64FF00\PureChat\PureChat;
-use fpe\event\member\MembershipChangeEvent;
 use fpe\manager\Members;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
@@ -99,19 +98,19 @@ class ChatEngine extends Engine
     }
 
     /**
-     * @param PureChat $pc 
+     * @return PureChat|null
      */
-    public function setPureChat($pc) 
+    public function getPureChat()
     {
-        $this->pureChat = $pc;
+        return $this->pureChat;
     }
 
     /**
-     * @return PureChat|null
+     * @param PureChat $pc
      */
-    public function getPureChat() 
+    public function setPureChat($pc)
     {
-        return $this->pureChat;
+        $this->pureChat = $pc;
     }
 
     // /**

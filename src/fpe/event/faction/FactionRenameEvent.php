@@ -5,7 +5,8 @@ namespace fpe\event\faction;
 use fpe\entity\Faction;
 use pocketmine\event\Cancellable;
 
-class FactionRenameEvent extends FactionEvent implements Cancellable {
+class FactionRenameEvent extends FactionEvent implements Cancellable
+{
 
     public static $handlerList = null;
     public static $eventPool = [];
@@ -21,15 +22,18 @@ class FactionRenameEvent extends FactionEvent implements Cancellable {
         $this->oldName = $faction->getName();
     }
 
-    public function getNewName(): string {
+    public function getNewName(): string
+    {
         return $this->name;
     }
 
-    public function getOldName(): string {
+    public function getOldName(): string
+    {
         return $this->oldName;
     }
 
-    public function setNewName(string $name) {
+    public function setNewName(string $name)
+    {
         // Should be validated?
         $this->name = $name;
     }

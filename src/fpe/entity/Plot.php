@@ -8,9 +8,9 @@ namespace fpe\entity;
 
 use fpe\FactionsPE;
 use fpe\manager\Plots;
+use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\level\format\Chunk;
 use pocketmine\math\Vector3;
 
 class Plot extends Position
@@ -114,9 +114,9 @@ class Plot extends Position
      * Returns chunk that plot sits on or null if invalid plot or level is not loaded
      * @return Chunk|null
      */
-    public function getChunk(): ?Chunk 
+    public function getChunk(): ?Chunk
     {
-        if($this->level) {
+        if ($this->level) {
             return $this->level->getChunk($this->x, $this->z);
         }
         return null;

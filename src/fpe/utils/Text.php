@@ -31,12 +31,13 @@ final class Text
         TextFormat::WHITE => [255, 255, 255]
     ];
 
-    public static function getRGB(string $colorCode): array {
-        return self::$rgbValues[$colorCode];
-    }
-
     private function __construct()
     {
+    }
+
+    public static function getRGB(string $colorCode): array
+    {
+        return self::$rgbValues[$colorCode];
     }
 
     public static function getRolePrefix($role): string
@@ -474,24 +475,25 @@ final class Text
 
     }
 
-    public static function time_elapsed(int $secs, bool $colored = true): string {
+    public static function time_elapsed(int $secs, bool $colored = true): string
+    {
         $bit = array(
-            TextFormat::AQUA . ' year'      => $secs / 31556926 % 12,
-            TextFormat::AQUA . ' week'      => $secs / 604800 % 52,
-            TextFormat::AQUA . ' day'       => $secs / 86400 % 7,
-            TextFormat::AQUA . ' hour'      => $secs / 3600 % 24,
-            TextFormat::AQUA . ' minute'    => $secs / 60 % 60,
-            TextFormat::AQUA . ' second'    => $secs % 60
-            );
-            
-        foreach($bit as $k => $v){
-            if($v > 1)$ret[] = TextFormat::LIGHT_PURPLE . $v . $k . 's';
-            if($v == 1)$ret[] = TextFormat::LIGHT_PURPLE . $v . $k;
+            TextFormat::AQUA . ' year' => $secs / 31556926 % 12,
+            TextFormat::AQUA . ' week' => $secs / 604800 % 52,
+            TextFormat::AQUA . ' day' => $secs / 86400 % 7,
+            TextFormat::AQUA . ' hour' => $secs / 3600 % 24,
+            TextFormat::AQUA . ' minute' => $secs / 60 % 60,
+            TextFormat::AQUA . ' second' => $secs % 60
+        );
+
+        foreach ($bit as $k => $v) {
+            if ($v > 1) $ret[] = TextFormat::LIGHT_PURPLE . $v . $k . 's';
+            if ($v == 1) $ret[] = TextFormat::LIGHT_PURPLE . $v . $k;
         }
         array_splice($ret, count($ret) - 1, 0, TextFormat::YELLOW . 'and');
-        
+
         $ret = join(' ', $ret);
-        if(!$colored) $ret = TextFormat::clean($ret);
+        if (!$colored) $ret = TextFormat::clean($ret);
         return $ret;
     }
 

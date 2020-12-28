@@ -24,22 +24,23 @@ class CombatEngine extends Engine
      * @priority LOWEST
      * @param PlayerDeathEvent
      */
-    public function onPlayerDeath(PlayerDeathEvent $event) {
-        if($event->getPlayer()->getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+    public function onPlayerDeath(PlayerDeathEvent $event)
+    {
+        if ($event->getPlayer()->getLastDamageCause() instanceof EntityDamageByEntityEvent) {
             $attacker = $event->getPlayer()->getLastDamageCause()->getDamager();
-            if($attacker instanceof Player) {
+            if ($attacker instanceof Player) {
                 $fplayer = Members::get($event->getPlayer());
                 $fattacker = Members::get($attacker);
 
                 // Inform friendly fire
-                if($ff = (Relation::sameFaction($fattacker, $fplayer) || Relation::isAlly($fattacker, $fplayer))) {
+                if ($ff = (Relation::sameFaction($fattacker, $fplayer) || Relation::isAlly($fattacker, $fplayer))) {
                     $ffMessage = Localizer::translatable('friendly-fire', [
                         $fattacker->getDisplayName(), $fplayer->getDisplayName()
                     ]);
-                    switch(strtolower(Gameplay::get('broadcast-friendly-fire', 'faction'))) {
+                    switch (strtolower(Gameplay::get('broadcast-friendly-fire', 'faction'))) {
                         case 'faction':
                             $fplayer->getFaction()->sendMessage($ffMessage);
-                            if($fplayer->getFaction() !== $fattacker->getFaction()) {
+                            if ($fplayer->getFaction() !== $fattacker->getFaction()) {
                                 $fattacker->getFaction()->sendMessage($ffMessage);
                             }
                             break;
@@ -53,17 +54,17 @@ class CombatEngine extends Engine
                 }
 
                 // Has attacker earned the power points if he killed ally...
-                if($ff && !Gameplay::get('allow-ally-kill-bonus', false)) {
+                if ($ff && !Gameplay::get('allow-ally-kill-bonus', false)) {
                     $fattacker->sendMessage(Localizer::translatable('ally-kill-no-bonus'));
                     return;
                 }
-                
+
                 // Is powergain enabled in this world?
                 if (!in_array($attacker->getLevel()->getFolderName(), Gameplay::get("world-power-gain-enabled", []), true)) {
                     $fattacker->sendMessage(Localizer::translatable("no-powergain-due-to-world"));
                     return;
                 }
-                
+
                 // Calculate power gain
                 $bonus = Gameplay::get('power-per-kill', 10);
                 $fattacker->addPower($bonus);
@@ -72,7 +73,7 @@ class CombatEngine extends Engine
                     $bonus,
                     'rel-color' => Relation::getColorOfThatToMe($fattacker, $fplayer),
                     $fplayer->getDisplayName()
-                ]));                
+                ]));
             }
         }
     }
@@ -108,7 +109,7 @@ class CombatEngine extends Engine
         $defendFaction = $mdefender->getFaction();
         if ($mattacker == null) {
             return false;
-        }        
+        }
         $attackFaction = $mattacker->getFaction(); # ERROR
 
         if ($mattacker !== null && $mdefender->isOverriding() || $mattacker->isOverriding()) return true;
@@ -145,10 +146,10 @@ class CombatEngine extends Engine
             // Players can attack faction-less players if they are on their land
             if ($victimPosFac === $attackFaction && Gameplay::get("enable-pvp-against-factionless-in-attackers-land", true)) {
                 return true;
-            // Players are able to attach each other if they don't have factions
+                // Players are able to attach each other if they don't have factions
             } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
                 return true;
-            // Can't attack players if they are faction-less
+                // Can't attack players if they are faction-less
             } elseif (Gameplay::get("can-member-attack-factionless", true)) {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-factionless"));
                 return false;

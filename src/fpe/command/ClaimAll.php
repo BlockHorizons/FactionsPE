@@ -25,7 +25,7 @@ class ClaimAll extends ClaimX
         ]];
     }
 
-    public function getPlots(Position $position) : array
+    public function getPlots(Position $position): array
     {
 
     }

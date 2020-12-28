@@ -1,4 +1,5 @@
 <?php
+
 namespace fpe\command;
 
 use dominate\Command;

@@ -6,6 +6,7 @@
 
 namespace fpe\command;
 
+use fpe\command\requirement\FactionPermission;
 use fpe\command\requirement\FactionRequirement;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
@@ -13,7 +14,6 @@ use fpe\permission\Permission;
 use fpe\utils\Text;
 use localizer\Localizer;
 use pocketmine\command\CommandSender;
-use fpe\command\requirement\FactionPermission;
 
 class ClaimAuto extends ClaimOne
 {
@@ -21,7 +21,8 @@ class ClaimAuto extends ClaimOne
     /** @var FactionRequirement */
     protected $requirement;
 
-    public function setup() {
+    public function setup()
+    {
         $this->requirement = new FactionPermission(Permissions::getById(Permission::TERRITORY));
     }
 
@@ -42,7 +43,7 @@ class ClaimAuto extends ClaimOne
             return true;
         }
 
-        if($faction === null) {
+        if ($faction === null) {
             $member->sendMessage(Text::parse("<red>Invalid faction!"));
             return true;
         }

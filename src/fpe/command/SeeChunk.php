@@ -1,4 +1,5 @@
 <?php
+
 namespace fpe\command;
 
 use dominate\Command;
@@ -6,40 +7,43 @@ use dominate\parameter\Parameter;
 use dominate\requirement\SimpleRequirement;
 use Exception;
 use fpe\engine\SeeChunkEngine;
+use fpe\manager\Members;
 use fpe\manager\Plots;
 use fpe\utils\Text;
-use pocketmine\command\CommandSender;
-use fpe\manager\Members;
 use localizer\Localizer;
+use pocketmine\command\CommandSender;
 use pocketmine\math\Vector2;
 
-class SeeChunk extends Command {
+class SeeChunk extends Command
+{
 
-	function setup() {
-		//$this->addAliases("sc");
+    function setup()
+    {
+        //$this->addAliases("sc");
 
-		$this->addParameter(new Parameter("active", Parameter::TYPE_BOOLEAN, true));
+        $this->addParameter(new Parameter("active", Parameter::TYPE_BOOLEAN, true));
 
-		$this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
-	}
+        $this->addRequirement(new SimpleRequirement(SimpleRequirement::PLAYER));
+    }
 
-	function perform(CommandSender $sender, $label, array $args) {
-		$member = Members::get($sender);
-		$old = $member->isSeeingChunk();
-		$target = $this->getParameterAt(0)->getValue(!$old);
+    function perform(CommandSender $sender, $label, array $args)
+    {
+        $member = Members::get($sender);
+        $old = $member->isSeeingChunk();
+        $target = $this->getParameterAt(0)->getValue(!$old);
 
-		// Detect no change
-		if($old === $target) {
-			$member->sendMessage(Localizer::translatable('seeing-chunk-no-change'));
-			return true;
-		} else {
-			$member->setSeeChunk($target);
-		}
+        // Detect no change
+        if ($old === $target) {
+            $member->sendMessage(Localizer::translatable('seeing-chunk-no-change'));
+            return true;
+        } else {
+            $member->setSeeChunk($target);
+        }
 
-		/** @var SeeChunkEngine $engine */
+        /** @var SeeChunkEngine $engine */
         /** @var \pocketmine\Player $sender */
-		$engine = $this->getPlugin()->getEngine("SeeChunkEngine");
-		try {
+        $engine = $this->getPlugin()->getEngine("SeeChunkEngine");
+        try {
             if ($target) {
 
                 $engine->setChunk($member, new Vector2(
@@ -51,12 +55,12 @@ class SeeChunk extends Command {
                 $engine->removeChunk($member);
             }
         } catch (Exception $e) {
-		    $member->sendMessage(Text::parse("<red>Internal error!"));
-		    return true;
+            $member->sendMessage(Text::parse("<red>Internal error!"));
+            return true;
         }
 
-		$member->sendMessage(Localizer::translatable('seeing-chunk-' . ($target ? 'activated' : 'deactivated')));
-		return true;
-	}
+        $member->sendMessage(Localizer::translatable('seeing-chunk-' . ($target ? 'activated' : 'deactivated')));
+        return true;
+    }
 
 }
