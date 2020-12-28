@@ -7,6 +7,8 @@ This plugin has not yet been approved on Poggit!
 
 #### Running from Phar file
 Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
+
+Latest builds are available [here](https://poggit.pmmp.io/ci/BlockHorizons/FactionsPE/FactionsPE).
 ### Running from source
 Clone this repository in your plugins folder, and make sure you have DevTools installed.
 
