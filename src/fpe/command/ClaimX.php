@@ -39,7 +39,7 @@ abstract class ClaimX extends Command
         return $this;
     }
 
-    public function perform(CommandSender $sender, $label, array $args): bool
+    public function perform(CommandSender $sender, $label, array $args)
     {
         if (!$sender instanceof Player) return false;
         $this->sender = $sender;

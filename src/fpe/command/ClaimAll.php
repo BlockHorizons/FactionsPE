@@ -6,13 +6,14 @@
 
 namespace fpe\command;
 
+use fpe\manager\Plots;
 use pocketmine\command\CommandSender;
 use pocketmine\level\Position;
 
 class ClaimAll extends ClaimX
 {
 
-    public function perform(CommandSender $sender, string $label, array $args) : bool
+    public function perform(CommandSender $sender, string $label, array $args)
     {
         $this->sender = $sender;
 
