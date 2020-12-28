@@ -1,5 +1,10 @@
 
 ## Features
+
+### Role system
+This enables to possibility to demote and promote members of the faction. This is closely related to relationships and
+permissions. See: `/faction promote` `/faction demote` `/faction recruit` `/faction leader` `/faction officer`
+
 ### Permissions
 * Build: edit terrain
 * Pain Build: edit, take damage

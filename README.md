@@ -16,10 +16,6 @@ Clone this repository in your plugins folder, and make sure you have DevTools in
 There is no official support for FactionsPE. However I've made [fork](https://github.com/Kris-Driv/PureChat) which does support this plugin. 
 **NOTE**: ``force-chat-formatter`` must be set to false in order to allow PureChat format your chat instead.
 
-###### Role system
-This enables to possibility to demote and promote members of the faction. This is closely related to relationships and
-permissions. See: `/faction promote` `/faction demote` `/faction recruit` `/faction leader` `/faction officer`
-
 ### For developers
 API methods and examples can be found [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/API)
 

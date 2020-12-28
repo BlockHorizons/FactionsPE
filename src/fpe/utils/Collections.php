@@ -79,7 +79,7 @@ class Collections
                     } elseif (!$contains && $overflown) {
                         $row .= self::MAP_KEY_OVERFLOW;
                     } else {
-                        if (!$contains) $fList[$chars{$chrIdx++}] = $hereFaction;
+                        if (!$contains) $fList[$chars[$chrIdx++]] = $hereFaction;
                         $fchar = array_search($hereFaction, $fList);
                         $row .= $hereFaction->getColorTo($m) . $fchar;
                     }
