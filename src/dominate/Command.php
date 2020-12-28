@@ -81,7 +81,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 	// Last execution parameters
 
-	/** @var CommandSender */
+	/** @var CommandSender|null */
 	protected $sender;
 
 	/** @var string[] */
@@ -395,7 +395,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 	public function sendUsage(CommandSender $sender = null) {
 		$sender = $sender ?? $this->sender;
-		if (!$sender) {
+		if (!($sender instanceof CommandSender)) {
 			return;
 		}
 
@@ -414,13 +414,13 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
      * ----------------------------------------------------------
 	*/
 
-	/**
-	 * @param CommandSender $sender
-	 * @param $label
-	 * @param array $args
-	 * @return bool
-	 */
-	public function prepare(CommandSender $sender, $label, array $args): bool {
+    /**
+     * @param CommandSender $sender
+     * @param string $label
+     * @param array $args
+     * @return bool
+     */
+	public function prepare(CommandSender $sender, string $label, array $args): bool {
 		return true;
 	}
 
@@ -597,7 +597,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	}
 
 	/**
-	 * @return FactionsPE
+	 * @return Plugin
 	 */
 	public function getPlugin(): Plugin {
 		return $this->plugin;

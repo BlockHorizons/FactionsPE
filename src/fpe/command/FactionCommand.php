@@ -80,13 +80,13 @@ class FactionCommand extends Command {
 		$this->addParameter(new Parameter("command"));
 	}
 
-	/**
-	 * @param CommandSender $sender
-	 * @param string $label
-	 * @param string[] $args
-	 * @return bool
-	 */
-	public function prepare(CommandSender $sender, $label, array $args): bool {
+    /**
+     * @param CommandSender $sender
+     * @param string $label
+     * @param string[] $args
+     * @return bool
+     */
+	public function prepare(CommandSender $sender, string $label, array $args): bool {
 		if (!empty($args)) {
 			if (!$this->getChild($args[0])) {
 				$this->sendUsage($sender);
