@@ -33,7 +33,7 @@ class ChatEngine extends Engine
 
     public function setup()
     {
-        $this->format = (bool)$this->getMain()->getConfig()->get("chat-formatter", true);
+        $this->format = (bool)$this->getMain()->getConfig()->get("force-chat-formatter", false);
     }
 
     /**

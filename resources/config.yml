@@ -40,8 +40,8 @@ data-provider:
     database: factions-pe
 
 # Chat
-# Set this to false if you want to use PureChat or anything else
-chat-formatter: true
+# Set this to true if you want to use default chat formatter
+force-chat-formatter: false
 
 # Should inactive factions be disbanded?
 purge-inactive-factions: true
