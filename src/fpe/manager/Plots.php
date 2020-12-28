@@ -21,7 +21,7 @@ class Plots
      * 2 ^ CHUNK_SIZE
      * @var int
      */
-    const CHUNK_SIZE = 5;
+    public static int $CHUNK_SIZE = 4;
 
     /** @var string[] hash => faction */
     private static $plots = [];

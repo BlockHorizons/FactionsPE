@@ -20,9 +20,9 @@ namespace dominate;
 
 use dominate\parameter\Parameter;
 use dominate\requirement\Requirement;
-use fpe\FactionsPE;
+use InvalidArgumentException;
 use localizer\Localizer;
-use Message;
+use LogicException;
 use pocketmine\command\Command as PocketMineCommand;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
@@ -31,72 +31,72 @@ use pocketmine\plugin\Plugin;
 class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 	/**
-	 * @var Command
+	 * @var Command|null
 	 */
-	protected $parent;
+	protected ?Command $parent = null;
 
 	/**
 	 * @var Requirement[]
 	 */
-	protected $requirements = [];
+	protected array $requirements = [];
 
 	/**
 	 * @var Command[]
 	 */
-	protected $childs = [];
+	protected array $childs = [];
 
 	/**
 	 * @var Parameter[]
 	 */
-	protected $parameters = [];
+	protected array $parameters = [];
 
 	/**
 	 * Values from each parameter
 	 * @var mixed[]
 	 */
-	protected $values = [];
+	protected array $values = [];
 
 	/**
-	 * @var Command
+	 * @var Command|null
 	 */
-	protected $endPoint = null;
+	protected ?Command $endPoint = null;
 
 	/**
 	 * Send error messagem if arguments > parameter count
 	 * @var bool
 	 */
-	protected $overflowSensitive = true;
+	protected bool $overflowSensitive = true;
 
 	/**
 	 * Swap arguments if given in wrong order
 	 * @var bool
 	 */
-	protected $swap = true;
+	protected bool $swap = true;
 
 	/**
 	 * Give sender suggestions if more than command met token
 	 * @var bool
 	 */
-	protected $smart = true;
+	protected bool $smart = true;
 
 	// Last execution parameters
 
 	/** @var CommandSender|null */
-	protected $sender;
+	protected ?CommandSender $sender = null;
 
 	/** @var string[] */
-	protected $args = [];
+	protected array $args = [];
 
 	/** @var string */
-	protected $label;
+	protected string $label;
 
 	/** @var Plugin */
-	protected $plugin;
+	protected Plugin $plugin;
 
     /**
      * @var string
      */
-    private $usage;
+    private string $usage;
 
     /**
 	 * @param Plugin|Command $owner
@@ -107,7 +107,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	 * @param Parameter[] $parameters = []
 	 * @param Command[] $childs = []
 	 */
-	public function __construct($owner, string $name, string $description = "", string $permission, array $aliases = [], array $parameters = [], array $childs = []) {
+	public function __construct($owner, string $name, string $description, string $permission, array $aliases = [], array $parameters = [], array $childs = []) {
 		parent::__construct($name, $description, "", $aliases);
 		$this->setPermission($permission);
 		$this->plugin = $owner instanceof Command ? $owner->getPlugin() : $owner;
@@ -196,27 +196,28 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 	/**
 	 * Get single command object by name
 	 */
-	public function getChild(string $name) {
+	public function getChild(string $name): ?Command
+    {
 		return $this->getChildsByToken($name)[0] ?? null;
 	}
 
-	/**
-	 * Registers new subcommand or replaces existing one
-	 *
-	 * @param Command $command
-	 * @param int $index if null then the child will be added at the end of array
-	 */
+    /**
+     * Registers new subcommand or replaces existing one
+     *
+     * @param Command $command
+     * @param int|null $index if null then the child will be added at the end of array
+     */
 	public function addChild(Command $command, int $index = null) {
 		if ($this->contains($command)) {
-			throw new \InvalidArgumentException("command '{$command->getName()}' is already a child of '{$this->getName()}'");
+			throw new InvalidArgumentException("command '{$command->getName()}' is already a child of '{$this->getName()}'");
 		}
 
 		if ($this->getParent() === $command) {
-			throw new \LogicException("parent can not be child");
+			throw new LogicException("parent can not be child");
 		}
 
 		if ($command->contains($this)) {
-			throw new \LogicException("parent '{$command->getName()}' can't be child of child");
+			throw new LogicException("parent '{$command->getName()}' can't be child of child");
 		}
 
 		$this->childs[($index ?? count($this->childs))] = $command;
@@ -224,16 +225,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 		$this->chainUpdate();
 	}
 
-	/**
-	 * @var Command[]
-	 */
-	public function addChilds(array $childs) {
-		foreach ($childs as $child) {
-			$this->addChild($child);
-		}
-	}
-
-	/**
+    /**
 	 * @var Command[]
 	 */
 	public function setChilds(array $childs) {
@@ -274,7 +266,7 @@ class Command extends PocketMineCommand implements PluginIdentifiableCommand {
 
 	public function setParent(Command $command) {
 		if ($this === $command) {
-			throw new \LogicException("command can not be parent of self");
+			throw new LogicException("command can not be parent of self");
 		}
 
 		// TODO: other logic checks

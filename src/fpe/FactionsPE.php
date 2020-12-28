@@ -135,7 +135,9 @@ class FactionsPE extends PluginBase {
 		$this->getLogger()->debug(Localizer::trans("factions-loaded", [count(Factions::getAll())]));
 
 		# Load Plots
+        Plots::$CHUNK_SIZE = (int) min(max($this->getConfig()->get('claim-size', 4), 1), 6);
 		$this->getDataProvider()->loadPlots();
+		$this->getLogger()->debug(Localizer::trans("plots-size", ["size" => 1 << Plots::$CHUNK_SIZE]));
 
 		# attach Console object
 		Members::attach(new FConsole());
@@ -270,9 +272,9 @@ class FactionsPE extends PluginBase {
 			}
 		}
 		// If chat-formatter is set to false, then we assume that user is using PureChat
-		if (!$this->getConfig()->get("chat-formatter")) {
+		if (!$this->getConfig()->get("force-chat-formatter")) {
 			$pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
-			if ($pc !== null && $pc->isEnabled()) {
+			if ($pc !== null) {
 				self::$engines["ChatEngine"]->setPureChat($pc);
 				$this->getLogger()->debug(Localizer::trans("chat-formatter-set", [
 					"plugin" => "PureChat",

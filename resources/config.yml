@@ -50,6 +50,9 @@ purge-inactive-factions: true
 # default: week (604800)
 purge-after: 604800
 
+# Claim size (1 = 128; 2 = 64; 3 = 32; 4 = 16 (default); 5 => 8; 6 => 4);
+claim-size: 4
+
 # Gameplay settings
 gameplay:
   # Enable the ability for players to fly in their claimed lands (/f fly)

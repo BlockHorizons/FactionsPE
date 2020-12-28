@@ -115,10 +115,10 @@ class SeeChunkEngine extends Engine
     {
         if (16 % $step) throw new InvalidArgumentException("invalid step(=$step) for chunk {$origin->getX()}:{$origin->getY()} remainder: " . 16 % $step);
         $particles = [];
-        $minX = $origin->getX() << Plots::CHUNK_SIZE;
-        $minZ = $origin->getY() << Plots::CHUNK_SIZE;
-        $endX = $minX + (1 << Plots::CHUNK_SIZE);
-        $endZ = $minZ + (1 << Plots::CHUNK_SIZE);
+        $minX = $origin->getX() << Plots::$CHUNK_SIZE;
+        $minZ = $origin->getY() << Plots::$CHUNK_SIZE;
+        $endX = $minX + (1 << Plots::$CHUNK_SIZE);
+        $endZ = $minZ + (1 << Plots::$CHUNK_SIZE);
         for ($x = $minX; $x <= $endX; $x += $step) {
             # Side 1
             $particles[] = $this->makeParticleFor($x, $y, $minZ, $particle, $player);

@@ -41,3 +41,5 @@ chat-formatter-set: "Chat formatter: <gold>:plugin<reset>"
 built-in: 'built-in'
 
 form-support-enabled: "Form support: :0"
+
+plots-size: "Custom plot size: <gold>:size<white>x<gold>:size"

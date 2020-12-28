@@ -27,8 +27,8 @@ class Plot extends Position
         parent::__construct($x);
 
         if ($x instanceof Position) {
-            $this->x = $x->x >> Plots::CHUNK_SIZE;
-            $this->z = $x->z >> Plots::CHUNK_SIZE;
+            $this->x = $x->x >> Plots::$CHUNK_SIZE;
+            $this->z = $x->z >> Plots::$CHUNK_SIZE;
             $this->level = $x->level;
         } else {
             $this->x = $x;
@@ -75,7 +75,7 @@ class Plot extends Position
 
     public function getPosition(): Position
     {
-        return new Position($this->x << Plots::CHUNK_SIZE, 0, $this->z << Plots::CHUNK_SIZE, $this->level);
+        return new Position($this->x << Plots::$CHUNK_SIZE, 0, $this->z << Plots::$CHUNK_SIZE, $this->level);
     }
 
     public function hash(): string

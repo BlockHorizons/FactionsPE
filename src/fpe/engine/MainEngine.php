@@ -116,8 +116,8 @@ class MainEngine extends Engine
     public function onMove(PlayerMoveEvent $event)
     {
         $member = Members::get($event->getPlayer());
-        $cz = $member->getPlayer()->getZ() >> Plots::CHUNK_SIZE;
-        $cx = $member->getPlayer()->getX() >> Plots::CHUNK_SIZE;
+        $cz = $member->getPlayer()->getZ() >> Plots::$CHUNK_SIZE;
+        $cx = $member->getPlayer()->getX() >> Plots::$CHUNK_SIZE;
         if (
             $cx !== $member->chunkPos[0] ||
             $cz !== $member->chunkPos[1]
@@ -520,13 +520,13 @@ class MainEngine extends Engine
             return;
         }
 
-        $fromCX = $fromBlock->getX() >> Plots::CHUNK_SIZE;
-        $fromCZ = $fromBlock->getZ() >> Plots::CHUNK_SIZE;
+        $fromCX = $fromBlock->getX() >> Plots::$CHUNK_SIZE;
+        $fromCZ = $fromBlock->getZ() >> Plots::$CHUNK_SIZE;
         $toBlock = $event->getNewState();
         $toBlock->setComponents($fromBlock->x, $fromBlock->y, $fromBlock->z);
         $toBlock->level = $fromBlock->level;
-        $toCX = $toBlock->getX() >> Plots::CHUNK_SIZE;
-        $toCZ = $toBlock->getY() >> Plots::CHUNK_SIZE;
+        $toCX = $toBlock->getX() >> Plots::$CHUNK_SIZE;
+        $toCZ = $toBlock->getY() >> Plots::$CHUNK_SIZE;
         // If a liquid (or dragon egg) moves from one chunk to another ...
         if ($toCX == $fromCX && $toCZ == $fromCZ) {
             return;

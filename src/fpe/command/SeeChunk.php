@@ -47,8 +47,8 @@ class SeeChunk extends Command
             if ($target) {
 
                 $engine->setChunk($member, new Vector2(
-                    $sender->getX() >> Plots::CHUNK_SIZE,
-                    $sender->getZ() >> Plots::CHUNK_SIZE
+                    $sender->getX() >> Plots::$CHUNK_SIZE,
+                    $sender->getZ() >> Plots::$CHUNK_SIZE
                 ), $sender->getLevel());
 
             } else {

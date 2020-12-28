@@ -21,7 +21,7 @@ class Version extends Command
             "version" => $this->getPlugin()->getDescription()->getVersion(),
         ]));
         $sender->sendMessage(Localizer::translatable("author", [
-            "author" => "Chris-Prime (@PrimusLV (Kristaps Drivnieks)), Sandertv {@Sandertv}"
+            "author" => "Kris-Driv, Sandertv (@Sandertv)"
         ]));
         $sender->sendMessage(Localizer::translatable("organization", [
             "organization" => "BlockHorizons (https://github.com/BlockHorizons/FactionsPE)"

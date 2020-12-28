@@ -67,7 +67,7 @@ class Collections
                 $contains = in_array($hereFaction, $fList, true);
 
                 if ($home instanceof Position && $m->getFaction() === $hereFaction || $m->isOverriding()) {
-                    if ($home->x >> Plots::CHUNK_SIZE === $herePs->x && $home->z >> Plots::CHUNK_SIZE === $herePs->z) {
+                    if ($home->x >> Plots::$CHUNK_SIZE === $herePs->x && $home->z >> Plots::$CHUNK_SIZE === $herePs->z) {
                         $row .= $hereFaction->getColorTo($m) . self::MAP_KEY_HOME;
                     } else {
                         goto draw_char;

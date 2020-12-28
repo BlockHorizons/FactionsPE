@@ -12,7 +12,7 @@ use pocketmine\level\Position;
 class ClaimAll extends ClaimX
 {
 
-    public function perform(CommandSender $sender, $label, array $args)
+    public function perform(CommandSender $sender, string $label, array $args) : bool
     {
         $this->sender = $sender;
 
