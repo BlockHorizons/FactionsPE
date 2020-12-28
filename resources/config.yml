@@ -159,7 +159,7 @@ gameplay:
   # Can players with faction attack other faction-less players ? 
   can-member-attack-factionless: true
   # Can players with no faction deal no damage to others ?
-  can-hurt-while-factionless: false
+  can-hurt-while-factionless: true
   # Can members of faction kill faction-less player if he is in their territory ?
   enable-pvp-against-factionless-in-attackers-land: true
   # Can faction-less players attack each other?

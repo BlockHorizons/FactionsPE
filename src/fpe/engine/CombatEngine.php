@@ -146,11 +146,11 @@ class CombatEngine extends Engine
             // Players can attack faction-less players if they are on their land
             if ($victimPosFac === $attackFaction && Gameplay::get("enable-pvp-against-factionless-in-attackers-land", true)) {
                 return true;
-                // Players are able to attach each other if they don't have factions
+                // Players are able to attack each other if they don't have factions
             } elseif ($attackFaction->isNone() && Gameplay::get("enable-pvp-between-factionless-players", true)) {
                 return true;
                 // Can't attack players if they are faction-less
-            } elseif (Gameplay::get("can-member-attack-factionless", true)) {
+            } elseif (!Gameplay::get("can-member-attack-factionless", true)) {
                 if ($notify) $attacker->sendMessage(Localizer::translatable("cant-hurt-factionless"));
                 return false;
             }
