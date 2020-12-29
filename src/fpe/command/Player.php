@@ -36,7 +36,7 @@ class Player extends Command
         $sender->sendMessage(Localizer::translatable("player-power", [$member->getPower(), $member->getPowerMax()]));
         $sender->sendMessage(Text::parse("<gold>Rank: <h>" . $member->getRole()));
         $sender->sendMessage(Text::parse("<gold>Faction: <h>" . ($member->hasFaction() ? $member->getFaction()->getName() : "none")));
-        $sender->sendMessage(Text::parse("<gold>Last online: <h>" . Text::ago($member->getLastPlayed())));
+        $sender->sendMessage(Text::parse("<gold>Last online: <h>" . $member->isOnline() ? "Now" : Text::ago($member->getLastPlayed())));
 
         // INFO: Power Boost
         if ($member->hasPowerBoost()) {

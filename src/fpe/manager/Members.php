@@ -154,13 +154,13 @@ class Members
     }
 
     /**
-     * @return IMember[]
+     * @return Member[]
      */
-    public static function getAllOnline(): ARRAY
+    public static function getAllOnline(): array
     {
         $ret = [];
         foreach (self::$players as $Member) {
-            if ($Member->isOnline()) $ret[] = $Member;
+            if ($Member->isOnline() && $Member instanceof Member) $ret[] = $Member;
         }
         return $ret;
     }

@@ -7,6 +7,7 @@
 namespace fpe\entity;
 
 use fpe\engine\BoardEngine;
+use fpe\manager\Members;
 use fpe\manager\Plots;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
@@ -65,9 +66,9 @@ class Member extends OfflineMember
         if (!BoardEngine::enabled()) return;
 
         if ($visible) {
-            BoardEngine::sendBoard($this->getPlayer());
+            BoardEngine::sendBoard(Members::get($this->getPlayer()));
         } else {
-            BoardEngine::removeBoard($this->getPlayer());
+            BoardEngine::removeBoard(Members::get($this->getPlayer()));
         }
     }
 

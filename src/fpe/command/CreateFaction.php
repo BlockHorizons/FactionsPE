@@ -72,7 +72,7 @@ class CreateFaction extends Command {
 
 		$faction = new Faction($fid, new FactionData([
 			"name"    => $name,
-			"creator" => $creator->getName(),
+            "members" => Factions::createMembersList($creator),
             "id"      => $fid
 		]));
 		Factions::attach($faction);

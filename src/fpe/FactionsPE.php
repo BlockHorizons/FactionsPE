@@ -334,7 +334,7 @@ class FactionsPE extends PluginBase {
 			}
 		}
 
-		if(Gameplay::get('scoreboard.enabled', true)) {
+		if($this->getConfig()->getNested("scoreboard.enabled", false)) {
 		    /** @var ScoreboardAPI $api */
 		    $api = $this->getServer()->getPluginManager()->getPlugin("ScoreboardAPI");
 		    if($api && $api->isEnabled()) {
