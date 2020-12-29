@@ -8,8 +8,8 @@ namespace fpe\command;
 
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
-use fpe\manager\Members;
 use fpe\localizer\Localizer;
+use fpe\manager\Members;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

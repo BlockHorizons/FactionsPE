@@ -6,6 +6,7 @@
 
 namespace fpe\entity;
 
+use fpe\engine\BoardEngine;
 use fpe\manager\Plots;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
@@ -52,14 +53,22 @@ class Member extends OfflineMember
         $this->factionHereId = Plots::getFactionAt($player)->getId();
     }
 
+    public function toggleHUD()
+    {
+        $this->setHUDVisible(!$this->hasHUD());
+    }
+
     public function setHUDVisible(bool $visible)
     {
         $this->hud_visible = $visible;
-    }
 
-    public function toggleHUD()
-    {
-        $this->hud_visible = !$this->hasHUD();
+        if (!BoardEngine::enabled()) return;
+
+        if ($visible) {
+            BoardEngine::sendBoard($this->getPlayer());
+        } else {
+            BoardEngine::removeBoard($this->getPlayer());
+        }
     }
 
     public function hasHUD(): bool

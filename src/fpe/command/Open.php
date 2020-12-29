@@ -6,13 +6,13 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use fpe\command\requirement\FactionRequirement;
 use fpe\command\requirement\FactionRole;
+use fpe\dominate\Command;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\relation\Relation;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class Open extends Command

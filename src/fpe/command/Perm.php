@@ -6,11 +6,11 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
-use fpe\dominate\parameter\Parameter;
 use fpe\command\subcommand\childs\PermListChild;
 use fpe\command\subcommand\childs\PermSetChild;
 use fpe\command\subcommand\childs\PermShowChild;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\manager\Permissions;
 
 class Perm extends Command

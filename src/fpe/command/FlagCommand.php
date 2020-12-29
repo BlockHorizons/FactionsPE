@@ -1,19 +1,22 @@
 <?php
+
 namespace fpe\command;
 
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\manager\Permissions;
 
-class FlagCommand extends Command {
+class FlagCommand extends Command
+{
 
-	public function setup() {
-		$plugin = $this->getPlugin();
-		//$this->addChild(new FlagSet($plugin, "set", "Set flag value", Permissions::FLAG_SET));
-		$this->addChild(new FlagShow($plugin, "show", "See faction flag settings", Permissions::FLAG_SHOW));
-		$this->addChild(new FlagList($plugin, "list", "List all registered flags", Permissions::FLAG_LIST));
+    public function setup()
+    {
+        $plugin = $this->getPlugin();
+        //$this->addChild(new FlagSet($plugin, "set", "Set flag value", Permissions::FLAG_SET));
+        $this->addChild(new FlagShow($plugin, "show", "See faction flag settings", Permissions::FLAG_SHOW));
+        $this->addChild(new FlagList($plugin, "list", "List all registered flags", Permissions::FLAG_LIST));
 
-		$this->addParameter(new Parameter("set|show|list"));
-	}
+        $this->addParameter(new Parameter("set|show|list"));
+    }
 
 }

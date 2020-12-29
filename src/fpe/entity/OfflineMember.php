@@ -8,13 +8,13 @@ namespace fpe\entity;
 
 use fpe\data\MemberData;
 use fpe\FactionsPE;
+use fpe\localizer\Localizer;
 use fpe\manager\Factions;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Gameplay;
-use fpe\localizer\Localizer;
 use pocketmine\Player;
 
 class OfflineMember extends MemberData implements IMember, RelationParticipator

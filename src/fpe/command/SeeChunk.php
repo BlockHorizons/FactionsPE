@@ -2,15 +2,15 @@
 
 namespace fpe\command;
 
+use Exception;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\dominate\requirement\SimpleRequirement;
-use Exception;
 use fpe\engine\SeeChunkEngine;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Plots;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\math\Vector2;
 

@@ -9,10 +9,10 @@
 namespace fpe\command;
 
 
-use fpe\dominate\Command;
-use fpe\dominate\parameter\Parameter;
 use fpe\command\parameter\FactionParameter;
 use fpe\command\parameter\MemberParameter;
+use fpe\dominate\Command;
+use fpe\dominate\parameter\Parameter;
 use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 

@@ -2,9 +2,9 @@
 
 namespace fpe\command;
 
+use fpe\command\parameter\FactionParameter;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
-use fpe\command\parameter\FactionParameter;
 use fpe\flag\Flag;
 use fpe\manager\Flags;
 use fpe\manager\Members;

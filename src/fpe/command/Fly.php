@@ -20,9 +20,9 @@
 namespace fpe\command;
 
 
+use fpe\command\requirement\FactionRequirement;
 use fpe\dominate\Command;
 use fpe\dominate\requirement\SimpleRequirement;
-use fpe\command\requirement\FactionRequirement;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\manager\Plots;

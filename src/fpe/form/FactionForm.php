@@ -2,12 +2,12 @@
 
 namespace fpe\form;
 
-use fpe\dominate\Command;
 use fpe\command\FactionCommand;
+use fpe\dominate\Command;
 use fpe\FactionsPE;
+use fpe\localizer\Localizer;
 use fpe\utils\Text;
 use jojoe77777\FormAPI\FormAPI;
-use fpe\localizer\Localizer;
 use pocketmine\Player;
 
 class FactionForm

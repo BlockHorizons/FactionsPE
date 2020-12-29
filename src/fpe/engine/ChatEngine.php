@@ -7,10 +7,10 @@
 namespace fpe\engine;
 
 use _64FF00\PureChat\PureChat;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
 use pocketmine\event\player\PlayerChatEvent;
 
 /**

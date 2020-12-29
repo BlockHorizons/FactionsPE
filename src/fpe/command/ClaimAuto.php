@@ -8,11 +8,11 @@ namespace fpe\command;
 
 use fpe\command\requirement\FactionPermission;
 use fpe\command\requirement\FactionRequirement;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class ClaimAuto extends ClaimOne

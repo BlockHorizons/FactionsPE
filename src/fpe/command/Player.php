@@ -2,12 +2,12 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use facitons\manager\Members;
 use fpe\command\parameter\MemberParameter;
+use fpe\dominate\Command;
 use fpe\interfaces\IFPlayer;
-use fpe\utils\Text;
 use fpe\localizer\Localizer;
+use fpe\utils\Text;
 use pocketmine\command\CommandSender;
 
 class Player extends Command

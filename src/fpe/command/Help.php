@@ -8,8 +8,8 @@ namespace fpe\command;
 
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
-use fpe\utils\Pager;
 use fpe\localizer\Localizer;
+use fpe\utils\Pager;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;

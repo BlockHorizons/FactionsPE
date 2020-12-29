@@ -4,12 +4,12 @@ namespace fpe\engine;
 
 use fpe\entity\Member;
 use fpe\event\member\MemberTraceEvent;
+use fpe\localizer\Localizer;
 use fpe\manager\Plots;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
 use InvalidArgumentException;
-use fpe\localizer\Localizer;
 use LogicException;
 use pocketmine\level\Level;
 use pocketmine\level\particle\DustParticle;

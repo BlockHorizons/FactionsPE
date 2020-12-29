@@ -11,6 +11,7 @@ namespace fpe\data\provider;
 
 use fpe\data\FactionData;
 use fpe\data\MemberData;
+use fpe\entity\Plot;
 
 class SQLite3DataProvider extends DataProvider
 {
@@ -105,6 +106,11 @@ class SQLite3DataProvider extends DataProvider
     public function getName(): string
     {
         // TODO: Implement getName() method.
+    }
+
+    public function deletePlot(Plot $plot)
+    {
+        // TODO: Implement deletePlot() method.
     }
 
     protected function prepare()

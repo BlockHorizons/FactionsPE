@@ -55,6 +55,9 @@ claim-size: 4
 
 # Gameplay settings
 gameplay:
+  # If
+  scoreboard:
+    enabled: true
   # Enable the ability for players to fly in their claimed lands (/f fly)
   fly: false
   hud:

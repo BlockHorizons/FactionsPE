@@ -7,9 +7,12 @@
 namespace fpe\entity;
 
 use fpe\data\FactionData;
+use fpe\engine\BoardEngine;
 use fpe\event\member\MembershipChangeEvent;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 use fpe\manager\Factions;
 use fpe\manager\Flags;
 use fpe\manager\Members;
@@ -20,8 +23,6 @@ use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
-use fpe\localizer\Translatable;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 
@@ -46,10 +47,11 @@ class Faction extends FactionData implements RelationParticipator
     /**
      * Faction constructor
      * @param string $id
-     * @param array $data
+     * @param FactionData $data
      */
-    public function __construct(string $id, array $data)
+    public function __construct(string $id, FactionData $data)
     {
+        $data = $data->__toArray();
         parent::__construct(array_merge(["id" => $id], $data));
 
         /**
@@ -64,13 +66,17 @@ class Faction extends FactionData implements RelationParticipator
                 $this->disband(self::DISBAND_REASON_EMPTY_FACTION);
             }
         }
+
+        if (BoardEngine::enabled()) {
+            BoardEngine::createBoard($this->getId(), $this->getName());
+        }
     }
 
     /*
-             * ----------------------------------------------------------
-             * STATUS
-             * ----------------------------------------------------------
-    */
+     * ----------------------------------------------------------
+     * STATUS
+     * ----------------------------------------------------------
+     */
 
     /**
      * Returns this Faction's leader, if returned null and this faction isn't special

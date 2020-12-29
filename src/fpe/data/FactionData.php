@@ -10,9 +10,10 @@ use Exception;
 use fpe\entity\IMember;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Factions;
 use fpe\permission\Permission;
-use fpe\localizer\Localizer;
+use fpe\relation\Relation;
 use pocketmine\level\Position;
 
 class FactionData extends Data
@@ -140,6 +141,10 @@ class FactionData extends Data
         $this->flags = $source["flags"] ?? [];
         $this->relationWishes = $source["relationWishes"] ?? [];
         $this->bank = $source["bank"] ?? $this->bank;
+
+        if (!isset($this->members[Relation::LEADER]) && isset($source["creator"])) {
+            $this->members[Relation::LEADER][] = $source["creator"];
+        }
 
         foreach ($this->members as $rank => $members) {
             foreach ($members as $key => $mem) {
