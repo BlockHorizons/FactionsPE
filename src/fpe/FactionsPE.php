@@ -15,6 +15,7 @@ use fpe\data\provider\JSONDataProvider;
 use fpe\data\provider\MySQLDataProvider;
 use fpe\data\provider\SQLite3DataProvider;
 use fpe\data\provider\YAMLDataProvider;
+use fpe\engine\BoardEngine;
 use fpe\engine\ChatEngine;
 use fpe\engine\CombatEngine;
 use fpe\engine\Engine;
@@ -34,13 +35,15 @@ use fpe\task\PowerUpdateTask;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
 use fpe\localizer\Localizer;
+use jasonwynn10\ScoreboardAPI\ScoreboardAPI;
 use pocketmine\plugin\PluginBase;
 
 define("IN_DEV", file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".dev"));
 
 class FactionsPE extends PluginBase {
 
-	private static $engines = [
+    /** @var string[] */
+	private static $registeredEngines = [
 		MainEngine::class,
 		ChatEngine::class,
 		CombatEngine::class,
@@ -48,20 +51,23 @@ class FactionsPE extends PluginBase {
 		SeeChunkEngine::class,
 	];
 
+	/** @var Engine[] */
+	private static array $engines = [];
+
 	/** @var FactionsPE */
-	private static $instance;
+	private static FactionsPE $instance;
 
 	/** @var DataProvider */
-	private $dataProvider;
+	private DataProvider $dataProvider;
 
 	/** @var Economizer|Transistor|null */
 	private $economy;
 
 	/** @var FormAPI|null */
-	private $formAPI;
+	private ?FormAPI $formAPI;
 
 	/** @var FactionForm */
-	private $form;
+	private FactionForm $form;
 
 	/**
 	 * Get current instance
@@ -234,7 +240,8 @@ class FactionsPE extends PluginBase {
 		return true;
 	}
 
-	public function getDataProvider() {
+	public function getDataProvider(): DataProvider
+    {
 		return $this->dataProvider;
 	}
 
@@ -265,7 +272,9 @@ class FactionsPE extends PluginBase {
 
 			$this->economy = new Economizer($this, $t);
 			if ($this->economy->ready()) {
-				$this->getLogger()->debug(Localizer::trans("economy-plugin-selected", ["name" => $this->economy->getName()]));
+                $this->getLogger()->debug(Localizer::trans('api-support-enabled', [
+                    'api' => $this->economy->getName()
+                ]));
 			} else {
 				$this->getLogger()->error(Localizer::trans("economy-not-ready", ["name" => $this->economy->getName()]));
 			}
@@ -273,7 +282,7 @@ class FactionsPE extends PluginBase {
 		// If chat-formatter is set to false, then we assume that user is using PureChat
 		if (!$this->getConfig()->get("force-chat-formatter")) {
 			$pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
-			if ($pc !== null) {
+			if ($pc instanceof PureChat) {
 				self::$engines["ChatEngine"]->setPureChat($pc);
 				$this->getLogger()->debug(Localizer::trans("chat-formatter-set", [
 					"plugin" => "PureChat",
@@ -312,7 +321,7 @@ class FactionsPE extends PluginBase {
 	 * @internal
 	 */
 	private function runEngines() {
-		foreach (self::$engines as $k => $engine) {
+		foreach (self::$registeredEngines as $k => $engine) {
 			try {
 				$class      = is_int($k) ? $engine : $k;
 				$reflection = new \ReflectionClass($class);
@@ -324,6 +333,19 @@ class FactionsPE extends PluginBase {
 				$this->getLogger()->error("Error while initializing engine: " . $e->getMessage());
 			}
 		}
+
+		if($this->getConfig()->getNested("scoreboard.enabled", false)) {
+		    /** @var ScoreboardAPI $api */
+		    $api = $this->getServer()->getPluginManager()->getPlugin("ScoreboardAPI");
+		    if($api && $api->isEnabled()) {
+                self::$engines["BoardEngine"] = $b = new BoardEngine($this, $api);
+                $this->getServer()->getPluginManager()->registerEvents($b, $this);
+
+                $this->getLogger()->debug(Localizer::trans('api-support-enabled', [
+		            'api' => $api->getName()
+                ]));
+            }
+        }
 	}
 
 	public function getEngine(string $name):  ? Engine {

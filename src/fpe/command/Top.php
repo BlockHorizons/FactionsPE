@@ -5,10 +5,10 @@ namespace fpe\command;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Factions;
 use fpe\utils\Pager;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 

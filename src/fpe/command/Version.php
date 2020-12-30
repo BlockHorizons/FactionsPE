@@ -7,8 +7,8 @@
 namespace fpe\command;
 
 use fpe\dominate\Command;
-use fpe\utils\Text;
 use fpe\localizer\Localizer;
+use fpe\utils\Text;
 use pocketmine\command\CommandSender;
 
 class Version extends Command

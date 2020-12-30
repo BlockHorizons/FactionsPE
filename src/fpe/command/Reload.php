@@ -7,8 +7,8 @@
 namespace fpe\command;
 
 use fpe\dominate\Command;
-use fpe\utils\Gameplay;
 use fpe\localizer\Localizer;
+use fpe\utils\Gameplay;
 use pocketmine\command\CommandSender;
 
 class Reload extends Command

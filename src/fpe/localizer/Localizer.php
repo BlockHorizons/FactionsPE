@@ -181,7 +181,8 @@ class Localizer {
 	 * @throw \Exception
 	 */
 	public function getDataFromFile(string $file): array{
-		$ext     = @end(explode('.', $file));
+        $x = explode('.', $file);
+        $ext     = @end($x);
 		$content = file_get_contents($file);
 		switch ($ext) {
 		default:
@@ -354,8 +355,6 @@ class Localizer {
 
 	public static function __callStatic(string $name, array $arguments) {
 		if (self::checkLanguageExistence($name)) {
-			# Localizer::lv('monster', [], null)
-			# Localizer::trans('monster', [], null, 'lv')
 			$arguments[1] = $arguments[1] ?? [];
 			$arguments[2] = $arguments[2] ?? null;
 			$arguments[3] = $name;

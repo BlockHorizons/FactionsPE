@@ -10,13 +10,20 @@ class ASCIICompass
 {
 
     const N = 'N';
-    const NE = '/';
+    const NE = 'NE';
     const E = 'E';
-    const SE = '\\';
+    const SE = 'SE';
     const S = 'S';
-    const SW = '/';
+    const SW = 'SW';
     const W = 'W';
-    const NW = '\\';
+    const NW = 'NW';
+
+    const DIAGONAL = [self::NE => "/", self::SE => "/", self::SW => "\\", self::NW => "\\"];
+
+    const FULL = [
+        self::N => "North", self::S => "South", self::E => "East", self::W => "West",
+        self::NE => "North East", self::SE => "South East", self::SW => "South West", self::NW => "North West"
+    ];
 
     /**
      * @param int $degrees
@@ -28,9 +35,9 @@ class ASCIICompass
         $ret = [];
         $point = self::getCompassPointForDirection($degrees);
         $row = "";
-        $row .= ($point === self::NW ? $colorActive : $colorDefault) . self::NW;
+        $row .= ($point === self::NW ? $colorActive : $colorDefault) .self::DIAGONAL[self::NW];
         $row .= ($point === self::N ? $colorActive : $colorDefault) . self::N;
-        $row .= ($point === self::NE ? $colorActive : $colorDefault) . self::NE;
+        $row .= ($point === self::NE ? $colorActive : $colorDefault) . self::DIAGONAL[self::NE];
         $ret[] = $row;
         $row = "";
         $row .= ($point === self::W ? $colorActive : $colorDefault) . self::W;
@@ -38,9 +45,9 @@ class ASCIICompass
         $row .= ($point === self::E ? $colorActive : $colorDefault) . self::E;
         $ret[] = $row;
         $row = "";
-        $row .= ($point === self::SW ? $colorActive : $colorDefault) . self::SW;
+        $row .= ($point === self::SW ? $colorActive : $colorDefault) . self::DIAGONAL[self::SW];
         $row .= ($point === self::S ? $colorActive : $colorDefault) . self::S;
-        $row .= ($point === self::SE ? $colorActive : $colorDefault) . self::SE;
+        $row .= ($point === self::SE ? $colorActive : $colorDefault) . self::DIAGONAL[self::SE];
         $ret[] = $row;
         return $ret;
     }
@@ -74,6 +81,12 @@ class ASCIICompass
             return self::N;
         else
             return null;
+    }
+
+    public static function getFullDirection(float $degrees) : string
+    {
+        $point = self::getCompassPointForDirection($degrees);
+        return $point ? self::FULL[$point] : "";
     }
 
 }

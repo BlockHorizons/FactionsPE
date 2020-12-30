@@ -11,6 +11,13 @@ use fpe\entity\IMember;
 use LogicException;
 use pocketmine\event\Cancellable;
 
+/**
+ * Class MembershipChangeEvent
+ *
+ * Called whenever player enters or leaves the faction
+ *
+ * @package fpe\event\member
+ */
 class MembershipChangeEvent extends MemberEvent implements Cancellable
 {
 
@@ -56,6 +63,11 @@ class MembershipChangeEvent extends MemberEvent implements Cancellable
         } else {
             parent::setCancelled($force);
         }
+    }
+
+    public function isLeaving(): bool
+    {
+        return $this->getFaction()->isNone();
     }
 
 }

@@ -6,10 +6,10 @@
 
 namespace fpe\command;
 
+use fpe\command\requirement\FactionRequirement;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\dominate\requirement\SimpleRequirement;
-use fpe\command\requirement\FactionRequirement;
 use fpe\manager\Permissions;
 
 class Unclaim extends Command

@@ -8,11 +8,11 @@ namespace fpe\command;
 
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Pager;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class PermList extends Command

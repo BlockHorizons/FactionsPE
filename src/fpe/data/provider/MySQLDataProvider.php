@@ -278,6 +278,10 @@ class MySQLDataProvider extends DataProvider
             $data["relationWishes"] = json_decode($data["relationWishes"], true);
             $data["members"] = json_decode($data["members"], true);
             $data["invitedPlayers"] = json_decode($data["invitedPlayers"], true);
+
+            $data = $this->__loadFaction($id, $data);
+            if (!$data) return null;
+
             return new Faction($id, $data);
         }
         return null;

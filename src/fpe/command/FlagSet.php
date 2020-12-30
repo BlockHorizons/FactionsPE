@@ -2,13 +2,13 @@
 
 namespace fpe\command;
 
+use fpe\command\parameter\FactionParameter;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
-use fpe\command\parameter\FactionParameter;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class FlagSet extends Command

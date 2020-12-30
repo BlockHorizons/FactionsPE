@@ -9,6 +9,7 @@ namespace fpe\data\provider;
 use fpe\data\FactionData;
 use fpe\data\MemberData;
 use fpe\entity\Faction;
+use fpe\entity\Plot;
 use fpe\manager\Factions;
 use fpe\manager\Plots;
 use fpe\utils\Text;
@@ -92,7 +93,10 @@ class JSONDataProvider extends DataProvider
     public function loadFaction(string $id)
     {
         if (file_exists($f = $this->getFactionFilePath($id, ".json"))) {
-            return new Faction($id, json_decode(file_get_contents($f), true));
+            $data = $this->__loadFaction($id, json_decode(file_get_contents($f), true));
+            if (!$data) return null;
+
+            return new Faction($id, $data);
         }
         return null;
     }
@@ -159,6 +163,11 @@ class JSONDataProvider extends DataProvider
         return "JSON";
     }
 
+    public function deletePlot(Plot $plot)
+    {
+        // TODO: Implement deletePlot() method.
+    }
+
     protected function prepare()
     {
         @mkdir($this->getMain()->getDataFolder() . "factions");
@@ -166,5 +175,4 @@ class JSONDataProvider extends DataProvider
         @touch($this->getMain()->getDataFolder() . "flags.json");
         @touch($this->getMain()->getDataFolder() . "permissions.json");
     }
-
 }

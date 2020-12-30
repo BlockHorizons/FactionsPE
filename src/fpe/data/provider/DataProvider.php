@@ -9,11 +9,13 @@ namespace fpe\data\provider;
 use Exception;
 use fpe\data\FactionData;
 use fpe\data\MemberData;
+use fpe\entity\Faction;
 use fpe\entity\Plot;
+use fpe\event\faction\FactionLoadEvent;
 use fpe\FactionsPE;
+use fpe\localizer\Localizer;
 use fpe\manager\Flags;
 use fpe\manager\Permissions;
-use fpe\localizer\Localizer;
 
 abstract class DataProvider
 {
@@ -110,9 +112,18 @@ abstract class DataProvider
 
     /**
      * @param string $id
-     * @return FactionData|null
+     * @return Faction|null
      */
     public abstract function loadFaction(string $id);
+
+    public function __loadFaction(string $id, array $rawData): ?FactionData
+    {
+        $data = new FactionData($rawData);
+        $event = new FactionLoadEvent($id, $data);
+        $event->call();
+        if ($event->isCancelled()) return null;
+        return $data;
+    }
 
     /**
      * @param string

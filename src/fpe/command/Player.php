@@ -2,12 +2,12 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use facitons\manager\Members;
 use fpe\command\parameter\MemberParameter;
+use fpe\dominate\Command;
 use fpe\interfaces\IFPlayer;
-use fpe\utils\Text;
 use fpe\localizer\Localizer;
+use fpe\utils\Text;
 use pocketmine\command\CommandSender;
 
 class Player extends Command
@@ -36,7 +36,7 @@ class Player extends Command
         $sender->sendMessage(Localizer::translatable("player-power", [$member->getPower(), $member->getPowerMax()]));
         $sender->sendMessage(Text::parse("<gold>Rank: <h>" . $member->getRole()));
         $sender->sendMessage(Text::parse("<gold>Faction: <h>" . ($member->hasFaction() ? $member->getFaction()->getName() : "none")));
-        $sender->sendMessage(Text::parse("<gold>Last online: <h>" . Text::ago($member->getLastPlayed())));
+        $sender->sendMessage(Text::parse("<gold>Last online: <h>" . $member->isOnline() ? "Now" : Text::ago($member->getLastPlayed())));
 
         // INFO: Power Boost
         if ($member->hasPowerBoost()) {

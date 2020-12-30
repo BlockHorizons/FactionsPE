@@ -19,8 +19,8 @@ authors:
 - Sandertv (@Sandertv)
 api: [3.0.0]
 main: "fpe\\FactionsPE"
-version: 1.3.1
-softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd]
+version: 1.4.0
+softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, ScoreboardAPI]
 
 permissions:
   factionspe.*:

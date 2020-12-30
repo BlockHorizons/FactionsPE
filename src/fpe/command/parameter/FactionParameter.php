@@ -8,10 +8,10 @@ namespace fpe\command\parameter;
 
 use fpe\dominate\parameter\Parameter;
 use fpe\entity\Faction;
-use fpe\manager\Factions;
-use fpe\manager\Members;
 use fpe\localizer\Localizer;
 use fpe\localizer\Translatable;
+use fpe\manager\Factions;
+use fpe\manager\Members;
 use pocketmine\command\CommandSender;
 
 class FactionParameter extends Parameter

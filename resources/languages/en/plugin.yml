@@ -28,6 +28,6 @@ hud-enabled: "Built-In HUD enabled"
 chat-formatter-set: "Chat formatter: :plugin"
 built-in: 'built-in'
 
-form-support-enabled: "Form support: :0"
+api-support-enabled: ":api support enabled"
 
 plots-size: "Custom plot size: :size x :size"

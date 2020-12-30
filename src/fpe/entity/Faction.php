@@ -7,9 +7,12 @@
 namespace fpe\entity;
 
 use fpe\data\FactionData;
+use fpe\engine\BoardEngine;
 use fpe\event\member\MembershipChangeEvent;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
+use fpe\localizer\Translatable;
 use fpe\manager\Factions;
 use fpe\manager\Flags;
 use fpe\manager\Members;
@@ -20,8 +23,6 @@ use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
-use fpe\localizer\Translatable;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 
@@ -46,18 +47,11 @@ class Faction extends FactionData implements RelationParticipator
     /**
      * Faction constructor
      * @param string $id
-     * @param array $data
+     * @param FactionData $data
      */
-    public function __construct(string $id, array $data)
+    public function __construct(string $id, FactionData $data)
     {
-        parent::__construct(array_merge(["id" => $id], $data));
-
-        /**
-         * You can pass initial player (creator) using "creator" or "members" data created by Factions::createMemberList
-         */
-        if (isset($data["creator"]) && !$this->getLeader()) {
-            $this->members[Relation::LEADER][] = $data["creator"] instanceof IMember ? strtolower(trim($data["creator"]->getName())) : strtolower(trim($data["creator"]));
-        }
+        parent::__construct(array_merge(["id" => $id], $data->__toArray()));
 
         if (Gameplay::get('faction.destroy-empty-factions', true) && !$this->isSpecial() && !$this->isPermanent()) {
             if ($this->isEmpty()) {
@@ -67,10 +61,10 @@ class Faction extends FactionData implements RelationParticipator
     }
 
     /*
-             * ----------------------------------------------------------
-             * STATUS
-             * ----------------------------------------------------------
-    */
+     * ----------------------------------------------------------
+     * STATUS
+     * ----------------------------------------------------------
+     */
 
     /**
      * Returns this Faction's leader, if returned null and this faction isn't special

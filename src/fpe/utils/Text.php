@@ -497,6 +497,15 @@ final class Text
         return $ret;
     }
 
+    public static function parseColorVarsInArray(array $lines) : array
+    {
+        $ret = [];
+        foreach($lines as $i => $line) {
+            $ret[$i] = self::parseColorVars($line);
+        }
+        return $ret;
+    }
+
 
 }
 

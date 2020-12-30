@@ -10,9 +10,10 @@ use Exception;
 use fpe\entity\IMember;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Factions;
 use fpe\permission\Permission;
-use fpe\localizer\Localizer;
+use fpe\relation\Relation;
 use pocketmine\level\Position;
 
 class FactionData extends Data

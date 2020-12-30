@@ -6,8 +6,8 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use fpe\command\parameter\FactionParameter;
+use fpe\dominate\Command;
 use fpe\engine\ChatEngine;
 use fpe\entity\Faction;
 use fpe\manager\Members;

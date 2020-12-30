@@ -6,6 +6,8 @@
 
 namespace fpe\entity;
 
+use fpe\engine\BoardEngine;
+use fpe\manager\Factions;
 use fpe\manager\Plots;
 use fpe\relation\Relation;
 use fpe\relation\RelationParticipator;
@@ -16,33 +18,38 @@ class Member extends OfflineMember
 {
 
     /** @var array */
-    public $chunkPos = [0, 0];
+    public array $chunkPos = [0, 0];
 
-    /** @var $lastActivityMillis */
-    protected $lastActivityMillis;
+    /** @var int $lastActivityMillis */
+    protected int $lastActivityMillis = 0;
 
     /** @var boolean $mapAutoUpdating */
-    protected $mapAutoUpdating = false;
+    protected bool $mapAutoUpdating = false;
 
     /**
      * Is player chatting with his faction mates?
      * @var bool
      */
-    protected $fchat = false;
+    protected bool $fchat = false;
+
     /** @var string */
-    protected $factionHereId;
+    protected string $factionHereId = Faction::WILDERNESS;
+
     /** @var boolean */
-    protected $seeChunk = false;
+    protected bool $seeChunk = false;
+
     /**
      * Enabled players the ability to fly within faction claim
      *
      * @var bool
      */
-    protected $fly = false;
+    protected bool $fly = false;
+
     /** @var Faction|null $autoClaimFaction */
-    private $autoClaimFaction;
+    private ?Faction $autoClaimFaction = null;
+
     /** @var bool $hud_visible */
-    private $hud_visible = true;
+    private bool $hud_visible = true;
 
     public function __construct(Player $player)
     {
@@ -52,14 +59,27 @@ class Member extends OfflineMember
         $this->factionHereId = Plots::getFactionAt($player)->getId();
     }
 
-    public function setHUDVisible(bool $visible)
+    public function setFactionHereId(string $id): void
     {
-        $this->hud_visible = $visible;
+        $this->factionHereId = $id;
     }
 
     public function toggleHUD()
     {
-        $this->hud_visible = !$this->hasHUD();
+        $this->setHUDVisible(!$this->hasHUD());
+    }
+
+    public function setHUDVisible(bool $visible)
+    {
+        $this->hud_visible = $visible;
+
+        if (!BoardEngine::enabled()) return;
+
+        if (!$visible) {
+            BoardEngine::removeBoard($this);
+        } else {
+            BoardEngine::sendBoard($this);
+        }
     }
 
     public function hasHUD(): bool
@@ -159,7 +179,11 @@ class Member extends OfflineMember
 
     public function getRelationToPlot(): string
     {
-        return Plots::getFactionAt($this->player)->getRelationTo($this);
+        return $this->getFactionHere()->getRelationTo($this);
+    }
+
+    public function getFactionHere(): Faction {
+        return Factions::getById($this->factionHereId) ?? Factions::getById(Faction::WILDERNESS);
     }
 
     /**

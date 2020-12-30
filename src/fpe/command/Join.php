@@ -3,19 +3,19 @@
 namespace fpe\command;
 
 
-use fpe\dominate\Command;
-use fpe\dominate\requirement\SimpleRequirement;
 use Exception;
 use fpe\command\parameter\FactionParameter;
 use fpe\command\parameter\MemberParameter;
 use fpe\command\requirement\FactionRequirement;
+use fpe\dominate\Command;
+use fpe\dominate\requirement\SimpleRequirement;
 use fpe\event\member\MembershipChangeEvent;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

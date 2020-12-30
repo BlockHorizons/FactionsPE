@@ -7,8 +7,8 @@
 namespace fpe\command\requirement;
 
 use fpe\dominate\requirement\Requirement;
-use fpe\manager\Members;
 use fpe\localizer\Translatable;
+use fpe\manager\Members;
 use pocketmine\command\CommandSender;
 
 class FactionRole extends Requirement

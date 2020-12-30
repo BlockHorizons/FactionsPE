@@ -6,17 +6,17 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use fpe\command\parameter\MemberParameter;
 use fpe\command\requirement\FactionPermission;
+use fpe\dominate\Command;
 use fpe\event\member\MembershipChangeEvent;
 use fpe\FactionsPE;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 

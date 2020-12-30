@@ -53,6 +53,38 @@ purge-after: 604800
 # Claim size (1 = 128; 2 = 64; 3 = 32; 4 = 16 (default); 5 => 8; 6 => 4);
 claim-size: 4
 
+# Scoreboard.
+#
+# Available variables:
+# <padding> = Align everything to the left
+# :faction = Your faction's name
+# :name = Your display name
+# :online-members = Number of your teammates online
+# :max-members = Total amount of players in your faction
+# :power = Current power level
+# :here-faction = Name of faction, on land you're standing on
+# <here-color> = relationship color of the land you're standing on
+# :direction = North, South, East, West
+# :short-direction = N, S, E, W
+# :x, :y, :z = your coordinates
+scoreboard:
+  enabled: true
+  title: "----- <gold>Factions <white>-----"
+  faction:
+    - "Faction:<padding> <red>:faction"
+    - "Members:<padding> <gold>:online-members<white>/<gold>:max-members"
+    - "Power:<padding> <gold>:power<white>/<gold>:max-power"
+    - "Here:<padding> <here-color>:here-faction"
+    - ""
+    - ""
+    - "X: <gray>:x <white>Y: <gray>:y <white>Z: <gray>:z <white>(<gray>:short-direction<white>)<padding>"
+  factionless:
+    - "Power:<padding> <gold>:power<white>/<gold>:max-power"
+    - "Here:<padding> <here-color>:here-faction"
+    - ""
+    - ""
+    - "X: <gray>:x <white>Y: <gray>:y <white>Z: <gray>:z<white> (<gray>:short-direction<white>)<padding>"
+
 # Gameplay settings
 gameplay:
   # Enable the ability for players to fly in their claimed lands (/f fly)

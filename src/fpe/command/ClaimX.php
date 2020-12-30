@@ -6,8 +6,8 @@
 
 namespace fpe\command;
 
-use fpe\dominate\Command;
 use fpe\command\parameter\FactionParameter;
+use fpe\dominate\Command;
 use fpe\manager\Members;
 use fpe\manager\Plots;
 use pocketmine\command\CommandSender;

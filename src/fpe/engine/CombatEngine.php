@@ -7,11 +7,11 @@
 namespace fpe\engine;
 
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Plots;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
-use fpe\localizer\Localizer;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\player\PlayerDeathEvent;

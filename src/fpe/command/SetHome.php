@@ -2,16 +2,16 @@
 
 namespace fpe\command;
 
+use fpe\command\requirement\FactionPermission;
+use fpe\command\requirement\FactionRequirement;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\dominate\requirement\SimpleRequirement;
-use fpe\command\requirement\FactionPermission;
-use fpe\command\requirement\FactionRequirement;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\manager\Plots;
 use fpe\permission\Permission;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 use pocketmine\level\Level;
 use pocketmine\level\Position;

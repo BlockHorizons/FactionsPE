@@ -26,6 +26,7 @@ use fpe\event\member\MemberPowerChangeEvent;
 use fpe\event\member\MemberTraceEvent;
 use fpe\FactionsPE;
 use fpe\flag\Flag;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\manager\Plots;
@@ -33,7 +34,6 @@ use fpe\permission\Permission;
 use fpe\relation\Relation;
 use fpe\utils\Gameplay;
 use fpe\utils\Text;
-use fpe\localizer\Localizer;
 use pocketmine\block\Block;
 use pocketmine\block\BlockIds;
 use pocketmine\block\Liquid;
@@ -134,8 +134,13 @@ class MainEngine extends Engine
     {
         /** @var Member $member */
         $member = $event->getMember();
+
+        $faction = $event->getTo()->getOwnerFaction();
+        // Update current location
+        $member->setFactionHereId($faction->getId());
+
         if (!$event->sameOwner() && Gameplay::get("send-plot-faction-description", true)) {
-            $faction = $event->getTo()->getOwnerFaction();
+
             $event->getMember()->getPlayer()->sendTip(Localizer::translatable("plot-faction-tip", [
                 "color" => $event->getMember()->getColorTo($faction),
                 "faction" => $faction->getName(),

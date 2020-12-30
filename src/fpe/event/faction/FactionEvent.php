@@ -12,10 +12,10 @@ use pocketmine\event\Event;
 class FactionEvent extends Event
 {
 
-    /** @var Faction */
+    /** @var Faction|null */
     protected $faction;
 
-    public function __construct(Faction $faction)
+    public function __construct(?Faction $faction)
     {
         $this->faction = $faction;
     }

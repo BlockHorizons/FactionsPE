@@ -6,6 +6,7 @@
 
 namespace fpe\manager;
 
+use fpe\data\FactionData;
 use fpe\entity\Faction;
 use fpe\entity\IMember;
 use fpe\flag\Flag;
@@ -27,7 +28,8 @@ class Factions
     public static function createSpecialFactions()
     {
         if (self::getByName(Faction::NAME_NONE) === null) {
-            Factions::attach(new Faction(Faction::NONE, [
+            Factions::attach(new Faction(Faction::NONE, new FactionData([
+                "id" => Faction::NONE,
                 "name" => Faction::NAME_NONE,
                 "flags" => [
                     Flag::PVP => true,
@@ -49,10 +51,11 @@ class Factions
                     Permission::BUTTON => Relation::getAll(),
                     Permission::DOOR => Relation::getAll()
                 ],
-            ]));
+            ])));
         }
         if (self::getByName(Faction::NAME_SAFEZONE) === null) {
-            Factions::attach(new Faction(Faction::SAFEZONE, [
+            Factions::attach(new Faction(Faction::SAFEZONE, new FactionData([
+                "id" => Faction::SAFEZONE,
                 "name" => Faction::NAME_SAFEZONE,
                 "flags" => [
                     Flag::PEACEFUL => true,
@@ -60,10 +63,11 @@ class Factions
                     Flag::INFINITY_POWER => true
                 ],
                 "description" => "Save from PVP and Monsters" # TODO: Translatable
-            ]));
+            ])));
         }
         if (self::getByName(Faction::NAME_WARZONE) === null) {
-            Factions::attach(new Faction(Faction::WARZONE, [
+            Factions::attach(new Faction(Faction::WARZONE, new FactionData([
+                "id" => Faction::WARZONE,
                 "name" => Faction::NAME_WARZONE,
                 "flags" => [
                     Flag::PVP => true,
@@ -71,7 +75,7 @@ class Factions
                     Flag::INFINITY_POWER => true
                 ],
                 "description" => "Be careful enemies can be nearby" # TODO: Translatable
-            ]));
+            ])));
         }
     }
 
@@ -95,13 +99,14 @@ class Factions
             throw new \Exception("Can not create faction: name '$name' taken");
         }
         // TODO: Validate description
-        return new Faction($id, array_merge([
+        return new Faction($id, new FactionData(array_merge([
+            "id" => $id,
             "name" => $name,
             "description" => $description,
             "members" => $members,
             "flags" => $flags,
             "perms" => $perms,
-            ], $data));
+            ], $data)));
     }
 
     /**
@@ -118,11 +123,11 @@ class Factions
     public static function createMembersList(IMember $leader, array $officers = [], array $members = [], array $recruits = []): array {
         foreach ($vars = [$officers, $members, $recruits] as $var) {
             foreach ($var as $key => $member) {
-                $var[$key] = Members::get($member, true);
+                $var[$key] = strtolower(Members::get($member, true)->getName());
             }
         }
         return [
-            Relation::LEADER => [$leader],
+            Relation::LEADER => [strtolower(trim($leader->getName()))],
             Relation::OFFICER => $officers,
             Relation::MEMBER => $members,
             Relation::RECRUIT => $recruits
@@ -133,7 +138,7 @@ class Factions
      * @param string $name
      * @return Faction|null
      */
-    public static function getByName(string $name)
+    public static function getByName(string $name): ?Faction
     {
         $name = strtolower(trim($name));
         foreach (self::$factions as $faction) {
@@ -146,12 +151,12 @@ class Factions
      * @param IPlayer $player
      * @return Faction|null
      */
-    public static function getForPlayer(IPlayer $player)
+    public static function getForPlayer(IPlayer $player): ?Faction
     {
         return self::getForMember(Members::get($player));
     }
 
-    public static function getForMember(IMember $member)
+    public static function getForMember(IMember $member): ?Faction
     {
         foreach (self::$factions as $faction) {
             if ($faction->isMember($member)) return $faction;

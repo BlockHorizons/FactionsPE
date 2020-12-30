@@ -6,6 +6,7 @@
 
 namespace fpe\command;
 
+use fpe\data\FactionData;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\dominate\requirement\SimpleRequirement;
@@ -69,10 +70,11 @@ class CreateFaction extends Command {
 			return false;
 		}
 
-		$faction = new Faction($fid, [
+		$faction = new Faction($fid, new FactionData([
 			"name"    => $name,
-			"creator" => $creator,
-		]);
+            "members" => Factions::createMembersList($creator),
+            "id"      => $fid
+		]));
 		Factions::attach($faction);
 		$creator->updateFaction();
 

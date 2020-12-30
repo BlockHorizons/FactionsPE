@@ -6,17 +6,17 @@
 
 namespace fpe\command;
 
+use fpe\command\requirement\FactionPermission;
+use fpe\command\requirement\FactionRequirement;
 use fpe\dominate\Command;
 use fpe\dominate\parameter\Parameter;
 use fpe\dominate\requirement\SimpleRequirement;
-use fpe\command\requirement\FactionPermission;
-use fpe\command\requirement\FactionRequirement;
 use fpe\FactionsPE;
+use fpe\localizer\Localizer;
 use fpe\manager\Members;
 use fpe\manager\Permissions;
 use fpe\permission\Permission;
 use fpe\utils\Gameplay;
-use fpe\localizer\Localizer;
 use pocketmine\command\CommandSender;
 
 class Withdraw extends Command

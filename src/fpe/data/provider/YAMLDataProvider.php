@@ -91,10 +91,13 @@ class YAMLDataProvider extends DataProvider
         }
     }
 
-    public function loadFaction(string $id)
+    public function loadFaction(string $id): ?Faction
     {
         if (file_exists($f = $this->getFactionFilePath($id, ".yml")) || file_exists($f = $this->getFactionFilePath($id, ".yaml"))) {
-            return new Faction($id, yaml_parse(file_get_contents($f)));
+            $data = $this->__loadFaction($id, yaml_parse(file_get_contents($f)));
+            if (!$data) return null;
+
+            return new Faction($id, $data);
         }
         return null;
     }
