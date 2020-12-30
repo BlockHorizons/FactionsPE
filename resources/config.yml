@@ -56,18 +56,34 @@ claim-size: 4
 # Scoreboard.
 #
 # Available variables:
+# <padding> = Align everything to the left
+# :faction = Your faction's name
+# :name = Your display name
+# :online-members = Number of your teammates online
+# :max-members = Total amount of players in your faction
+# :power = Current power level
+# :here-faction = Name of faction, on land you're standing on
+# <here-color> = relationship color of the land you're standing on
+# :direction = North, South, East, West
+# :short-direction = N, S, E, W
+# :x, :y, :z = your coordinates
 scoreboard:
   enabled: true
-  title: "Factions"
+  title: "----- <gold>Factions <white>-----"
   faction:
-    - "<gold>:faction"
-    - "<green>Lorem"
-    - "<blue>Ipsum"
+    - "Faction:<padding> <red>:faction"
+    - "Members:<padding> <gold>:online-members<white>/<gold>:max-members"
+    - "Power:<padding> <gold>:power<white>/<gold>:max-power"
+    - "Here:<padding> <here-color>:here-faction"
+    - ""
+    - ""
+    - "X: <gray>:x <white>Y: <gray>:y <white>Z: <gray>:z <white>(<gray>:short-direction<white>)<padding>"
   factionless:
-    - "Factionless"
-    - "<random>Dolor"
-    - "<random>Sit"
-    - "<random>Amet."
+    - "Power:<padding> <gold>:power<white>/<gold>:max-power"
+    - "Here:<padding> <here-color>:here-faction"
+    - ""
+    - ""
+    - "X: <gray>:x <white>Y: <gray>:y <white>Z: <gray>:z<white> (<gray>:short-direction<white>)<padding>"
 
 # Gameplay settings
 gameplay:

@@ -6,17 +6,21 @@
 
 namespace fpe\engine;
 
+use fpe\command\Relation;
 use fpe\entity\FConsole;
 use fpe\entity\Member;
 use fpe\event\member\MembershipChangeEvent;
 use fpe\FactionsPE;
 use fpe\manager\Members;
+use fpe\utils\ASCIICompass;
 use fpe\utils\Text;
 use jasonwynn10\ScoreboardAPI\Scoreboard;
 use jasonwynn10\ScoreboardAPI\ScoreboardAPI;
 use jasonwynn10\ScoreboardAPI\ScoreboardEntry;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class BoardEngine extends Engine implements Listener
 {
@@ -53,11 +57,59 @@ class BoardEngine extends Engine implements Listener
     public static function parseLine(string $text, Member $member): string
     {
         $faction = $member->getFaction();
-        return str_replace(
-            [":faction", ":name"],
-            [$faction->getName(), $member->getPlayer()->getDisplayName()],
+        $player = $member->getPlayer();
+        $string = str_replace(
+            [
+                ":faction",
+                ":name",
+                ":here-faction",
+                "<here-color>",
+                ":x", ":y", ":z",
+                ":direction",
+                ":short-direction",
+                ":online-members",
+                ":max-members",
+                ":player-online",
+                ":total-players",
+                ":power",
+                ":max-power"
+            ],
+            [
+                $faction->getName(),
+                $member->getPlayer()->getDisplayName(),
+                $member->getFactionHere()->getName(),
+                Text::getRelationColor($member->getRelationToPlot()),
+                $player->getFloorX(), $player->getFloorY(), $player->getFloorZ(),
+                ASCIICompass::getFullDirection($player->getYaw()),
+                ASCIICompass::getCompassPointForDirection($player->getYaw()),
+                count($faction->getOnlineMembers()),
+                count($faction->getMembers()),
+                count(Server::getInstance()->getOnlinePlayers()),
+                Server::getInstance()->getMaxPlayers(),
+                $member->getPower(),
+                $member->getPowerMax()
+            ],
             $text
         );
+
+        $max = 0;
+        $lengths = [];
+        $lines = explode("\n", $string);
+        foreach($lines as $k => $line) {
+            if(($pos = strpos($line, "<padding>")) === false) {
+                continue;
+            }
+            $line = TextFormat::clean($line);
+            $pos += 9;
+            $c = strlen(substr($line, 0, $pos));
+            $lengths[$k] = $c;
+            if($c > $max) $max = $c;
+        }
+        foreach($lengths as $i => $c) {
+            $lines[$i] = str_replace("<padding>", str_repeat(" ", $max - $c), $lines[$i]);
+        }
+
+        return implode("\n", $lines);
     }
 
     public static function createBoard(string $id, int $lineCount): ?Scoreboard
@@ -111,6 +163,9 @@ class BoardEngine extends Engine implements Listener
 
     public function onRun(int $currentTick)
     {
+        self::$api->removeScoreboard(self::$boards["faction"]);
+        self::$api->removeScoreboard(self::$boards["factionless"]);
+
         foreach (Members::getAllOnline() as $member) {
             if($member instanceof FConsole) continue;
             if(!$member->hasHUD()) continue;
@@ -125,6 +180,7 @@ class BoardEngine extends Engine implements Listener
                 )
             );
 
+            self::$api->sendScoreboard($board, [$member->getPlayer()]);
             foreach($board->getEntries() as $line => $entry) {
                 if(!isset($newLines[$line])) continue;
 

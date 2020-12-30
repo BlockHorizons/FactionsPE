@@ -134,8 +134,13 @@ class MainEngine extends Engine
     {
         /** @var Member $member */
         $member = $event->getMember();
+
+        $faction = $event->getTo()->getOwnerFaction();
+        // Update current location
+        $member->setFactionHereId($faction->getId());
+
         if (!$event->sameOwner() && Gameplay::get("send-plot-faction-description", true)) {
-            $faction = $event->getTo()->getOwnerFaction();
+
             $event->getMember()->getPlayer()->sendTip(Localizer::translatable("plot-faction-tip", [
                 "color" => $event->getMember()->getColorTo($faction),
                 "faction" => $faction->getName(),
