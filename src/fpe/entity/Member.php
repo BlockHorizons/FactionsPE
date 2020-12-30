@@ -65,10 +65,10 @@ class Member extends OfflineMember
 
         if (!BoardEngine::enabled()) return;
 
-        if ($visible) {
-            BoardEngine::sendBoard(Members::get($this->getPlayer()));
+        if (!$visible) {
+            BoardEngine::removeBoard($this);
         } else {
-            BoardEngine::removeBoard(Members::get($this->getPlayer()));
+            BoardEngine::sendBoard($this);
         }
     }
 

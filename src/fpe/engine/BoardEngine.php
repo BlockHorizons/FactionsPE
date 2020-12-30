@@ -17,7 +17,6 @@ use jasonwynn10\ScoreboardAPI\ScoreboardAPI;
 use jasonwynn10\ScoreboardAPI\ScoreboardEntry;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerQuitEvent;
 
 class BoardEngine extends Engine implements Listener
 {
@@ -34,6 +33,8 @@ class BoardEngine extends Engine implements Listener
     public function __construct(FactionsPE $main, ScoreboardAPI $api)
     {
         parent::__construct($main, 20);
+        self::$api = $api;
+        self::$enabled = true;
 
         // Read scoreboard format from config
         self::$title = $main->getConfig()->getNested("scoreboard.title", "");
@@ -44,8 +45,9 @@ class BoardEngine extends Engine implements Listener
         self::$factionEntries = Text::parseColorVarsInArray(self::$factionEntries);
         self::$factionlessEntries = Text::parseColorVarsInArray(self::$factionlessEntries);
 
-        self::$api = $api;
-        self::$enabled = true;
+        // Create scoreboards
+        self::createBoard("faction", count(self::$factionEntries));
+        self::createBoard("factionless", count(self::$factionlessEntries));
     }
 
     public static function parseLine(string $text, Member $member): string
@@ -58,17 +60,17 @@ class BoardEngine extends Engine implements Listener
         );
     }
 
-    public static function createBoard(Member $member): ?Scoreboard
+    public static function createBoard(string $id, int $lineCount): ?Scoreboard
     {
         $board = self::$api->createScoreboard(
-            $member->getPlayer()->getRawUniqueId(),
-            "Scoreboard",
+            $id,
+            Text::parse(self::$title),
             Scoreboard::SLOT_SIDEBAR,
             Scoreboard::SORT_ASCENDING
         );
-        self::createEntries($board, $member);
+        self::createEntries($board, $lineCount);
 
-        self::$boards[$member->getPlayer()->getRawUniqueId()] = $board;
+        self::$boards[$id] = $board;
         return $board;
     }
 
@@ -79,26 +81,19 @@ class BoardEngine extends Engine implements Listener
 
     public static function removeBoard(Member $member): void
     {
-        $board = self::getBoard($member->getPlayer()->getRawUniqueId());
-        if ($board) {
-            self::$api->removeScoreboard($board);
-            unset(self::$boards[$member->getPlayer()->getRawUniqueId()]);
-        }
+        $board = self::getBoard($member);
+        self::$api->removeScoreboard($board, [$member->getPlayer()]);
     }
 
-    public static function sendBoard(Member $member): void
+    public static function sendBoard(Member $member, ?string $id = null): void
     {
-        $player = $member->getPlayer();
-        $board = self::getBoard($player->getRawUniqueId());
-        if ($board) {
-            self::$api->sendScoreboard($board, [$player]);
-        }
+        $board = self::getBoard($member, $id);
+        self::$api->sendScoreboard($board, [$member->getPlayer()]);
     }
 
-    public static function createEntries(Scoreboard $board, Member $member): array
+    public static function createEntries(Scoreboard $board, int $lineCount): array
     {
         $entries = [];
-        $lineCount = $member->hasFaction() ? count(self::$factionEntries) : count(self::$factionlessEntries);
         for ($i = 0; $i < $lineCount; $i++) {
             $entry = $board->createEntry($i, $i, ScoreboardEntry::TYPE_FAKE_PLAYER, "line {$i}");
             $entry->pad();
@@ -109,25 +104,18 @@ class BoardEngine extends Engine implements Listener
         return $entries;
     }
 
-    public static function getBoard(string $id): ?Scoreboard
+    public static function getBoard(Member $member, ?string $id = null): ?Scoreboard
     {
-        return self::$api->getScoreboard($id);
+        return self::$api->getScoreboard($id ?? $member->hasFaction() ? "faction" : "factionless");
     }
 
     public function onRun(int $currentTick)
     {
         foreach (Members::getAllOnline() as $member) {
             if($member instanceof FConsole) continue;
+            if(!$member->hasHUD()) continue;
 
-            $board = self::getBoard($member->getPlayer()->getRawUniqueId());
-            if(!$board) {
-                echo "No board found!".PHP_EOL;
-                if($member->hasHUD()) {
-                    echo "Creating new board for member".PHP_EOL;
-                    self::createBoard($member);
-                }
-                continue;
-            }
+            $board = self::getBoard($member);
 
             $newLines = explode(
                 "\n",
@@ -146,36 +134,20 @@ class BoardEngine extends Engine implements Listener
         }
     }
 
-    public function memberRoleChange(MembershipChangeEvent $event) {
-        echo "Changing board, because player joined or left the faction".PHP_EOL;
-        self::removeBoard($event->getMember());
+    public function onPlayerJoin(PlayerJoinEvent $event) {
+        self::sendBoard(Members::get($event->getPlayer()));
     }
 
     /**
-     * @param PlayerJoinEvent $event
-     * @priority HIGHEST
+     * @param MembershipChangeEvent $event
+     * @priority MONITOR
      * @ignoreCancelled false
      */
-    public function onPlayerJoin(PlayerJoinEvent $event)
-    {
-        $player = $event->getPlayer();
-        $member = Members::get($player);
-
-        self::createBoard($member);
-        if ($member->hasHUD()) {
-            self::sendBoard($member);
-        }
+    public function onMembershipChange(MembershipChangeEvent $event) {
+        /** @var Member $member */
+        $member = $event->getMember();
+        self::removeBoard($member);
+        self::sendBoard($member, $event->isLeaving() ? "factionless" : "faction");
     }
-
-    /**
-     * @param PlayerJoinEvent $event
-     * @priority HIGHEST
-     * @ignoreCancelled false
-     */
-    public function onPlayerQuit(PlayerQuitEvent $event)
-    {
-        self::removeBoard(Members::get($event->getPlayer()));
-    }
-
 
 }
