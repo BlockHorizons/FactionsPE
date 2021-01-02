@@ -17,9 +17,9 @@ author: BlockHorizons
 authors:
 - Chris-Prime (@PrimusLV, @flipkris)
 - Sandertv (@Sandertv)
-api: [3.0.0]
-main: "fpe\\FactionsPE"
-version: 1.4.0
+api: 3.17.2
+main: "BlockHorizons\\FactionsPE\\FactionsPE"
+version: 1.4.1
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, ScoreboardAPI]
 
 permissions:
