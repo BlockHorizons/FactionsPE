@@ -5,6 +5,8 @@ Hit counter: [![HitCount](http://hits.dwyl.io/BlockHorizons/FactionsPE.svg)](htt
 ### Installing
 This plugin has not yet been approved on Poggit.
 
+Your server must be running on PHP v7.4
+
 #### Running from Phar file
 Grab the latest .phar file from release section and insert into your server's plugin folder. After, restart the server. See more detailed instructions [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/Installation) :+1:
 
