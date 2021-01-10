@@ -19,7 +19,7 @@ authors:
 - Sandertv (@Sandertv)
 api: 3.17.2
 main: "BlockHorizons\\FactionsPE\\FactionsPE"
-version: 1.4.1
+version: 1.4.2
 softdepend: [EconomyAPI, MassiveEconomy, PocketMoney, GoldStd, ScoreboardAPI]
 
 permissions:

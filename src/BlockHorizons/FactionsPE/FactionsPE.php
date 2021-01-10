@@ -64,7 +64,7 @@ class FactionsPE extends PluginBase {
 	private $economy;
 
 	/** @var FormAPI|null */
-	private ?FormAPI $formAPI;
+	private ?FormAPI $formAPI = null;
 
 	/** @var FactionForm */
 	private FactionForm $form;
