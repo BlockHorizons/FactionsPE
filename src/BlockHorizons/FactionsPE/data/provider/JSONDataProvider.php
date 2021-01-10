@@ -80,9 +80,10 @@ class JSONDataProvider extends DataProvider
         $special = [Faction::NONE, Faction::SAFEZONE, Faction::WARZONE];
         $files = glob($this->getMain()->getDataFolder() . "factions/*.json");
         $files = array_map(function ($el) {
-            return substr($el, strpos($el, "factions/") + 9, -4);
+            return substr(basename($el), 0, -5);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
+            var_dump($faction);
             $f = $this->loadFaction($faction);
             if ($f instanceof Faction) {
                 Factions::attach($f);
@@ -93,7 +94,12 @@ class JSONDataProvider extends DataProvider
     public function loadFaction(string $id)
     {
         if (file_exists($f = $this->getFactionFilePath($id, ".json"))) {
-            $data = $this->__loadFaction($id, json_decode(file_get_contents($f), true));
+            $raw = json_decode(file_get_contents($f), true);
+            if($raw === null) {
+                $this->getMain()->getLogger()->notice("Faction '$id' JSON data is corrupted/malformed");
+                return null;
+            }
+            $data = $this->__loadFaction($id, $raw);
             if (!$data) return null;
 
             return new Faction($id, $data);

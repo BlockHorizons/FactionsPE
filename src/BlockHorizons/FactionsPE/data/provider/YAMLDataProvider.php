@@ -81,7 +81,7 @@ class YAMLDataProvider extends DataProvider
             glob($this->getMain()->getDataFolder() . "factions/*.yaml")
         );
         $files = array_map(function ($el) {
-            return substr($el, strpos($el, "factions/") + 9, strpos($el, '.yml') !== false ? -4 : -5);
+            return substr(basename($el), 0, strpos($el, '.yml') !== false ? -4 : -5);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
             $f = $this->loadFaction($faction);
@@ -94,7 +94,12 @@ class YAMLDataProvider extends DataProvider
     public function loadFaction(string $id): ?Faction
     {
         if (file_exists($f = $this->getFactionFilePath($id, ".yml")) || file_exists($f = $this->getFactionFilePath($id, ".yaml"))) {
-            $data = $this->__loadFaction($id, yaml_parse(file_get_contents($f)));
+            $raw = yaml_parse_file($f);
+            if($raw === null) {
+                $this->getMain()->getLogger()->notice("Faction '$id' YAML data is corrupted/malformed");
+                return null;
+            }
+            $data = $this->__loadFaction($id, $raw);
             if (!$data) return null;
 
             return new Faction($id, $data);
