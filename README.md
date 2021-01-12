@@ -1,6 +1,6 @@
 ![Factions - PE](https://raw.githubusercontent.com/BlockHorizons/FactionsPE/reborn/resources/logo.png "FactionsPE Logo")
 
-Hit counter: [![HitCount](http://hits.dwyl.io/BlockHorizons/FactionsPE.svg)](http://hits.dwyl.io/BlockHorizons/FactionsPE)
+[![HitCount](http://hits.dwyl.io/BlockHorizons/FactionsPE.svg)](http://hits.dwyl.io/BlockHorizons/FactionsPE) [![](https://poggit.pmmp.io/shield.dl/FactionsPE)](https://poggit.pmmp.io/p/FactionsPE)
 
 ### Installing
 This plugin has not yet been approved on Poggit.
