@@ -83,7 +83,6 @@ class JSONDataProvider extends DataProvider
             return substr(basename($el), 0, -5);
         }, $files);
         foreach (DataProvider::order($files) as $faction) {
-            var_dump($faction);
             $f = $this->loadFaction($faction);
             if ($f instanceof Faction) {
                 Factions::attach($f);
