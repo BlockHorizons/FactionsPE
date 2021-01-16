@@ -18,6 +18,10 @@ Clone this repository in your plugins folder, and make sure you have DevTools in
 There is no official support for FactionsPE. However I've made [fork](https://github.com/Kris-Driv/PureChat) which does support this plugin. 
 **NOTE**: ``force-chat-formatter`` must be set to false in order to allow PureChat format your chat instead.
 
+### ScoreHud support
+Addon is located in source files, exact path is `~/resources/FactionsPEAddon.php`. Copy and paste this file inside your
+`~/plugin_data/ScoreHud/addons` folder. This supports the default two variables `{faction}` and `{faction_power}`
+
 ### For developers
 API methods and examples can be found [at the wiki](https://github.com/BlockHorizons/FactionsPE/wiki/API)
 

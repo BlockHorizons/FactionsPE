@@ -133,11 +133,10 @@ class BoardEngine extends Engine implements Listener
 
     public static function removeBoard(Member $member): void
     {
-        $board = self::getBoard($member);
         try {
-            self::$api->removeScoreboard($board, [$member->getPlayer()]);
+            self::$api->removeScoreboard(self::getBoard($member, "faction"), [$member->getPlayer()]);
             try {
-                self::$api->removeScoreboard($board, [$member->getPlayer()]);
+                self::$api->removeScoreboard(self::getBoard($member, "factionless"), [$member->getPlayer()]);
             } catch(\Exception $e) {
                 // Ignore
             }
