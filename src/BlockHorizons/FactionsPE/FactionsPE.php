@@ -214,22 +214,22 @@ class FactionsPE extends PluginBase {
 	private function loadDataProvider(): bool {
 		try {
 			switch (strtolower(trim($this->getConfig()->get('data-provider')["type"]))) {
-			default:
-			case 'yaml':
-			case 'yml':
-				$this->setDataProvider(new YAMLDataProvider($this));
-				break;
-			case 'json':
-				$this->setDataProvider(new JSONDataProvider($this));
-				break;
-			case 'sql':
-			case 'sqlite':
-			case 'sqlite3':
-				$this->setDataProvider(new SQLite3DataProvider($this));
-				break;
-			case 'mysql':
-				$this->setDataProvider(new MySQLDataProvider($this));
-				break;
+				default:
+				case 'yaml':
+				case 'yml':
+					$this->setDataProvider(new YAMLDataProvider($this));
+					break;
+				case 'json':
+					$this->setDataProvider(new JSONDataProvider($this));
+					break;
+				// case 'sql':
+				// case 'sqlite':
+				// case 'sqlite3':
+				// 	$this->setDataProvider(new SQLite3DataProvider($this));
+				// 	break;
+				// case 'mysql':
+				// 	$this->setDataProvider(new MySQLDataProvider($this));
+				// 	break;
 			}
 		} catch (\Exception $e) {
 			$this->getLogger()->critical(Localizer::trans('plugin.dataprovider-error', [$e->getMessage(), $e->getCode()]));
